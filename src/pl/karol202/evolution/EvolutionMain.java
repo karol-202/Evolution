@@ -1,17 +1,20 @@
 package pl.karol202.evolution;
 
-import pl.karol202.evolution.ui.MainFrame;
+import pl.karol202.evolution.ui.EvolutionFrame;
 import pl.karol202.evolution.world.World;
 
 import javax.swing.*;
+import java.util.Random;
 
-public class Main
+public class EvolutionMain
 {
+	private Random random;
 	private World world;
 	
-	public Main()
+	public EvolutionMain()
 	{
-		world = new World(null, 512, 512);
+		random = new Random();
+		world = new World(random, 512, 512);
 		runMainFrame();
 	}
 	
@@ -25,11 +28,11 @@ public class Main
 		{
 			e.printStackTrace();
 		}
-		SwingUtilities.invokeLater(() -> new MainFrame(world));
+		SwingUtilities.invokeLater(() -> new EvolutionFrame(world));
 	}
 	
 	public static void main(String[] args)
 	{
-		new Main();
+		new EvolutionMain();
 	}
 }
