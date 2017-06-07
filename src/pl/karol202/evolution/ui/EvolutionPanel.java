@@ -1,13 +1,14 @@
 package pl.karol202.evolution.ui;
 
 import pl.karol202.evolution.utils.Gradient;
+import pl.karol202.evolution.world.OnWorldUpdateListener;
 import pl.karol202.evolution.world.World;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 
-public class EvolutionPanel extends JPanel
+public class EvolutionPanel extends JPanel implements OnWorldUpdateListener
 {
 	private World world;
 	private Gradient temperatureGradient;
@@ -18,6 +19,7 @@ public class EvolutionPanel extends JPanel
 	public EvolutionPanel(World world)
 	{
 		this.world = world;
+		world.addListener(this);
 		initTemperature();
 		initHumidity();
 	}
@@ -68,6 +70,14 @@ public class EvolutionPanel extends JPanel
 				humidityImage.setRGB(x, y, color);
 			}
 		}
+	}
+	
+	@Override
+	public void onWorldUpdated()
+	{
+		initTemperature();
+		initHumidity();
+		repaint();
 	}
 	
 	@Override

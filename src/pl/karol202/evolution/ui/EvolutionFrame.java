@@ -8,6 +8,10 @@ public class EvolutionFrame extends JFrame
 {
 	private World world;
 	
+	private JMenuBar menuBar;
+	private JMenu menuSimulation;
+	private JMenuItem itemNew;
+	
 	public EvolutionFrame(World world)
 	{
 		super("Evolution");
@@ -19,5 +23,15 @@ public class EvolutionFrame extends JFrame
 
 		EvolutionPanel panel = new EvolutionPanel(world);
 		add(panel);
+		
+		menuBar = new JMenuBar();
+		setJMenuBar(menuBar);
+		
+		menuSimulation = new JMenu("Symulacja");
+		menuBar.add(menuSimulation);
+		
+		itemNew = new JMenuItem("Nowa symulacja");
+		itemNew.addActionListener(e -> world.generateWorld());
+		menuSimulation.add(itemNew);
 	}
 }

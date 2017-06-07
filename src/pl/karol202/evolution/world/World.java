@@ -3,6 +3,7 @@ package pl.karol202.evolution.world;
 import pl.karol202.evolution.utils.OctaveSimplexNoise;
 import pl.karol202.evolution.utils.Utils;
 
+import java.util.ArrayList;
 import java.util.Random;
 
 public class World
@@ -23,12 +24,13 @@ public class World
 	private static final double[] HUMIDITY_OCTAVES = {
 			0.5, 0.25, 0.125, 0.0625, 0.03125
 	};
-	
+
 	private Random random;
 	private int width;
 	private int height;
 	private float[][] temperature;
 	private float[][] humidity;
+	private ArrayList<OnWorldUpdateListener> listeners;
 	
 	public World(Random random, int width, int height)
 	{
@@ -37,13 +39,15 @@ public class World
 		this.height = height;
 		this.temperature = new float[width][height];
 		this.humidity = new float[width][height];
+		this.listeners = new ArrayList<>();
 		generateWorld();
 	}
 	
-	private void generateWorld()
+	public void generateWorld()
 	{
 		generateTemperature();
 		generateHumidity();
+		listeners.forEach(OnWorldUpdateListener::onWorldUpdated);
 	}
 	
 	private void generateTemperature()
@@ -77,6 +81,11 @@ public class World
 	private int getRandomOffset()
 	{
 		return random.nextInt(MAX_OFFSET - MIN_OFFSET) + MIN_OFFSET;
+	}
+	
+	public void addListener(OnWorldUpdateListener listener)
+	{
+		listeners.add(listener);
 	}
 	
 	public int getWidth()
