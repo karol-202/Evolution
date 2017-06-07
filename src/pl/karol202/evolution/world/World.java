@@ -7,14 +7,22 @@ import java.util.Random;
 
 public class World
 {
-	private static final float FREQUENCY = 256;
 	private static final int MIN_OFFSET = -50000;
 	private static final int MAX_OFFSET = 50000;
-	private static final double[] OCTAVES = {
-			0.75, 0.2, 0.05
-	};
+	
+	private static final float TEMPERATURE_FREQUENCY = 256;
 	private static final float MIN_TEMPERATURE = -20f;
 	private static final float MAX_TEMPERATURE = 40f;
+	private static final double[] TEMPERATURE_OCTAVES = {
+			0.75, 0.2, 0.05
+	};
+	
+	private static final float HUMIDITY_FREQUENCY = 256;
+	private static final float MIN_HUMIDITY = 0;
+	private static final float MAX_HUMIDITY = 100;
+	private static final double[] HUMIDITY_OCTAVES = {
+			0.5, 0.25, 0.125, 0.0625, 0.03125
+	};
 	
 	private Random random;
 	private int width;
@@ -34,14 +42,34 @@ public class World
 	
 	private void generateWorld()
 	{
+		generateTemperature();
+		generateHumidity();
+	}
+	
+	private void generateTemperature()
+	{
 		int xOffset = getRandomOffset();
 		int yOffset = getRandomOffset();
 		for(int x = 0; x < width; x++)
 		{
 			for(int y = 0; y < height; y++)
 			{
-				float noise = (float) OctaveSimplexNoise.noise((x / FREQUENCY) + xOffset, (y / FREQUENCY) + yOffset, OCTAVES);
+				float noise = (float) OctaveSimplexNoise.noise((x / TEMPERATURE_FREQUENCY) + xOffset, (y / TEMPERATURE_FREQUENCY) + yOffset, TEMPERATURE_OCTAVES);
 				temperature[x][y] = Utils.map(noise, -1, 1, MIN_TEMPERATURE, MAX_TEMPERATURE);
+			}
+		}
+	}
+	
+	private void generateHumidity()
+	{
+		int xOffset = getRandomOffset();
+		int yOffset = getRandomOffset();
+		for(int x = 0; x < width; x++)
+		{
+			for(int y = 0; y < height; y++)
+			{
+				float noise = (float) OctaveSimplexNoise.noise((x / HUMIDITY_FREQUENCY) + xOffset, (y / HUMIDITY_FREQUENCY) + yOffset, HUMIDITY_OCTAVES);
+				humidity[x][y] = Utils.map(noise, -1, 1, MIN_HUMIDITY, MAX_HUMIDITY);
 			}
 		}
 	}

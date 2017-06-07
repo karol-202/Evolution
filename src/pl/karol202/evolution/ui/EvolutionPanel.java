@@ -10,12 +10,20 @@ import java.awt.image.BufferedImage;
 public class EvolutionPanel extends JPanel
 {
 	private World world;
-	private BufferedImage temperatureImage;
 	private Gradient temperatureGradient;
+	private BufferedImage temperatureImage;
+	private Gradient humidityGradient;
+	private BufferedImage humidityImage;
 	
 	public EvolutionPanel(World world)
 	{
 		this.world = world;
+		initTemperature();
+		initHumidity();
+	}
+	
+	private void initTemperature()
+	{
 		temperatureGradient = new Gradient();
 		temperatureGradient.addColor(new Color(0.96f, 0.04f, 0f), 45);
 		temperatureGradient.addColor(new Color(1f, 0.27f, 0.02f), 31);
@@ -24,18 +32,6 @@ public class EvolutionPanel extends JPanel
 		temperatureGradient.addColor(new Color(0f, 0.85f, 0.6f), -4);
 		temperatureGradient.addColor(new Color(0.1f, 0.28f, 1f), -20);
 		createTemperatureImage();
-	}
-	
-	@Override
-	protected void paintComponent(Graphics g)
-	{
-		super.paintComponent(g);
-		drawTemperature(g);
-	}
-	
-	private void drawTemperature(Graphics g)
-	{
-		g.drawImage(temperatureImage, 0, 0, world.getWidth(), world.getHeight(), null);
 	}
 	
 	private void createTemperatureImage()
@@ -50,5 +46,44 @@ public class EvolutionPanel extends JPanel
 				temperatureImage.setRGB(x, y, color);
 			}
 		}
+	}
+	
+	private void initHumidity()
+	{
+		humidityGradient = new Gradient();
+		humidityGradient.addColor(Color.WHITE, 0);
+		humidityGradient.addColor(new Color(0.1f, 0.28f, 1f), 100);
+		createHumidityImage();
+	}
+	
+	private void createHumidityImage()
+	{
+		humidityImage = new BufferedImage(world.getWidth(), world.getHeight(), BufferedImage.TYPE_INT_RGB);
+		for(int x = 0; x < world.getWidth(); x++)
+		{
+			for(int y = 0; y < world.getHeight(); y++)
+			{
+				float humidity = world.getHumidity()[x][y];
+				int color = humidityGradient.getColorAtPosition(humidity).getRGB();
+				humidityImage.setRGB(x, y, color);
+			}
+		}
+	}
+	
+	@Override
+	protected void paintComponent(Graphics g)
+	{
+		super.paintComponent(g);
+		drawHumidity(g);
+	}
+	
+	private void drawTemperature(Graphics g)
+	{
+		g.drawImage(temperatureImage, 0, 0, world.getWidth(), world.getHeight(), null);
+	}
+	
+	private void drawHumidity(Graphics g)
+	{
+		g.drawImage(humidityImage, 0, 0, world.getWidth(), world.getHeight(), null);
 	}
 }
