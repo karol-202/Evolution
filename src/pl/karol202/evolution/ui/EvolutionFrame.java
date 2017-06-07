@@ -9,8 +9,14 @@ public class EvolutionFrame extends JFrame
 	private World world;
 	
 	private JMenuBar menuBar;
+	
 	private JMenu menuSimulation;
 	private JMenuItem itemNew;
+	
+	private JMenu menuView;
+	private ButtonGroup groupView;
+	private JRadioButtonMenuItem itemViewTemperature;
+	private JRadioButtonMenuItem itemViewHumidity;
 	
 	public EvolutionFrame(World world)
 	{
@@ -33,5 +39,21 @@ public class EvolutionFrame extends JFrame
 		itemNew = new JMenuItem("Nowa symulacja");
 		itemNew.addActionListener(e -> world.generateWorld());
 		menuSimulation.add(itemNew);
+		
+		menuView = new JMenu("Widok");
+		menuBar.add(menuView);
+		
+		groupView = new ButtonGroup();
+		
+		itemViewTemperature = new JRadioButtonMenuItem("Temperatura");
+		itemViewTemperature.addActionListener(e -> panel.setViewMode(ViewMode.TEMPERATURE));
+		itemViewTemperature.setSelected(true);
+		groupView.add(itemViewTemperature);
+		menuView.add(itemViewTemperature);
+		
+		itemViewHumidity = new JRadioButtonMenuItem("Wilgotność");
+		itemViewHumidity.addActionListener(e -> panel.setViewMode(ViewMode.HUMIDITY));
+		groupView.add(itemViewHumidity);
+		menuView.add(itemViewHumidity);
 	}
 }

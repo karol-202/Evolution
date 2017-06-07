@@ -11,14 +11,18 @@ import java.awt.image.BufferedImage;
 public class EvolutionPanel extends JPanel implements OnWorldUpdateListener
 {
 	private World world;
+	
 	private Gradient temperatureGradient;
 	private BufferedImage temperatureImage;
 	private Gradient humidityGradient;
 	private BufferedImage humidityImage;
 	
+	private ViewMode viewMode;
+	
 	public EvolutionPanel(World world)
 	{
 		this.world = world;
+		this.viewMode = ViewMode.TEMPERATURE;
 		world.addListener(this);
 		initTemperature();
 		initHumidity();
@@ -84,7 +88,8 @@ public class EvolutionPanel extends JPanel implements OnWorldUpdateListener
 	protected void paintComponent(Graphics g)
 	{
 		super.paintComponent(g);
-		drawHumidity(g);
+		if(viewMode == ViewMode.TEMPERATURE) drawTemperature(g);
+		else if(viewMode == ViewMode.HUMIDITY) drawHumidity(g);
 	}
 	
 	private void drawTemperature(Graphics g)
@@ -95,5 +100,11 @@ public class EvolutionPanel extends JPanel implements OnWorldUpdateListener
 	private void drawHumidity(Graphics g)
 	{
 		g.drawImage(humidityImage, 0, 0, world.getWidth(), world.getHeight(), null);
+	}
+	
+	public void setViewMode(ViewMode viewMode)
+	{
+		this.viewMode = viewMode;
+		repaint();
 	}
 }
