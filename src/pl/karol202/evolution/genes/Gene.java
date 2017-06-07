@@ -35,7 +35,7 @@ public class Gene
 	@Override
 	public String toString()
 	{
-		return "Gene{" + "type=" + type + ", level=" + level + ", alleleA=" + alleleA + ", alleleB=" + alleleB + '}';
+		return "Gene{" + "type = " + type + ", level = " + level + ", alleleA = " + alleleA + ", alleleB = " + alleleB + '}';
 	}
 	
 	public GeneType getType()

@@ -4,29 +4,33 @@ import java.util.Random;
 
 public class Genotype
 {
-	private Gene[] genes;
 	private Random random;
-	private boolean empty;
+	private Gene[] genes;
 	
 	public Genotype(Random random)
 	{
 		this.random = random;
 		genes = new Gene[GeneType.getAllGenesCount()];
-		empty = true;
+		createRandomGenes();
 	}
 	
-	public void createRandomGenes()
+	public Genotype(Random random, Genotype genotypeA, Genotype genotypeB)
+	{
+		this.random = random;
+		genes = new Gene[GeneType.getAllGenesCount()];
+		inheritGenes(genotypeA, genotypeB);
+	}
+	
+	private void createRandomGenes()
 	{
 		int id = 0;
 		for(GeneType type : GeneType.values())
 			for(int level = 0; level < type.getLevels(); level++)
 				genes[id++] = new Gene(type, level, random);
-		empty = false;
 	}
 	
-	public void inheritGenes(Genotype genotypeA, Genotype genotypeB)
+	private void inheritGenes(Genotype genotypeA, Genotype genotypeB)
 	{
-		if(genotypeA.empty || genotypeB.empty) throw new RuntimeException("Empty genotype");
 		for(int i = 0; i < genes.length; i++)
 		{
 			Gene geneA = genotypeA.genes[i];
@@ -39,6 +43,12 @@ public class Genotype
 			Gene newGene = new Gene(geneA.getType(), geneA.getLevel(), alleleA, alleleB);
 			genes[i] = newGene;
 		}
-		empty = false;
+	}
+	
+	public Gene[] getGenes()
+	{
+		Gene[] copy = new Gene[genes.length];
+		System.arraycopy(genes, 0, copy, 0, genes.length);
+		return copy;
 	}
 }
