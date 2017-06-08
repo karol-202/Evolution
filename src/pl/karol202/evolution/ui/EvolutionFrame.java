@@ -114,6 +114,7 @@ public class EvolutionFrame extends JFrame implements EvolutionPanel.OnViewParam
 	private void initBottomPanel()
 	{
 		panelBottom = new JPanel(new GridBagLayout());
+		panelBottom.setBorder(BorderFactory.createMatteBorder(1, 0, 0, 0, Color.DARK_GRAY));
 		add(panelBottom, BorderLayout.SOUTH);
 		initScaleLabel();
 		initScaleDownButton();

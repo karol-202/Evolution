@@ -112,11 +112,14 @@ public class EvolutionPanel extends JPanel implements OnWorldUpdateListener, Mou
 	}
 	
 	@Override
-	protected void paintComponent(Graphics g)
+	protected void paintComponent(Graphics graphics)
 	{
-		super.paintComponent(g);
+		super.paintComponent(graphics);
+		Graphics2D g = (Graphics2D) graphics;
 		if(viewMode == ViewMode.TEMPERATURE) drawTemperature(g);
 		else if(viewMode == ViewMode.HUMIDITY) drawHumidity(g);
+		g.setStroke(new BasicStroke(2));
+		g.drawRect(xPosition - 1, yPosition - 1, (int) (world.getWidth() * scale) + 1, (int) (world.getHeight() * scale) + 1);
 	}
 	
 	private void drawTemperature(Graphics g)
@@ -287,6 +290,10 @@ public class EvolutionPanel extends JPanel implements OnWorldUpdateListener, Mou
 	{
 		xPosition = xPosAtDraggingStart + (e.getX() - draggingStartX);
 		yPosition = yPosAtDraggingStart + (e.getY() - draggingStartY);
+		if(xPosition < -(world.getWidth() * scale)) xPosition = (int) -(world.getWidth() * scale);
+		if(yPosition < -(world.getHeight() * scale)) yPosition = (int) -(world.getHeight() * scale);
+		if(xPosition > getWidth()) xPosition = getWidth();
+		if(yPosition > getHeight()) yPosition = getHeight();
 		repaint();
 	}
 	
