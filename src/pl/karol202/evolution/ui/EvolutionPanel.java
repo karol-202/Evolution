@@ -6,11 +6,10 @@ import pl.karol202.evolution.world.World;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.MouseWheelEvent;
-import java.awt.event.MouseWheelListener;
+import java.awt.event.*;
 import java.awt.image.BufferedImage;
 
-public class EvolutionPanel extends JPanel implements OnWorldUpdateListener, MouseWheelListener
+public class EvolutionPanel extends JPanel implements OnWorldUpdateListener, MouseWheelListener, MouseMotionListener, MouseListener
 {
 	private static final double SQRT2 = Math.sqrt(2);
 	private static final double MIN_ZOOM = 0.03125f;
@@ -25,16 +24,23 @@ public class EvolutionPanel extends JPanel implements OnWorldUpdateListener, Mou
 	
 	private ViewMode viewMode;
 	private double scale;
-	private int xOffset;
-	private int yOffset;
+	private int xPosition;
+	private int yPosition;
+	
+	private int draggingStartX;
+	private int draggingStartY;
+	private int xPosAtDraggingStart;
+	private int yPosAtDraggingStart;
 	
 	public EvolutionPanel(World world)
 	{
 		this.world = world;
 		this.viewMode = ViewMode.TEMPERATURE;
 		this.scale = 1;
-		this.xOffset = 0;
-		this.yOffset = 0;
+		this.xPosition = 0;
+		this.yPosition = 0;
+		addMouseListener(this);
+		addMouseMotionListener(this);
 		addMouseWheelListener(this);
 		world.addListener(this);
 		initTemperatureGradient();
@@ -92,8 +98,8 @@ public class EvolutionPanel extends JPanel implements OnWorldUpdateListener, Mou
 	@Override
 	public void onWorldUpdated()
 	{
-		initTemperatureGradient();
-		initHumidityGradient();
+		createTemperatureImage();
+		createHumidityImage();
 		repaint();
 	}
 	
@@ -107,12 +113,12 @@ public class EvolutionPanel extends JPanel implements OnWorldUpdateListener, Mou
 	
 	private void drawTemperature(Graphics g)
 	{
-		g.drawImage(temperatureImage, xOffset, yOffset, getImageWidth(temperatureImage), getImageHeight(temperatureImage), null);
+		g.drawImage(temperatureImage, xPosition, yPosition, getImageWidth(temperatureImage), getImageHeight(temperatureImage), null);
 	}
 	
 	private void drawHumidity(Graphics g)
 	{
-		g.drawImage(humidityImage, xOffset, yOffset, getImageWidth(humidityImage), getImageHeight(humidityImage), null);
+		g.drawImage(humidityImage, xPosition, yPosition, getImageWidth(humidityImage), getImageHeight(humidityImage), null);
 	}
 	
 	private int getImageWidth(BufferedImage image)
@@ -124,7 +130,7 @@ public class EvolutionPanel extends JPanel implements OnWorldUpdateListener, Mou
 	{
 		return (int) Math.round(image.getHeight() * scale);
 	}
-
+	
 	public void setViewMode(ViewMode viewMode)
 	{
 		this.viewMode = viewMode;
@@ -204,6 +210,38 @@ public class EvolutionPanel extends JPanel implements OnWorldUpdateListener, Mou
 		if(position >= 0) return round;
 		else return 1 / round;
 	}
+	
+	@Override
+	public void mouseClicked(MouseEvent e) { }
+	
+	@Override
+	public void mousePressed(MouseEvent e)
+	{
+		draggingStartX = e.getX();
+		draggingStartY = e.getY();
+		xPosAtDraggingStart = xPosition;
+		yPosAtDraggingStart = yPosition;
+	}
+	
+	@Override
+	public void mouseReleased(MouseEvent e) { }
+	
+	@Override
+	public void mouseEntered(MouseEvent e) { }
+	
+	@Override
+	public void mouseExited(MouseEvent e) { }
+	
+	@Override
+	public void mouseDragged(MouseEvent e)
+	{
+		xPosition = xPosAtDraggingStart + (e.getX() - draggingStartX);
+		yPosition = yPosAtDraggingStart + (e.getY() - draggingStartY);
+		repaint();
+	}
+	
+	@Override
+	public void mouseMoved(MouseEvent e) { }
 	
 	@Override
 	public void mouseWheelMoved(MouseWheelEvent e)

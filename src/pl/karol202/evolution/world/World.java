@@ -11,14 +11,14 @@ public class World
 	private static final int MIN_OFFSET = -50000;
 	private static final int MAX_OFFSET = 50000;
 	
-	private static final float TEMPERATURE_FREQUENCY = 256;
+	private static final float TEMPERATURE_FREQUENCY = 512;
 	private static final float MIN_TEMPERATURE = -20f;
 	private static final float MAX_TEMPERATURE = 40f;
 	private static final double[] TEMPERATURE_OCTAVES = {
 			0.75, 0.2, 0.05
 	};
 	
-	private static final float HUMIDITY_FREQUENCY = 256;
+	private static final float HUMIDITY_FREQUENCY = 512;
 	private static final float MIN_HUMIDITY = 0;
 	private static final float MAX_HUMIDITY = 100;
 	private static final double[] HUMIDITY_OCTAVES = {
