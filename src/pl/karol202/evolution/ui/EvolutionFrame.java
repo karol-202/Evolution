@@ -19,6 +19,7 @@ public class EvolutionFrame extends JFrame implements EvolutionPanel.OnViewParam
 	
 	private JMenu menuView;
 	private ButtonGroup groupView;
+	private JRadioButtonMenuItem itemViewStandard;
 	private JRadioButtonMenuItem itemViewTemperature;
 	private JRadioButtonMenuItem itemViewHumidity;
 	private JMenuItem itemCenterView;
@@ -81,17 +82,26 @@ public class EvolutionFrame extends JFrame implements EvolutionPanel.OnViewParam
 		menuBar.add(menuView);
 		
 		groupView = new ButtonGroup();
+		initStandardModeItem();
 		initTemperatureModeItem();
 		initHumidityModeItem();
 		menuView.add(new JSeparator());
 		initCenterViewItem();
 	}
 	
+	private void initStandardModeItem()
+	{
+		itemViewStandard = new JRadioButtonMenuItem("Standardowy");
+		itemViewStandard.addActionListener(e -> evolutionPanel.setViewMode(ViewMode.STANDARD));
+		itemViewStandard.setSelected(true);
+		groupView.add(itemViewStandard);
+		menuView.add(itemViewStandard);
+	}
+	
 	private void initTemperatureModeItem()
 	{
 		itemViewTemperature = new JRadioButtonMenuItem("Temperatura");
 		itemViewTemperature.addActionListener(e -> evolutionPanel.setViewMode(ViewMode.TEMPERATURE));
-		itemViewTemperature.setSelected(true);
 		groupView.add(itemViewTemperature);
 		menuView.add(itemViewTemperature);
 	}

@@ -1,5 +1,6 @@
 package pl.karol202.evolution.world;
 
+import pl.karol202.evolution.entity.Entities;
 import pl.karol202.evolution.utils.OctaveSimplexNoise;
 import pl.karol202.evolution.utils.Utils;
 
@@ -30,6 +31,7 @@ public class World
 	private int height;
 	private float[][] temperature;
 	private float[][] humidity;
+	private Entities entities;
 	private ArrayList<OnWorldUpdateListener> listeners;
 	
 	public World(Random random, int width, int height)
@@ -39,6 +41,7 @@ public class World
 		this.height = height;
 		this.temperature = new float[width][height];
 		this.humidity = new float[width][height];
+		this.entities = new Entities();
 		this.listeners = new ArrayList<>();
 		generateWorld();
 	}
@@ -47,6 +50,7 @@ public class World
 	{
 		generateTemperature();
 		generateHumidity();
+		entities.generateEntities();
 		listeners.forEach(OnWorldUpdateListener::onWorldUpdated);
 	}
 	
@@ -106,5 +110,10 @@ public class World
 	public float[][] getHumidity()
 	{
 		return humidity;
+	}
+	
+	public Entities getEntities()
+	{
+		return entities;
 	}
 }

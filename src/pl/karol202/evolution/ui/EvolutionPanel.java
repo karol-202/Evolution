@@ -1,5 +1,7 @@
 package pl.karol202.evolution.ui;
 
+import pl.karol202.evolution.entity.Entities;
+import pl.karol202.evolution.entity.Entity;
 import pl.karol202.evolution.utils.Gradient;
 import pl.karol202.evolution.utils.Utils;
 import pl.karol202.evolution.world.OnWorldUpdateListener;
@@ -22,6 +24,7 @@ public class EvolutionPanel extends JPanel implements OnWorldUpdateListener, Mou
 	private static final double MAX_ZOOM = 16;
 	
 	private World world;
+	private Entities entities;
 	private OnViewParametersChangeListener viewListener;
 	
 	private Gradient temperatureGradient;
@@ -42,8 +45,9 @@ public class EvolutionPanel extends JPanel implements OnWorldUpdateListener, Mou
 	public EvolutionPanel(World world, OnViewParametersChangeListener listener)
 	{
 		this.world = world;
+		this.entities = world.getEntities();
 		this.viewListener = listener;
-		this.viewMode = ViewMode.TEMPERATURE;
+		this.viewMode = ViewMode.STANDARD;
 		this.scale = 1;
 		this.xPosition = 0;
 		this.yPosition = 0;
@@ -116,30 +120,78 @@ public class EvolutionPanel extends JPanel implements OnWorldUpdateListener, Mou
 	{
 		super.paintComponent(graphics);
 		Graphics2D g = (Graphics2D) graphics;
-		if(viewMode == ViewMode.TEMPERATURE) drawTemperature(g);
+		setGraphicsParams(g);
+		drawBackground(g);
+		drawBorder(g);
+		setClipping(g);
+		drawEntities(g);
+	}
+	
+	private void setGraphicsParams(Graphics2D g)
+	{
+		g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+	}
+	
+	private void drawBackground(Graphics2D g)
+	{
+		if(viewMode == ViewMode.STANDARD) drawStandardBackground(g);
+		else if(viewMode == ViewMode.TEMPERATURE) drawTemperature(g);
 		else if(viewMode == ViewMode.HUMIDITY) drawHumidity(g);
+	}
+	
+	private void drawStandardBackground(Graphics2D g)
+	{
+		g.setColor(Color.WHITE);
+		g.fillRect(xPosition, yPosition, getScaledWorldWidth(), getScaledWorldHeight());
+	}
+	
+	private void drawTemperature(Graphics2D g)
+	{
+		g.drawImage(temperatureImage, xPosition, yPosition, getScaledWorldWidth(), getScaledWorldHeight(), null);
+	}
+	
+	private void drawHumidity(Graphics2D g)
+	{
+		g.drawImage(humidityImage, xPosition, yPosition, getScaledWorldWidth(), getScaledWorldHeight(), null);
+	}
+	
+	private void drawBorder(Graphics2D g)
+	{
+		g.setColor(Color.DARK_GRAY);
 		g.setStroke(new BasicStroke(2));
-		g.drawRect(xPosition - 1, yPosition - 1, (int) (world.getWidth() * scale) + 1, (int) (world.getHeight() * scale) + 1);
+		g.drawRect(xPosition - 1, yPosition - 1, getScaledWorldWidth() + 1, getScaledWorldHeight() + 1);
 	}
 	
-	private void drawTemperature(Graphics g)
+	private void setClipping(Graphics2D g)
 	{
-		g.drawImage(temperatureImage, xPosition, yPosition, getScaledImageWidth(temperatureImage), getScaledImageHeight(temperatureImage), null);
+		g.clipRect(xPosition, yPosition, getScaledWorldWidth(), getScaledWorldHeight());
 	}
 	
-	private void drawHumidity(Graphics g)
+	private void drawEntities(Graphics2D g)
 	{
-		g.drawImage(humidityImage, xPosition, yPosition, getScaledImageWidth(humidityImage), getScaledImageHeight(humidityImage), null);
+		for(Entity entity : entities.getEntities()) drawEntity(g, entity);
 	}
 	
-	private int getScaledImageWidth(BufferedImage image)
+	private void drawEntity(Graphics2D g, Entity entity)
 	{
-		return (int) Math.round(image.getWidth() * scale);
+		int x = (int) (entity.getX() * scale) + xPosition;
+		int y = (int) (entity.getY() * scale) + yPosition;
+		int size = (int) (20 * scale);
+		g.setColor(Color.WHITE);
+		g.fillOval(x - (size / 2), y - (size / 2), size, size);
+		g.setColor(Color.DARK_GRAY);
+		g.setStroke(new BasicStroke(1));
+		g.drawOval(x - (size / 2), y - (size / 2), size, size);
 	}
 	
-	private int getScaledImageHeight(BufferedImage image)
+	private int getScaledWorldWidth()
 	{
-		return (int) Math.round(image.getHeight() * scale);
+		return (int) Math.round(world.getWidth() * scale);
+	}
+	
+	private int getScaledWorldHeight()
+	{
+		return (int) Math.round(world.getHeight() * scale);
 	}
 	
 	public void setViewMode(ViewMode viewMode)
@@ -247,8 +299,8 @@ public class EvolutionPanel extends JPanel implements OnWorldUpdateListener, Mou
 	
 	private void applyScalingToPosition(double oldScale, int focusX, int focusY)
 	{
-		int scaledWorldSizeX = (int) Math.round(world.getWidth() * scale);
-		int scaledWorldSizeY = (int) Math.round(world.getHeight() * scale);
+		int scaledWorldSizeX = getScaledWorldWidth();
+		int scaledWorldSizeY = getScaledWorldHeight();
 		int oldScaledWorldSizeX = (int) Math.round(world.getWidth() * oldScale);
 		int oldScaledWorldSizeY = (int) Math.round(world.getHeight() * oldScale);
 		float xMultiplier = Utils.map(focusX, xPosition, xPosition + oldScaledWorldSizeX, 0, 1);
@@ -259,8 +311,8 @@ public class EvolutionPanel extends JPanel implements OnWorldUpdateListener, Mou
 	
 	public void centerView()
 	{
-		xPosition = (int) (((getWidth() / 2) - (world.getWidth() * scale / 2)));
-		yPosition = (int) (((getHeight() / 2) - (world.getHeight() * scale / 2)));
+		xPosition = (getWidth() / 2) - (getScaledWorldWidth() / 2);
+		yPosition = (getHeight() / 2) - (getScaledWorldHeight() / 2);
 		repaint();
 	}
 	
@@ -290,8 +342,8 @@ public class EvolutionPanel extends JPanel implements OnWorldUpdateListener, Mou
 	{
 		xPosition = xPosAtDraggingStart + (e.getX() - draggingStartX);
 		yPosition = yPosAtDraggingStart + (e.getY() - draggingStartY);
-		if(xPosition < -(world.getWidth() * scale)) xPosition = (int) -(world.getWidth() * scale);
-		if(yPosition < -(world.getHeight() * scale)) yPosition = (int) -(world.getHeight() * scale);
+		if(xPosition < -getScaledWorldWidth()) xPosition = -getScaledWorldWidth();
+		if(yPosition < -getScaledWorldHeight()) yPosition = -getScaledWorldHeight();
 		if(xPosition > getWidth()) xPosition = getWidth();
 		if(yPosition > getHeight()) yPosition = getHeight();
 		repaint();
