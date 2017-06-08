@@ -42,6 +42,9 @@ public class EvolutionPanel extends JPanel implements OnWorldUpdateListener, Mou
 	private int xPosAtDraggingStart;
 	private int yPosAtDraggingStart;
 	
+	private int mouseX;
+	private int mouseY;
+	
 	public EvolutionPanel(World world, OnViewParametersChangeListener listener)
 	{
 		this.world = world;
@@ -174,14 +177,29 @@ public class EvolutionPanel extends JPanel implements OnWorldUpdateListener, Mou
 	
 	private void drawEntity(Graphics2D g, Entity entity)
 	{
-		int x = (int) (entity.getX() * scale) + xPosition;
-		int y = (int) (entity.getY() * scale) + yPosition;
-		int size = (int) (20 * scale);
-		g.setColor(Color.WHITE);
-		g.fillOval(x - (size / 2), y - (size / 2), size, size);
+		Rectangle bounds = getEntityBounds(entity);
+		boolean hovered = isHovered(bounds);
+		g.setColor(hovered ? new Color(216, 216, 216) : Color.WHITE);
+		g.fillOval(bounds.x, bounds.y, bounds.width, bounds.height);
 		g.setColor(Color.DARK_GRAY);
 		g.setStroke(new BasicStroke(1));
-		g.drawOval(x - (size / 2), y - (size / 2), size, size);
+		g.drawOval(bounds.x, bounds.y, bounds.width, bounds.height);
+	}
+	
+	private Rectangle getEntityBounds(Entity entity)
+	{
+		int size = (int) (20 * scale);
+		int x = (int) (entity.getX() * scale) + xPosition - (size / 2);
+		int y = (int) (entity.getY() * scale) + yPosition - (size / 2);
+		return new Rectangle(x, y, size, size);
+	}
+	
+	private boolean isHovered(Rectangle rectangle)
+	{
+		double x = mouseX - rectangle.getCenterX();
+		double y = mouseY - rectangle.getCenterY();
+		double distance = Math.sqrt((x * x) + (y * y));
+		return distance < rectangle.width / 2;
 	}
 	
 	private int getScaledWorldWidth()
@@ -346,11 +364,19 @@ public class EvolutionPanel extends JPanel implements OnWorldUpdateListener, Mou
 		if(yPosition < -getScaledWorldHeight()) yPosition = -getScaledWorldHeight();
 		if(xPosition > getWidth()) xPosition = getWidth();
 		if(yPosition > getHeight()) yPosition = getHeight();
+		
+		mouseX = e.getX();
+		mouseY = e.getY();
 		repaint();
 	}
 	
 	@Override
-	public void mouseMoved(MouseEvent e) { }
+	public void mouseMoved(MouseEvent e)
+	{
+		mouseX = e.getX();
+		mouseY = e.getY();
+		repaint();
+	}
 	
 	@Override
 	public void mouseWheelMoved(MouseWheelEvent e)
