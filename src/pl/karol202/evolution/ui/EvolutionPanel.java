@@ -6,9 +6,11 @@ import pl.karol202.evolution.world.World;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.MouseWheelEvent;
+import java.awt.event.MouseWheelListener;
 import java.awt.image.BufferedImage;
 
-public class EvolutionPanel extends JPanel implements OnWorldUpdateListener
+public class EvolutionPanel extends JPanel implements OnWorldUpdateListener, MouseWheelListener
 {
 	private static final double SQRT2 = Math.sqrt(2);
 	private static final double MIN_ZOOM = 0.03125f;
@@ -33,6 +35,7 @@ public class EvolutionPanel extends JPanel implements OnWorldUpdateListener
 		this.scale = 1;
 		this.xOffset = 0;
 		this.yOffset = 0;
+		addMouseWheelListener(this);
 		world.addListener(this);
 		initTemperatureGradient();
 		initHumidityGradient();
@@ -121,7 +124,7 @@ public class EvolutionPanel extends JPanel implements OnWorldUpdateListener
 	{
 		return (int) Math.round(image.getHeight() * scale);
 	}
-	
+
 	public void setViewMode(ViewMode viewMode)
 	{
 		this.viewMode = viewMode;
@@ -200,5 +203,14 @@ public class EvolutionPanel extends JPanel implements OnWorldUpdateListener
 		double round = Math.round(fract * 2) / 2f;
 		if(position >= 0) return round;
 		else return 1 / round;
+	}
+	
+	@Override
+	public void mouseWheelMoved(MouseWheelEvent e)
+	{
+		if(e.getScrollType() != MouseWheelEvent.WHEEL_UNIT_SCROLL) return;
+		int rotation = e.getWheelRotation();
+		if(rotation > 0) scaleDown();
+		else scaleUp();
 	}
 }
