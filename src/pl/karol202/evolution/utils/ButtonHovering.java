@@ -11,6 +11,12 @@ import java.io.IOException;
 
 public class ButtonHovering extends JPanel implements MouseListener
 {
+	public interface OnButtonClickListener
+	{
+		void onButtonClicked();
+	}
+	
+	private OnButtonClickListener listener;
 	private BufferedImage image;
 	private Color defaultColor;
 	private Color hoverColor;
@@ -33,7 +39,10 @@ public class ButtonHovering extends JPanel implements MouseListener
 	}
 	
 	@Override
-	public void mouseClicked(MouseEvent e) { }
+	public void mouseClicked(MouseEvent e)
+	{
+		if(listener != null) listener.onButtonClicked();
+	}
 	
 	@Override
 	public void mousePressed(MouseEvent e)
@@ -80,5 +89,10 @@ public class ButtonHovering extends JPanel implements MouseListener
 	{
 		super.paintComponent(g);
 		g.drawImage(image, 0, 0, image.getWidth(), image.getHeight(), null);
+	}
+	
+	public void setListener(OnButtonClickListener listener)
+	{
+		this.listener = listener;
 	}
 }

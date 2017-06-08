@@ -10,6 +10,10 @@ import java.awt.image.BufferedImage;
 
 public class EvolutionPanel extends JPanel implements OnWorldUpdateListener
 {
+	private static final double SQRT2 = Math.sqrt(2);
+	private static final double MIN_ZOOM = 0.03125f;
+	private static final double MAX_ZOOM = 16;
+	
 	private World world;
 	
 	private Gradient temperatureGradient;
@@ -18,17 +22,25 @@ public class EvolutionPanel extends JPanel implements OnWorldUpdateListener
 	private BufferedImage humidityImage;
 	
 	private ViewMode viewMode;
+	private double scale;
+	private int xOffset;
+	private int yOffset;
 	
 	public EvolutionPanel(World world)
 	{
 		this.world = world;
 		this.viewMode = ViewMode.TEMPERATURE;
+		this.scale = 1;
+		this.xOffset = 0;
+		this.yOffset = 0;
 		world.addListener(this);
-		initTemperature();
-		initHumidity();
+		initTemperatureGradient();
+		initHumidityGradient();
+		createTemperatureImage();
+		createHumidityImage();
 	}
 	
-	private void initTemperature()
+	private void initTemperatureGradient()
 	{
 		temperatureGradient = new Gradient();
 		temperatureGradient.addColor(new Color(0.96f, 0.04f, 0f), 45);
@@ -37,15 +49,21 @@ public class EvolutionPanel extends JPanel implements OnWorldUpdateListener
 		temperatureGradient.addColor(new Color(0.42f, 0.91f, 0f), 8);
 		temperatureGradient.addColor(new Color(0f, 0.85f, 0.6f), -4);
 		temperatureGradient.addColor(new Color(0.1f, 0.28f, 1f), -20);
-		createTemperatureImage();
+	}
+	
+	private void initHumidityGradient()
+	{
+		humidityGradient = new Gradient();
+		humidityGradient.addColor(Color.WHITE, 0);
+		humidityGradient.addColor(new Color(0.1f, 0.28f, 1f), 100);
 	}
 	
 	private void createTemperatureImage()
 	{
 		temperatureImage = new BufferedImage(world.getWidth(), world.getHeight(), BufferedImage.TYPE_INT_RGB);
-		for(int x = 0; x < world.getWidth(); x++)
+		for(int x = 0; x < temperatureImage.getWidth(); x++)
 		{
-			for(int y = 0; y < world.getHeight(); y++)
+			for(int y = 0; y < temperatureImage.getHeight(); y++)
 			{
 				float temperature = world.getTemperature()[x][y];
 				int color = temperatureGradient.getColorAtPosition(temperature).getRGB();
@@ -54,20 +72,12 @@ public class EvolutionPanel extends JPanel implements OnWorldUpdateListener
 		}
 	}
 	
-	private void initHumidity()
-	{
-		humidityGradient = new Gradient();
-		humidityGradient.addColor(Color.WHITE, 0);
-		humidityGradient.addColor(new Color(0.1f, 0.28f, 1f), 100);
-		createHumidityImage();
-	}
-	
 	private void createHumidityImage()
 	{
 		humidityImage = new BufferedImage(world.getWidth(), world.getHeight(), BufferedImage.TYPE_INT_RGB);
-		for(int x = 0; x < world.getWidth(); x++)
+		for(int x = 0; x < humidityImage.getWidth(); x++)
 		{
-			for(int y = 0; y < world.getHeight(); y++)
+			for(int y = 0; y < humidityImage.getHeight(); y++)
 			{
 				float humidity = world.getHumidity()[x][y];
 				int color = humidityGradient.getColorAtPosition(humidity).getRGB();
@@ -79,8 +89,8 @@ public class EvolutionPanel extends JPanel implements OnWorldUpdateListener
 	@Override
 	public void onWorldUpdated()
 	{
-		initTemperature();
-		initHumidity();
+		initTemperatureGradient();
+		initHumidityGradient();
 		repaint();
 	}
 	
@@ -94,17 +104,101 @@ public class EvolutionPanel extends JPanel implements OnWorldUpdateListener
 	
 	private void drawTemperature(Graphics g)
 	{
-		g.drawImage(temperatureImage, 0, 0, world.getWidth(), world.getHeight(), null);
+		g.drawImage(temperatureImage, xOffset, yOffset, getImageWidth(temperatureImage), getImageHeight(temperatureImage), null);
 	}
 	
 	private void drawHumidity(Graphics g)
 	{
-		g.drawImage(humidityImage, 0, 0, world.getWidth(), world.getHeight(), null);
+		g.drawImage(humidityImage, xOffset, yOffset, getImageWidth(humidityImage), getImageHeight(humidityImage), null);
+	}
+	
+	private int getImageWidth(BufferedImage image)
+	{
+		return (int) Math.round(image.getWidth() * scale);
+	}
+	
+	private int getImageHeight(BufferedImage image)
+	{
+		return (int) Math.round(image.getHeight() * scale);
 	}
 	
 	public void setViewMode(ViewMode viewMode)
 	{
 		this.viewMode = viewMode;
 		repaint();
+	}
+	
+	public double getScale()
+	{
+		return scale;
+	}
+	
+	public void scaleDown()
+	{
+		scale = getLowerZoom();
+		if(scale < MIN_ZOOM) scale = MIN_ZOOM;
+		repaint();
+	}
+	
+	public void scaleUp()
+	{
+		scale = getGreaterZoom();
+		if(scale > MAX_ZOOM) scale = MAX_ZOOM;
+		repaint();
+	}
+	
+	private double getLowerZoom()
+	{
+		int position = 0;
+		if(scale > 1)
+		{
+			double lower = 1;
+			while(true)
+			{
+				double next = calculateZoomRatio(++position);
+				if(next >= scale) return lower;
+				lower = next;
+			}
+		}
+		else
+		{
+			while(true)
+			{
+				double next = calculateZoomRatio(--position);
+				if(next < scale) return next;
+			}
+		}
+	}
+	
+	private double getGreaterZoom()
+	{
+		int position = 0;
+		if(scale < 1)
+		{
+			double greater = 1;
+			while(true)
+			{
+				double next = calculateZoomRatio(--position);
+				if(next <= scale) return greater;
+				greater = next;
+			}
+		}
+		else
+		{
+			while(true)
+			{
+				double next = calculateZoomRatio(++position);
+				if(next > scale) return next;
+			}
+		}
+	}
+	
+	private double calculateZoomRatio(int position)
+	{
+		int posAbs = Math.abs(position);
+		double fract = Math.pow(SQRT2, posAbs);
+		double round = Math.round(fract * 2) / 2f;
+		if(position >= 0) return round;
+		else return 1 / round;
 	}
 }

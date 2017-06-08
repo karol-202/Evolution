@@ -69,19 +69,32 @@ public class EvolutionFrame extends JFrame
 		panelBottom = new JPanel(new GridBagLayout());
 		add(panelBottom, BorderLayout.SOUTH);
 		
-		labelScale = new JLabel("100%");
+		labelScale = new JLabel(getScaleString());
 		panelBottom.add(labelScale, new GridBagConstraints(1, 0, 1, 1, 0, 0,
 				GridBagConstraints.EAST, GridBagConstraints.NONE, new Insets(0, 0, 0, 0),
 				0, 0));
 		
 		buttonMinus = new ButtonHovering("res/minus.png");
+		buttonMinus.setListener(() -> {
+			evolutionPanel.scaleDown();
+			labelScale.setText(getScaleString());
+		});
 		panelBottom.add(buttonMinus, new GridBagConstraints(0, 0, 1, 1, 1, 0,
 				GridBagConstraints.EAST, GridBagConstraints.NONE, new Insets(0, 0, 0, 0),
 				0, 0));
 		
 		buttonPlus = new ButtonHovering("res/plus.png");
+		buttonPlus.setListener(() -> {
+			evolutionPanel.scaleUp();
+			labelScale.setText(getScaleString());
+		});
 		panelBottom.add(buttonPlus, new GridBagConstraints(2, 0, 1, 1, 0, 0,
 				GridBagConstraints.CENTER, GridBagConstraints.NONE, new Insets(0, 0, 0, 0),
 				0, 0));
+	}
+	
+	private String getScaleString()
+	{
+		return String.format("%.1f%%", evolutionPanel.getScale() * 100);
 	}
 }
