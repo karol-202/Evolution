@@ -1,6 +1,7 @@
 package pl.karol202.evolution.ui;
 
 import pl.karol202.evolution.utils.Gradient;
+import pl.karol202.evolution.utils.Utils;
 import pl.karol202.evolution.world.OnWorldUpdateListener;
 import pl.karol202.evolution.world.World;
 
@@ -11,11 +12,17 @@ import java.awt.image.BufferedImage;
 
 public class EvolutionPanel extends JPanel implements OnWorldUpdateListener, MouseWheelListener, MouseMotionListener, MouseListener
 {
+	public interface OnViewParametersChangeListener
+	{
+		void onViewParametersChanged();
+	}
+	
 	private static final double SQRT2 = Math.sqrt(2);
 	private static final double MIN_ZOOM = 0.03125f;
 	private static final double MAX_ZOOM = 16;
 	
 	private World world;
+	private OnViewParametersChangeListener viewListener;
 	
 	private Gradient temperatureGradient;
 	private BufferedImage temperatureImage;
@@ -32,9 +39,10 @@ public class EvolutionPanel extends JPanel implements OnWorldUpdateListener, Mou
 	private int xPosAtDraggingStart;
 	private int yPosAtDraggingStart;
 	
-	public EvolutionPanel(World world)
+	public EvolutionPanel(World world, OnViewParametersChangeListener listener)
 	{
 		this.world = world;
+		this.viewListener = listener;
 		this.viewMode = ViewMode.TEMPERATURE;
 		this.scale = 1;
 		this.xPosition = 0;
@@ -113,20 +121,20 @@ public class EvolutionPanel extends JPanel implements OnWorldUpdateListener, Mou
 	
 	private void drawTemperature(Graphics g)
 	{
-		g.drawImage(temperatureImage, xPosition, yPosition, getImageWidth(temperatureImage), getImageHeight(temperatureImage), null);
+		g.drawImage(temperatureImage, xPosition, yPosition, getScaledImageWidth(temperatureImage), getScaledImageHeight(temperatureImage), null);
 	}
 	
 	private void drawHumidity(Graphics g)
 	{
-		g.drawImage(humidityImage, xPosition, yPosition, getImageWidth(humidityImage), getImageHeight(humidityImage), null);
+		g.drawImage(humidityImage, xPosition, yPosition, getScaledImageWidth(humidityImage), getScaledImageHeight(humidityImage), null);
 	}
 	
-	private int getImageWidth(BufferedImage image)
+	private int getScaledImageWidth(BufferedImage image)
 	{
 		return (int) Math.round(image.getWidth() * scale);
 	}
 	
-	private int getImageHeight(BufferedImage image)
+	private int getScaledImageHeight(BufferedImage image)
 	{
 		return (int) Math.round(image.getHeight() * scale);
 	}
@@ -144,16 +152,34 @@ public class EvolutionPanel extends JPanel implements OnWorldUpdateListener, Mou
 	
 	public void scaleDown()
 	{
+		double oldScale = scale;
+		scaleDownInternal();
+		applyScalingToPosition(oldScale);
+	}
+	
+	private void scaleDownInternal()
+	{
 		scale = getLowerZoom();
 		if(scale < MIN_ZOOM) scale = MIN_ZOOM;
+		
 		repaint();
+		if(viewListener != null) viewListener.onViewParametersChanged();
 	}
 	
 	public void scaleUp()
 	{
+		double oldScale = scale;
+		scaleUpInternal();
+		applyScalingToPosition(oldScale);
+	}
+	
+	private void scaleUpInternal()
+	{
 		scale = getGreaterZoom();
 		if(scale > MAX_ZOOM) scale = MAX_ZOOM;
+		
 		repaint();
+		if(viewListener != null) viewListener.onViewParametersChanged();
 	}
 	
 	private double getLowerZoom()
@@ -211,6 +237,30 @@ public class EvolutionPanel extends JPanel implements OnWorldUpdateListener, Mou
 		else return 1 / round;
 	}
 	
+	private void applyScalingToPosition(double oldScale)
+	{
+		applyScalingToPosition(oldScale, getWidth() / 2, getHeight() / 2);
+	}
+	
+	private void applyScalingToPosition(double oldScale, int focusX, int focusY)
+	{
+		int scaledWorldSizeX = (int) Math.round(world.getWidth() * scale);
+		int scaledWorldSizeY = (int) Math.round(world.getHeight() * scale);
+		int oldScaledWorldSizeX = (int) Math.round(world.getWidth() * oldScale);
+		int oldScaledWorldSizeY = (int) Math.round(world.getHeight() * oldScale);
+		float xMultiplier = Utils.map(focusX, xPosition, xPosition + oldScaledWorldSizeX, 0, 1);
+		float yMultiplier = Utils.map(focusY, yPosition, yPosition + oldScaledWorldSizeY, 0, 1);
+		xPosition -= Math.round((scaledWorldSizeX - oldScaledWorldSizeX) * xMultiplier);
+		yPosition -= Math.round((scaledWorldSizeY - oldScaledWorldSizeY) * yMultiplier);
+	}
+	
+	public void centerView()
+	{
+		xPosition = (int) (((getWidth() / 2) - (world.getWidth() * scale / 2)));
+		yPosition = (int) (((getHeight() / 2) - (world.getHeight() * scale / 2)));
+		repaint();
+	}
+	
 	@Override
 	public void mouseClicked(MouseEvent e) { }
 	
@@ -248,7 +298,10 @@ public class EvolutionPanel extends JPanel implements OnWorldUpdateListener, Mou
 	{
 		if(e.getScrollType() != MouseWheelEvent.WHEEL_UNIT_SCROLL) return;
 		int rotation = e.getWheelRotation();
-		if(rotation > 0) scaleDown();
-		else scaleUp();
+		
+		double oldScale = scale;
+		if(rotation > 0) scaleDownInternal();
+		else scaleUpInternal();
+		applyScalingToPosition(oldScale, e.getX(), e.getY());
 	}
 }

@@ -14,7 +14,7 @@ public class EvolutionMain
 	public EvolutionMain()
 	{
 		random = new Random();
-		world = new World(random, 512, 512);
+		world = new World(random, 1024, 1024);
 		runMainFrame();
 	}
 	
