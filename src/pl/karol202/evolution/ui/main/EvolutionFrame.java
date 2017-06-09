@@ -1,15 +1,18 @@
 package pl.karol202.evolution.ui.main;
 
+import pl.karol202.evolution.simulation.Simulation;
 import pl.karol202.evolution.ui.entity.EntityPanel;
+import pl.karol202.evolution.ui.time.TimeSettingsFrame;
 import pl.karol202.evolution.utils.ButtonHovering;
 import pl.karol202.evolution.world.World;
 
 import javax.swing.*;
 import java.awt.*;
 
-public class EvolutionFrame extends JFrame implements EvolutionPanel.OnViewParametersChangeListener
+public class EvolutionFrame extends JFrame implements EvolutionPanel.OnViewParametersChangeListener, Simulation.OnSimulationStateChangeListener
 {
 	private World world;
+	private Simulation simulation;
 	
 	private EvolutionPanel evolutionPanel;
 	
@@ -17,6 +20,10 @@ public class EvolutionFrame extends JFrame implements EvolutionPanel.OnViewParam
 	
 	private JMenu menuSimulation;
 	private JMenuItem itemNew;
+	private JMenuItem itemStart;
+	private JMenuItem itemPause;
+	private JMenuItem itemStep;
+	private JMenuItem itemTimeSettings;
 	
 	private JMenu menuView;
 	private ButtonGroup groupView;
@@ -32,16 +39,20 @@ public class EvolutionFrame extends JFrame implements EvolutionPanel.OnViewParam
 	
 	private EntityPanel entityPanel;
 	
-	public EvolutionFrame(World world)
+	public EvolutionFrame(World world, Simulation simulation)
 	{
 		super("Evolution");
 		this.world = world;
+		this.simulation = simulation;
+		simulation.addStateListener(this);
 		
 		setFrameParams();
 		initEvolutionPanel();
 		initMenu();
 		initBottomPanel();
 		initEntityPanel();
+		
+		updateMenu();
 	}
 	
 	private void setFrameParams()
@@ -71,6 +82,11 @@ public class EvolutionFrame extends JFrame implements EvolutionPanel.OnViewParam
 		menuSimulation = new JMenu("Symulacja");
 		menuBar.add(menuSimulation);
 		initNewSimulationItem();
+		menuSimulation.add(new JSeparator());
+		initStartSimulationItem();
+		initPauseSimulationItem();
+		initStepSimulationItem();
+		initTimeSettingsItem();
 	}
 	
 	private void initNewSimulationItem()
@@ -78,6 +94,34 @@ public class EvolutionFrame extends JFrame implements EvolutionPanel.OnViewParam
 		itemNew = new JMenuItem("Nowa symulacja");
 		itemNew.addActionListener(e -> world.generateWorld());
 		menuSimulation.add(itemNew);
+	}
+	
+	private void initStartSimulationItem()
+	{
+		itemStart = new JMenuItem("Start symulacji");
+		itemStart.addActionListener(e -> simulation.start());
+		menuSimulation.add(itemStart);
+	}
+	
+	private void initPauseSimulationItem()
+	{
+		itemPause = new JMenuItem("Zatrzymaj symulację");
+		itemPause.addActionListener(e -> simulation.stop());
+		menuSimulation.add(itemPause);
+	}
+	
+	private void initStepSimulationItem()
+	{
+		itemStep = new JMenuItem("Krok symulacji");
+		itemStep.addActionListener(e -> simulation.step());
+		menuSimulation.add(itemStep);
+	}
+	
+	private void initTimeSettingsItem()
+	{
+		itemTimeSettings = new JMenuItem("Ustawienia czasu");
+		itemTimeSettings.addActionListener(e -> SwingUtilities.invokeLater(() -> new TimeSettingsFrame(simulation)));
+		menuSimulation.add(itemTimeSettings);
 	}
 	
 	private void initViewMenu()
@@ -168,6 +212,14 @@ public class EvolutionFrame extends JFrame implements EvolutionPanel.OnViewParam
 		add(entityPanel, BorderLayout.EAST);
 	}
 	
+	private void updateMenu()
+	{
+		itemStart.setEnabled(!simulation.isRunning());
+		itemPause.setEnabled(simulation.isRunning());
+		itemStep.setEnabled(!simulation.isRunning());
+		itemTimeSettings.setEnabled(!simulation.isRunning());
+	}
+	
 	@Override
 	public void onViewParametersChanged()
 	{
@@ -178,6 +230,12 @@ public class EvolutionFrame extends JFrame implements EvolutionPanel.OnViewParam
 	public void onEntitySelectionChanged()
 	{
 		entityPanel.updateData();
+	}
+	
+	@Override
+	public void onSimulationStateChanged()
+	{
+		updateMenu();
 	}
 	
 	private String getScaleString()

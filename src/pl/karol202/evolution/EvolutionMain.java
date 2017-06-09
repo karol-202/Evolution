@@ -1,5 +1,6 @@
 package pl.karol202.evolution;
 
+import pl.karol202.evolution.simulation.Simulation;
 import pl.karol202.evolution.ui.main.EvolutionFrame;
 import pl.karol202.evolution.world.World;
 
@@ -10,11 +11,13 @@ public class EvolutionMain
 {
 	private Random random;
 	private World world;
+	private Simulation simulation;
 	
 	public EvolutionMain()
 	{
 		random = new Random();
 		world = new World(random, 1024, 1024);
+		simulation = new Simulation(1000);
 		setLookAndFeel();
 		runMainFrame();
 	}
@@ -33,7 +36,7 @@ public class EvolutionMain
 	
 	private void runMainFrame()
 	{
-		SwingUtilities.invokeLater(() -> new EvolutionFrame(world));
+		SwingUtilities.invokeLater(() -> new EvolutionFrame(world, simulation));
 	}
 	
 	public static void main(String[] args)
