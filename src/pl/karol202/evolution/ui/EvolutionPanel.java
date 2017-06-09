@@ -17,6 +17,8 @@ public class EvolutionPanel extends JPanel implements OnWorldUpdateListener, Mou
 	public interface OnViewParametersChangeListener
 	{
 		void onViewParametersChanged();
+		
+		void onEntitySelectionChanged();
 	}
 	
 	private static final double SQRT2 = Math.sqrt(2);
@@ -44,6 +46,7 @@ public class EvolutionPanel extends JPanel implements OnWorldUpdateListener, Mou
 	
 	private int mouseX;
 	private int mouseY;
+	private Entity hoveredEntity;
 	
 	public EvolutionPanel(World world, OnViewParametersChangeListener listener)
 	{
@@ -172,6 +175,7 @@ public class EvolutionPanel extends JPanel implements OnWorldUpdateListener, Mou
 	
 	private void drawEntities(Graphics2D g)
 	{
+		hoveredEntity = null;
 		for(Entity entity : entities.getEntities()) drawEntity(g, entity);
 	}
 	
@@ -179,6 +183,7 @@ public class EvolutionPanel extends JPanel implements OnWorldUpdateListener, Mou
 	{
 		Rectangle bounds = getEntityBounds(entity);
 		boolean hovered = isHovered(bounds);
+		if(hovered) hoveredEntity = entity;
 		g.setColor(hovered ? new Color(216, 216, 216) : Color.WHITE);
 		g.fillOval(bounds.x, bounds.y, bounds.width, bounds.height);
 		g.setColor(Color.DARK_GRAY);
@@ -335,7 +340,19 @@ public class EvolutionPanel extends JPanel implements OnWorldUpdateListener, Mou
 	}
 	
 	@Override
-	public void mouseClicked(MouseEvent e) { }
+	public void mouseClicked(MouseEvent e)
+	{
+		if(hoveredEntity != null)
+		{
+			entities.selectEntity(hoveredEntity);
+			viewListener.onEntitySelectionChanged();
+		}
+		else
+		{
+			entities.selectNothing();
+			viewListener.onEntitySelectionChanged();
+		}
+	}
 	
 	@Override
 	public void mousePressed(MouseEvent e)

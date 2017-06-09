@@ -29,6 +29,8 @@ public class EvolutionFrame extends JFrame implements EvolutionPanel.OnViewParam
 	private ButtonHovering buttonMinus;
 	private ButtonHovering buttonPlus;
 	
+	private EntityPanel entityPanel;
+	
 	public EvolutionFrame(World world)
 	{
 		super("Evolution");
@@ -38,6 +40,7 @@ public class EvolutionFrame extends JFrame implements EvolutionPanel.OnViewParam
 		initEvolutionPanel();
 		initMenu();
 		initBottomPanel();
+		initEntityPanel();
 	}
 	
 	private void setFrameParams()
@@ -157,10 +160,23 @@ public class EvolutionFrame extends JFrame implements EvolutionPanel.OnViewParam
 				0, 0));
 	}
 	
+	private void initEntityPanel()
+	{
+		entityPanel = new EntityPanel(world.getEntities());
+		entityPanel.setBorder(BorderFactory.createMatteBorder(0, 1, 0, 0, Color.DARK_GRAY));
+		add(entityPanel, BorderLayout.EAST);
+	}
+	
 	@Override
 	public void onViewParametersChanged()
 	{
 		labelScale.setText(getScaleString());
+	}
+	
+	@Override
+	public void onEntitySelectionChanged()
+	{
+		entityPanel.updateData();
 	}
 	
 	private String getScaleString()

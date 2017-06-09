@@ -15,10 +15,11 @@ public class EvolutionMain
 	{
 		random = new Random();
 		world = new World(random, 1024, 1024);
+		setLookAndFeel();
 		runMainFrame();
 	}
 	
-	private void runMainFrame()
+	private void setLookAndFeel()
 	{
 		try
 		{
@@ -28,6 +29,10 @@ public class EvolutionMain
 		{
 			e.printStackTrace();
 		}
+	}
+	
+	private void runMainFrame()
+	{
 		SwingUtilities.invokeLater(() -> new EvolutionFrame(world));
 	}
 	
