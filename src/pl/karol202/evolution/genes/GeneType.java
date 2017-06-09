@@ -2,24 +2,32 @@ package pl.karol202.evolution.genes;
 
 public enum GeneType
 {
-	SIZ(3);//Size
+	SIZ(new float[] { 7, 6, 5, 4, 3, 2, 1 });//Size
 	
-	private int levels;
+	private float[] propertyIngredients;
 	
-	GeneType(int levels)
+	GeneType() { }
+	
+	GeneType(float[] propertyIngredients)
 	{
-		this.levels = levels;
+		this.propertyIngredients = propertyIngredients;
 	}
 	
 	public int getLevels()
 	{
-		return levels;
+		if(propertyIngredients == null) return 1;
+		else return propertyIngredients.length;
+	}
+	
+	public float[] getPropertyIngredients()
+	{
+		return propertyIngredients;
 	}
 	
 	public static int getAllGenesCount()
 	{
 		int count = 0;
-		for(GeneType type : values()) count += type.levels;
+		for(GeneType type : values()) count += type.getLevels();
 		return count;
 	}
 }

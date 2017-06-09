@@ -5,7 +5,8 @@ import java.util.function.Function;
 public enum  EntityProperties
 {
 	X("X", e -> toString(e.getX())),
-	Y("Y", e -> toString(e.getY()));
+	Y("Y", e -> toString(e.getY())),
+	SIZE("Wielkość", e -> toString(e.getSize()));
 	
 	private String name;
 	private Function<Entity, String> function;

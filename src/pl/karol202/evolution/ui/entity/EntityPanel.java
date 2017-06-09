@@ -2,11 +2,13 @@ package pl.karol202.evolution.ui.entity;
 
 import pl.karol202.evolution.entity.Entities;
 import pl.karol202.evolution.entity.Entity;
+import pl.karol202.evolution.world.OnWorldUpdateListener;
+import pl.karol202.evolution.world.World;
 
 import javax.swing.*;
 import java.awt.*;
 
-public class EntityPanel extends JPanel
+public class EntityPanel extends JPanel implements OnWorldUpdateListener
 {
 	private Entities entities;
 	
@@ -22,9 +24,10 @@ public class EntityPanel extends JPanel
 	private JTable tableGenotype;
 	private GenotypeTableModel tableModelGenotype;
 	
-	public EntityPanel(Entities entities)
+	public EntityPanel(World world)
 	{
-		this.entities = entities;
+		this.entities = world.getEntities();
+		world.addListener(this);
 		
 		setLayout(new GridBagLayout());
 		initTitleLabel();
@@ -95,5 +98,11 @@ public class EntityPanel extends JPanel
 		Entity entity = entities.getSelectedEntity();
 		tableModelProperties.setEntity(entity);
 		tableModelGenotype.setEntity(entity);
+	}
+	
+	@Override
+	public void onWorldUpdated()
+	{
+		updateData();
 	}
 }

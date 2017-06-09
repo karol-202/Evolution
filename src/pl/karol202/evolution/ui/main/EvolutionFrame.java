@@ -163,7 +163,7 @@ public class EvolutionFrame extends JFrame implements EvolutionPanel.OnViewParam
 	
 	private void initEntityPanel()
 	{
-		entityPanel = new EntityPanel(world.getEntities());
+		entityPanel = new EntityPanel(world);
 		entityPanel.setBorder(BorderFactory.createMatteBorder(0, 1, 0, 0, Color.DARK_GRAY));
 		add(entityPanel, BorderLayout.EAST);
 	}

@@ -18,7 +18,9 @@ public class Entities
 	
 	public void generateEntities()
 	{
+		entities.clear();
 		entities.add(Entity.createRandomEntity(100, 100, random));
+		selectedEntity = -1;
 	}
 	
 	public void selectEntity(Entity entity)

@@ -193,7 +193,7 @@ public class EvolutionPanel extends JPanel implements OnWorldUpdateListener, Mou
 	
 	private Rectangle getEntityBounds(Entity entity)
 	{
-		int size = (int) (20 * scale);
+		int size = (int) (entity.getSize() * scale);
 		int x = (int) (entity.getX() * scale) + xPosition - (size / 2);
 		int y = (int) (entity.getY() * scale) + yPosition - (size / 2);
 		return new Rectangle(x, y, size, size);
