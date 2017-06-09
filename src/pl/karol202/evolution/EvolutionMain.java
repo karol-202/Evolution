@@ -1,6 +1,6 @@
 package pl.karol202.evolution;
 
-import pl.karol202.evolution.ui.EvolutionFrame;
+import pl.karol202.evolution.ui.main.EvolutionFrame;
 import pl.karol202.evolution.world.World;
 
 import javax.swing.*;

@@ -1,5 +1,6 @@
-package pl.karol202.evolution.ui;
+package pl.karol202.evolution.ui.main;
 
+import pl.karol202.evolution.ui.entity.EntityPanel;
 import pl.karol202.evolution.utils.ButtonHovering;
 import pl.karol202.evolution.world.World;
 

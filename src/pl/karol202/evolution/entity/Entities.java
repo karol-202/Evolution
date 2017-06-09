@@ -1,21 +1,24 @@
 package pl.karol202.evolution.entity;
 
 import java.util.ArrayList;
+import java.util.Random;
 
 public class Entities
 {
+	private Random random;
 	private ArrayList<Entity> entities;
 	private int selectedEntity;
 	
-	public Entities()
+	public Entities(Random random)
 	{
+		this.random = random;
 		entities = new ArrayList<>();
 		selectedEntity = -1;
 	}
 	
 	public void generateEntities()
 	{
-		entities.add(new Entity(100, 100));
+		entities.add(Entity.createRandomEntity(100, 100, random));
 	}
 	
 	public void selectEntity(Entity entity)

@@ -1,4 +1,4 @@
-package pl.karol202.evolution.ui;
+package pl.karol202.evolution.ui.main;
 
 import pl.karol202.evolution.entity.Entities;
 import pl.karol202.evolution.entity.Entity;

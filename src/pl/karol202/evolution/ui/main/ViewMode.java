@@ -1,4 +1,4 @@
-package pl.karol202.evolution.ui;
+package pl.karol202.evolution.ui.main;
 
 public enum  ViewMode
 {

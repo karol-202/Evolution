@@ -41,7 +41,7 @@ public class World
 		this.height = height;
 		this.temperature = new float[width][height];
 		this.humidity = new float[width][height];
-		this.entities = new Entities();
+		this.entities = new Entities(random);
 		this.listeners = new ArrayList<>();
 		generateWorld();
 	}

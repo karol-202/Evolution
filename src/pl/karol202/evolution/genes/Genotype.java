@@ -45,10 +45,20 @@ public class Genotype
 		}
 	}
 	
-	public Gene[] getGenes()
+	public Gene[] getGenesOfType(GeneType type)
 	{
-		Gene[] copy = new Gene[genes.length];
-		System.arraycopy(genes, 0, copy, 0, genes.length);
-		return copy;
+		Gene[] filtered = new Gene[type.getLevels()];
+		for(Gene gene : genes) if(gene.getType() == type) filtered[gene.getLevel()] = gene;
+		return filtered;
+	}
+	
+	public Gene getGeneOfTypeAndLevel(GeneType type, int level)
+	{
+		return getGenesOfType(type)[level];
+	}
+	
+	public Gene getGeneByIndex(int index)
+	{
+		return genes[index];
 	}
 }

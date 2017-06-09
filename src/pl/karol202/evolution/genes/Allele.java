@@ -4,7 +4,21 @@ import java.util.Random;
 
 public enum Allele
 {
-	DOMINANT, RECESSIVE;
+	DOMINANT("Dominujący"),
+	RECESSIVE("Recesywny");
+	
+	private String name;
+	
+	Allele(String name)
+	{
+		this.name = name;
+	}
+	
+	@Override
+	public String toString()
+	{
+		return name;
+	}
 	
 	public static Allele random(Random random)
 	{
