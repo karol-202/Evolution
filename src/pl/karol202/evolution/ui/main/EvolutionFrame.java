@@ -32,12 +32,17 @@ public class EvolutionFrame extends JFrame implements EvolutionPanel.OnViewParam
 	private JRadioButtonMenuItem itemViewHumidity;
 	private JMenuItem itemCenterView;
 	
+	private JToolBar toolbar;
+	private JButton buttonStart;
+	private JButton buttonPause;
+	private JButton buttonStep;
+	
 	private JPanel panelBottom;
 	private JLabel labelScale;
 	private ButtonHovering buttonMinus;
 	private ButtonHovering buttonPlus;
 	
-	private EntityPanel entityPanel;
+	private EntityPanel panelEntity;
 	
 	public EvolutionFrame(World world, Simulation simulation)
 	{
@@ -49,6 +54,7 @@ public class EvolutionFrame extends JFrame implements EvolutionPanel.OnViewParam
 		setFrameParams();
 		initEvolutionPanel();
 		initMenu();
+		initToolbar();
 		initBottomPanel();
 		initEntityPanel();
 		
@@ -169,6 +175,41 @@ public class EvolutionFrame extends JFrame implements EvolutionPanel.OnViewParam
 		menuView.add(itemCenterView);
 	}
 	
+	private void initToolbar()
+	{
+		toolbar = new JToolBar("Pasek narzędzi");
+		toolbar.setFloatable(false);
+		toolbar.setBorder(BorderFactory.createMatteBorder(0, 0, 1, 0, Color.DARK_GRAY));
+		add(toolbar, BorderLayout.PAGE_START);
+		initStartButton();
+		initPauseButton();
+		initStepButton();
+	}
+	
+	private void initStartButton()
+	{
+		buttonStart = new JButton(new ImageIcon("res/start.png"));
+		buttonStart.setFocusable(false);
+		buttonStart.addActionListener(e -> simulation.start());
+		toolbar.add(buttonStart);
+	}
+	
+	private void initPauseButton()
+	{
+		buttonPause = new JButton(new ImageIcon("res/stop.png"));
+		buttonPause.setFocusable(false);
+		buttonPause.addActionListener(e -> simulation.stop());
+		toolbar.add(buttonPause);
+	}
+	
+	private void initStepButton()
+	{
+		buttonStep = new JButton(new ImageIcon("res/step.png"));
+		buttonStep.setFocusable(false);
+		buttonStep.addActionListener(e -> simulation.step());
+		toolbar.add(buttonStep);
+	}
+	
 	private void initBottomPanel()
 	{
 		panelBottom = new JPanel(new GridBagLayout());
@@ -207,9 +248,9 @@ public class EvolutionFrame extends JFrame implements EvolutionPanel.OnViewParam
 	
 	private void initEntityPanel()
 	{
-		entityPanel = new EntityPanel(world);
-		entityPanel.setBorder(BorderFactory.createMatteBorder(0, 1, 0, 0, Color.DARK_GRAY));
-		add(entityPanel, BorderLayout.EAST);
+		panelEntity = new EntityPanel(world);
+		panelEntity.setBorder(BorderFactory.createMatteBorder(0, 1, 0, 0, Color.DARK_GRAY));
+		add(panelEntity, BorderLayout.EAST);
 	}
 	
 	private void updateMenu()
@@ -229,7 +270,7 @@ public class EvolutionFrame extends JFrame implements EvolutionPanel.OnViewParam
 	@Override
 	public void onEntitySelectionChanged()
 	{
-		entityPanel.updateData();
+		panelEntity.updateData();
 	}
 	
 	@Override
