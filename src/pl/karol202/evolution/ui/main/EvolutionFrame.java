@@ -98,7 +98,11 @@ public class EvolutionFrame extends JFrame implements EvolutionPanel.OnViewParam
 	private void initNewSimulationItem()
 	{
 		itemNew = new JMenuItem("Nowa symulacja");
-		itemNew.addActionListener(e -> world.generateWorld());
+		itemNew.addActionListener(e ->
+		{
+			world.generateWorld();
+			simulation.reset();
+		});
 		menuSimulation.add(itemNew);
 	}
 	
@@ -259,6 +263,10 @@ public class EvolutionFrame extends JFrame implements EvolutionPanel.OnViewParam
 		itemPause.setEnabled(simulation.isRunning());
 		itemStep.setEnabled(!simulation.isRunning());
 		itemTimeSettings.setEnabled(!simulation.isRunning());
+		
+		buttonStart.setEnabled(!simulation.isRunning());
+		buttonPause.setEnabled(simulation.isRunning());
+		buttonStep.setEnabled(!simulation.isRunning());
 	}
 	
 	@Override

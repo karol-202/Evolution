@@ -20,6 +20,11 @@ public class EvolutionMain
 		simulation = new Simulation(1000);
 		setLookAndFeel();
 		runMainFrame();
+		while(true)
+		{
+			SwingUtilities.invokeLater(() -> simulation.mainLoop());
+			waitAMillisecond();
+		}
 	}
 	
 	private void setLookAndFeel()
@@ -37,6 +42,18 @@ public class EvolutionMain
 	private void runMainFrame()
 	{
 		SwingUtilities.invokeLater(() -> new EvolutionFrame(world, simulation));
+	}
+	
+	private void waitAMillisecond()
+	{
+		try
+		{
+			Thread.sleep(1);
+		}
+		catch(InterruptedException e)
+		{
+			e.printStackTrace();
+		}
 	}
 	
 	public static void main(String[] args)

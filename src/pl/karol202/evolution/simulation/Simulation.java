@@ -12,7 +12,7 @@ public class Simulation
 	private ArrayList<OnSimulationStateChangeListener> listeners;
 	private int timeStep;
 	private boolean running;
-	private int time; //Ms
+	private long lastUpdateTime; //MS
 	
 	public Simulation(int timeStep)
 	{
@@ -25,7 +25,6 @@ public class Simulation
 		if(running) return;
 		running = true;
 		listeners.forEach(OnSimulationStateChangeListener::onSimulationStateChanged);
-		System.out.println("start");
 	}
 	
 	public void stop()
@@ -33,19 +32,40 @@ public class Simulation
 		if(!running) return;
 		running = false;
 		listeners.forEach(OnSimulationStateChangeListener::onSimulationStateChanged);
-		System.out.println("stop");
 	}
 	
 	public void step()
 	{
 		if(running) return;
-		time += timeStep;
-		update();
+		update(timeStep);
 	}
 	
-	private void update()
+	public void reset()
 	{
-		System.out.println("update");
+		running = false;
+		listeners.forEach(OnSimulationStateChangeListener::onSimulationStateChanged);
+	}
+	
+	public void mainLoop()
+	{
+		if(canUpdate()) updateInLoop();
+	}
+	
+	private boolean canUpdate()
+	{
+		return running && lastUpdateTime + timeStep < System.currentTimeMillis();
+	}
+	
+	private void updateInLoop()
+	{
+		long deltaTime = System.currentTimeMillis() - lastUpdateTime;
+		lastUpdateTime = System.currentTimeMillis();
+		update(deltaTime);
+	}
+	
+	private void update(float deltaTime)
+	{
+		System.out.println("Update, delta time: " + deltaTime);
 	}
 	
 	public int getTimeStep()
