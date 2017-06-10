@@ -9,12 +9,12 @@ import pl.karol202.evolution.world.World;
 import javax.swing.*;
 import java.awt.*;
 
-public class EvolutionFrame extends JFrame implements EvolutionPanel.OnViewParametersChangeListener, Simulation.OnSimulationStateChangeListener
+public class EvolutionFrame extends JFrame implements EvolutionPanel.OnViewParametersChangeListener, Simulation.OnSimulationUpdateListener
 {
 	private World world;
 	private Simulation simulation;
 	
-	private EvolutionPanel evolutionPanel;
+	private EvolutionPanel panelEvolution;
 	
 	private JMenuBar menuBar;
 	
@@ -71,8 +71,8 @@ public class EvolutionFrame extends JFrame implements EvolutionPanel.OnViewParam
 	
 	private void initEvolutionPanel()
 	{
-		evolutionPanel = new EvolutionPanel(world, this);
-		add(evolutionPanel, BorderLayout.CENTER);
+		panelEvolution = new EvolutionPanel(world, this);
+		add(panelEvolution, BorderLayout.CENTER);
 	}
 	
 	private void initMenu()
@@ -150,7 +150,7 @@ public class EvolutionFrame extends JFrame implements EvolutionPanel.OnViewParam
 	private void initStandardModeItem()
 	{
 		itemViewStandard = new JRadioButtonMenuItem("Standardowy");
-		itemViewStandard.addActionListener(e -> evolutionPanel.setViewMode(ViewMode.STANDARD));
+		itemViewStandard.addActionListener(e -> panelEvolution.setViewMode(ViewMode.STANDARD));
 		itemViewStandard.setSelected(true);
 		groupView.add(itemViewStandard);
 		menuView.add(itemViewStandard);
@@ -159,7 +159,7 @@ public class EvolutionFrame extends JFrame implements EvolutionPanel.OnViewParam
 	private void initTemperatureModeItem()
 	{
 		itemViewTemperature = new JRadioButtonMenuItem("Temperatura");
-		itemViewTemperature.addActionListener(e -> evolutionPanel.setViewMode(ViewMode.TEMPERATURE));
+		itemViewTemperature.addActionListener(e -> panelEvolution.setViewMode(ViewMode.TEMPERATURE));
 		groupView.add(itemViewTemperature);
 		menuView.add(itemViewTemperature);
 	}
@@ -167,7 +167,7 @@ public class EvolutionFrame extends JFrame implements EvolutionPanel.OnViewParam
 	private void initHumidityModeItem()
 	{
 		itemViewHumidity = new JRadioButtonMenuItem("Wilgotność");
-		itemViewHumidity.addActionListener(e -> evolutionPanel.setViewMode(ViewMode.HUMIDITY));
+		itemViewHumidity.addActionListener(e -> panelEvolution.setViewMode(ViewMode.HUMIDITY));
 		groupView.add(itemViewHumidity);
 		menuView.add(itemViewHumidity);
 	}
@@ -175,7 +175,7 @@ public class EvolutionFrame extends JFrame implements EvolutionPanel.OnViewParam
 	private void initCenterViewItem()
 	{
 		itemCenterView = new JMenuItem("Wyśrodkuj");
-		itemCenterView.addActionListener(e -> evolutionPanel.centerView());
+		itemCenterView.addActionListener(e -> panelEvolution.centerView());
 		menuView.add(itemCenterView);
 	}
 	
@@ -235,7 +235,7 @@ public class EvolutionFrame extends JFrame implements EvolutionPanel.OnViewParam
 	private void initScaleDownButton()
 	{
 		buttonMinus = new ButtonHovering("res/minus.png");
-		buttonMinus.setListener(evolutionPanel::scaleDown);
+		buttonMinus.setListener(panelEvolution::scaleDown);
 		panelBottom.add(buttonMinus, new GridBagConstraints(0, 0, 1, 1, 1, 0,
 				GridBagConstraints.EAST, GridBagConstraints.NONE, new Insets(0, 0, 0, 0),
 				0, 0));
@@ -244,7 +244,7 @@ public class EvolutionFrame extends JFrame implements EvolutionPanel.OnViewParam
 	private void initScaleUpButton()
 	{
 		buttonPlus = new ButtonHovering("res/plus.png");
-		buttonPlus.setListener(evolutionPanel::scaleUp);
+		buttonPlus.setListener(panelEvolution::scaleUp);
 		panelBottom.add(buttonPlus, new GridBagConstraints(2, 0, 1, 1, 0, 0,
 				GridBagConstraints.CENTER, GridBagConstraints.NONE, new Insets(0, 0, 0, 0),
 				0, 0));
@@ -282,6 +282,13 @@ public class EvolutionFrame extends JFrame implements EvolutionPanel.OnViewParam
 	}
 	
 	@Override
+	public void onSimulationUpdated()
+	{
+		panelEvolution.repaint();
+		panelEntity.updateData();
+	}
+	
+	@Override
 	public void onSimulationStateChanged()
 	{
 		updateMenu();
@@ -289,6 +296,6 @@ public class EvolutionFrame extends JFrame implements EvolutionPanel.OnViewParam
 	
 	private String getScaleString()
 	{
-		return String.format("%.1f%%", evolutionPanel.getScale() * 100);
+		return String.format("%.1f%%", panelEvolution.getScale() * 100);
 	}
 }

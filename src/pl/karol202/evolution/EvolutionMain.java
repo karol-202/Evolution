@@ -17,7 +17,7 @@ public class EvolutionMain
 	{
 		random = new Random();
 		world = new World(random, 1024, 1024);
-		simulation = new Simulation(1000);
+		simulation = new Simulation(world, 3);
 		setLookAndFeel();
 		runMainFrame();
 		while(true)

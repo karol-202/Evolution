@@ -2,7 +2,7 @@ package pl.karol202.evolution.entity;
 
 import java.util.function.Function;
 
-public enum  EntityProperties
+public enum EntityProperties
 {
 	X("X", e -> toString(e.getX())),
 	Y("Y", e -> toString(e.getY())),

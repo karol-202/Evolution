@@ -183,8 +183,9 @@ public class EvolutionPanel extends JPanel implements OnWorldUpdateListener, Mou
 	{
 		Rectangle bounds = getEntityBounds(entity);
 		boolean hovered = isHovered(bounds);
+		boolean selected = isSelected(entity);
 		if(hovered) hoveredEntity = entity;
-		g.setColor(hovered ? new Color(216, 216, 216) : Color.WHITE);
+		g.setColor(hovered || selected ? new Color(216, 216, 216) : Color.WHITE);
 		g.fillOval(bounds.x, bounds.y, bounds.width, bounds.height);
 		g.setColor(Color.DARK_GRAY);
 		g.setStroke(new BasicStroke(1));
@@ -205,6 +206,11 @@ public class EvolutionPanel extends JPanel implements OnWorldUpdateListener, Mou
 		double y = mouseY - rectangle.getCenterY();
 		double distance = Math.sqrt((x * x) + (y * y));
 		return distance < rectangle.width / 2;
+	}
+	
+	private boolean isSelected(Entity entity)
+	{
+		return entity == entities.getSelectedEntity();
 	}
 	
 	private int getScaledWorldWidth()
@@ -352,6 +358,7 @@ public class EvolutionPanel extends JPanel implements OnWorldUpdateListener, Mou
 			entities.selectNothing();
 			viewListener.onEntitySelectionChanged();
 		}
+		repaint();
 	}
 	
 	@Override

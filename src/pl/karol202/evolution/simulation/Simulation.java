@@ -1,22 +1,30 @@
 package pl.karol202.evolution.simulation;
 
+import pl.karol202.evolution.world.World;
+
 import java.util.ArrayList;
 
 public class Simulation
 {
-	public interface OnSimulationStateChangeListener
+	public interface OnSimulationUpdateListener
 	{
+		void onSimulationUpdated();
+		
 		void onSimulationStateChanged();
 	}
 	
-	private ArrayList<OnSimulationStateChangeListener> listeners;
+	public static float deltaTime;
+	
+	private ArrayList<OnSimulationUpdateListener> listeners;
+	private World world;
 	private int timeStep;
 	private boolean running;
 	private long lastUpdateTime; //MS
 	
-	public Simulation(int timeStep)
+	public Simulation(World world, int timeStep)
 	{
 		this.listeners = new ArrayList<>();
+		this.world = world;
 		this.timeStep = timeStep;
 	}
 	
@@ -24,14 +32,14 @@ public class Simulation
 	{
 		if(running) return;
 		running = true;
-		listeners.forEach(OnSimulationStateChangeListener::onSimulationStateChanged);
+		listeners.forEach(OnSimulationUpdateListener::onSimulationStateChanged);
 	}
 	
 	public void stop()
 	{
 		if(!running) return;
 		running = false;
-		listeners.forEach(OnSimulationStateChangeListener::onSimulationStateChanged);
+		listeners.forEach(OnSimulationUpdateListener::onSimulationStateChanged);
 	}
 	
 	public void step()
@@ -43,7 +51,7 @@ public class Simulation
 	public void reset()
 	{
 		running = false;
-		listeners.forEach(OnSimulationStateChangeListener::onSimulationStateChanged);
+		listeners.forEach(OnSimulationUpdateListener::onSimulationStateChanged);
 	}
 	
 	public void mainLoop()
@@ -63,9 +71,12 @@ public class Simulation
 		update(deltaTime);
 	}
 	
-	private void update(float deltaTime)
+	private void update(long deltaTime)
 	{
 		System.out.println("Update, delta time: " + deltaTime);
+		Simulation.deltaTime = deltaTime / 1000f;
+		world.update();
+		listeners.forEach(OnSimulationUpdateListener::onSimulationUpdated);
 	}
 	
 	public int getTimeStep()
@@ -84,7 +95,7 @@ public class Simulation
 		return running;
 	}
 	
-	public void addStateListener(OnSimulationStateChangeListener listener)
+	public void addStateListener(OnSimulationUpdateListener listener)
 	{
 		listeners.add(listener);
 	}

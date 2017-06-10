@@ -32,6 +32,11 @@ public class Gene
 		return type == gene.type && level == gene.level;
 	}
 	
+	public boolean checkGene()
+	{
+		return alleleA == Allele.DOMINANT || alleleB == Allele.DOMINANT;
+	}
+	
 	@Override
 	public String toString()
 	{

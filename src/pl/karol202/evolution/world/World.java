@@ -87,6 +87,11 @@ public class World
 		return random.nextInt(MAX_OFFSET - MIN_OFFSET) + MIN_OFFSET;
 	}
 	
+	public void update()
+	{
+		entities.update();
+	}
+	
 	public void addListener(OnWorldUpdateListener listener)
 	{
 		listeners.add(listener);

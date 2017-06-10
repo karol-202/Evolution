@@ -45,6 +45,23 @@ public class Genotype
 		}
 	}
 	
+	public float getFloatProperty(GeneType type)
+	{
+		if(type.getLevels() <= 1) throw new RuntimeException(type + " is not a float gene.");
+		Gene[] genes = getGenesOfType(type);
+		float property = 0;
+		for(Gene gene : genes)
+			if(gene.checkGene()) property += type.getPropertyIngredients()[gene.getLevel()];
+		return property;
+	}
+	
+	public boolean getBooleanProperty(GeneType type)
+	{
+		if(type.getLevels() != 1) throw new RuntimeException(type + " is not a boolean gene.");
+		Gene gene = getGenesOfType(type)[0];
+		return gene.checkGene();
+	}
+	
 	public Gene[] getGenesOfType(GeneType type)
 	{
 		Gene[] filtered = new Gene[type.getLevels()];

@@ -23,6 +23,11 @@ public class Entities
 		selectedEntity = -1;
 	}
 	
+	public void update()
+	{
+		entities.forEach(Entity::update);
+	}
+	
 	public void selectEntity(Entity entity)
 	{
 		if(!entities.contains(entity)) throw new RuntimeException("Unknown entity: " + entity);
