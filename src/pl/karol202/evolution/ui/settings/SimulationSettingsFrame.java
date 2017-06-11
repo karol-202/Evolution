@@ -29,7 +29,17 @@ public class SimulationSettingsFrame extends JFrame implements DocumentListener
 	private JLabel labelHumidityFrequency;
 	private JComboBox<Integer> comboBoxHumidityFrequency;
 	
-	private JLabel labelTimestep;
+	private JLabel labelTemperatureRange;
+	private JTextField fieldMinTemperature;
+	private JLabel labelTemperatureDash;
+	private JTextField fieldMaxTemperature;
+	
+	private JLabel labelHumidityRange;
+	private JTextField fieldMinHumidity;
+	private JLabel labelHumidityDash;
+	private JTextField fieldMaxHumidity;
+	
+	private JLabel labelTimeStep;
 	private JSlider sliderTimeStep;
 	
 	private JButton buttonCancel;
@@ -45,6 +55,8 @@ public class SimulationSettingsFrame extends JFrame implements DocumentListener
 		initSizeSection();
 		initTemperatureFrequencySection();
 		initHumidityFrequencySection();
+		initTemperatureRangeSection();
+		initHumidityRangeSection();
 		initTimeSection();
 		initFooter();
 		pack();
@@ -162,6 +174,90 @@ public class SimulationSettingsFrame extends JFrame implements DocumentListener
 		return -1;
 	}
 	
+	private void initTemperatureRangeSection()
+	{
+		initTemperatureRangeLabel();
+		initTemperatureRangeMinField();
+		initTemperatureRangeDashLabel();
+		initTemperatureRangeMaxField();
+	}
+	
+	private void initTemperatureRangeLabel()
+	{
+		labelTemperatureRange = new JLabel("Zakres temperatury");
+		add(labelTemperatureRange, new GridBagConstraints(0, 3, 1, 1, 0, 0,
+				GridBagConstraints.LINE_START, GridBagConstraints.NONE, new Insets(7, 8, 0, 5),
+				0, 0));
+	}
+	
+	private void initTemperatureRangeMinField()
+	{
+		fieldMinTemperature = new JTextField(Float.toString(world.getMinTemperature()), 6);
+		fieldMinTemperature.getDocument().addDocumentListener(this);
+		add(fieldMinTemperature, new GridBagConstraints(2, 3, 1, 1, 1, 0,
+				GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL, new Insets(7, 0, 0, 0),
+				0, 0));
+	}
+	
+	private void initTemperatureRangeDashLabel()
+	{
+		labelTemperatureDash = new JLabel("-");
+		add(labelTemperatureDash, new GridBagConstraints(3, 3, 1, 1, 0, 0,
+				GridBagConstraints.CENTER, GridBagConstraints.NONE, new Insets(7, 4, 0, 4),
+				0, 0));
+	}
+	
+	private void initTemperatureRangeMaxField()
+	{
+		fieldMaxTemperature = new JTextField(Float.toString(world.getMaxTemperature()), 6);
+		fieldMaxTemperature.getDocument().addDocumentListener(this);
+		add(fieldMaxTemperature, new GridBagConstraints(4, 3, 2, 1, 1, 0,
+				GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL, new Insets(7, 0, 0, 5),
+				0, 0));
+	}
+	
+	private void initHumidityRangeSection()
+	{
+		initHumidityRangeLabel();
+		initHumidityRangeMinField();
+		initHumidityRangeDashLabel();
+		initHumidityRangeMaxField();
+	}
+	
+	private void initHumidityRangeLabel()
+	{
+		labelHumidityRange = new JLabel("Zakres wilgotności");
+		add(labelHumidityRange, new GridBagConstraints(0, 4, 1, 1, 0, 0,
+				GridBagConstraints.LINE_START, GridBagConstraints.NONE, new Insets(7, 8, 0, 5),
+				0, 0));
+	}
+	
+	private void initHumidityRangeMinField()
+	{
+		fieldMinHumidity = new JTextField(Float.toString(world.getMinHumidity()), 6);
+		fieldMinHumidity.getDocument().addDocumentListener(this);
+		add(fieldMinHumidity, new GridBagConstraints(2, 4, 1, 1, 1, 0,
+				GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL, new Insets(7, 0, 0, 0),
+				0, 0));
+	}
+	
+	private void initHumidityRangeDashLabel()
+	{
+		labelHumidityDash = new JLabel("-");
+		add(labelHumidityDash, new GridBagConstraints(3, 4, 1, 1, 0, 0,
+				GridBagConstraints.CENTER, GridBagConstraints.NONE, new Insets(7, 4, 0, 4),
+				0, 0));
+	}
+	
+	private void initHumidityRangeMaxField()
+	{
+		fieldMaxHumidity = new JTextField(Float.toString(world.getMaxHumidity()), 6);
+		fieldMaxHumidity.getDocument().addDocumentListener(this);
+		add(fieldMaxHumidity, new GridBagConstraints(4, 4, 2, 1, 1, 0,
+				GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL, new Insets(7, 0, 0, 5),
+				0, 0));
+	}
+	
 	private void initTimeSection()
 	{
 		initTimeStepLabel();
@@ -170,8 +266,8 @@ public class SimulationSettingsFrame extends JFrame implements DocumentListener
 	
 	private void initTimeStepLabel()
 	{
-		labelTimestep = new JLabel("Jednostka czasu");
-		add(labelTimestep, new GridBagConstraints(0, 3, 1, 1, 0, 0,
+		labelTimeStep = new JLabel("Jednostka czasu");
+		add(labelTimeStep, new GridBagConstraints(0, 5, 1, 1, 0, 0,
 				GridBagConstraints.LINE_START, GridBagConstraints.NONE, new Insets(-10, 8, 0, 10),
 				0, 0));
 	}
@@ -184,7 +280,7 @@ public class SimulationSettingsFrame extends JFrame implements DocumentListener
 		sliderTimeStep.setPaintLabels(true);
 		sliderTimeStep.setPaintTicks(true);
 		sliderTimeStep.setFocusable(false);
-		add(sliderTimeStep, new GridBagConstraints(1, 3, 5, 1, 0, 0,
+		add(sliderTimeStep, new GridBagConstraints(1, 5, 5, 1, 0, 0,
 				GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL, new Insets(3, 0, 0, 5),
 				0, 0));
 	}
@@ -199,7 +295,7 @@ public class SimulationSettingsFrame extends JFrame implements DocumentListener
 	{
 		buttonCancel = new JButton("Anuluj");
 		buttonCancel.addActionListener(e -> closeFrame());
-		add(buttonCancel, new GridBagConstraints(2, 4, 3, 1, 1, 0,
+		add(buttonCancel, new GridBagConstraints(2, 6, 3, 1, 1, 0,
 				GridBagConstraints.LINE_END, GridBagConstraints.VERTICAL, new Insets(3, 0, 5, 2),
 				0, 0));
 	}
@@ -208,7 +304,7 @@ public class SimulationSettingsFrame extends JFrame implements DocumentListener
 	{
 		buttonOK = new JButton("OK");
 		buttonOK.addActionListener(e -> applySettings());
-		add(buttonOK, new GridBagConstraints(5, 4, 1, 1, 0, 0,
+		add(buttonOK, new GridBagConstraints(5, 6, 1, 1, 0, 0,
 				GridBagConstraints.CENTER, GridBagConstraints.BOTH, new Insets(3, 2, 5, 5),
 				0, 0));
 	}
@@ -222,6 +318,7 @@ public class SimulationSettingsFrame extends JFrame implements DocumentListener
 	private void applySettings()
 	{
 		applyFrequencies();
+		applyRanges();
 		applyTimestep();
 		applySize();
 		closeFrame();
@@ -238,6 +335,21 @@ public class SimulationSettingsFrame extends JFrame implements DocumentListener
 	{
 		world.setTemperatureFrequency((int) comboBoxTemperatureFrequency.getSelectedItem());
 		world.setHumidityFrequency((int) comboBoxHumidityFrequency.getSelectedItem());
+	}
+	
+	private void applyRanges()
+	{
+		float minTemperature = Float.parseFloat(fieldMinTemperature.getText());
+		world.setMinTemperature(minTemperature);
+		
+		float maxTemperature = Float.parseFloat(fieldMaxTemperature.getText());
+		world.setMaxTemperature(maxTemperature);
+		
+		float minHumidity = Float.parseFloat(fieldMinHumidity.getText());
+		world.setMinHumidity(minHumidity);
+		
+		float maxHumidity = Float.parseFloat(fieldMaxHumidity.getText());
+		world.setMaxHumidity(maxHumidity);
 	}
 	
 	private void applyTimestep()
@@ -263,7 +375,9 @@ public class SimulationSettingsFrame extends JFrame implements DocumentListener
 	
 	private void updateOKButton()
 	{
-		boolean dataCorrect = isTextValidSize(fieldX) && isTextValidSize(fieldY);
+		boolean dataCorrect = isTextValidSize(fieldX) && isTextValidSize(fieldY) &&
+							  isTextValidFloat(fieldMinTemperature) && isTextValidFloat(fieldMaxTemperature) &&
+							  isTextValidFloat(fieldMinHumidity) && isTextValidFloat(fieldMaxHumidity);
 		buttonOK.setEnabled(dataCorrect);
 	}
 	
@@ -273,6 +387,19 @@ public class SimulationSettingsFrame extends JFrame implements DocumentListener
 		{
 			int i = Integer.parseInt(field.getText());
 			return i > 0 && i <= World.MAX_SIZE;
+		}
+		catch(NumberFormatException ex)
+		{
+			return false;
+		}
+	}
+	
+	private boolean isTextValidFloat(JTextField field)
+	{
+		try
+		{
+			Float.parseFloat(field.getText());
+			return true;
 		}
 		catch(NumberFormatException ex)
 		{

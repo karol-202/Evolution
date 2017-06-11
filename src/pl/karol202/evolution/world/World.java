@@ -14,14 +14,9 @@ public class World
 	private static final int MIN_OFFSET = -10000;
 	private static final int MAX_OFFSET = 10000;
 	
-	private static final float MIN_TEMPERATURE = -20f;
-	private static final float MAX_TEMPERATURE = 40f;
 	private static final double[] TEMPERATURE_OCTAVES = {
 			0.55, 0.3, 0.15
 	};
-	
-	private static final float MIN_HUMIDITY = 0;
-	private static final float MAX_HUMIDITY = 100;
 	private static final double[] HUMIDITY_OCTAVES = {
 			0.5, 0.25, 0.125, 0.0625, 0.03125
 	};
@@ -34,6 +29,10 @@ public class World
 	private int height;
 	private int temperatureFrequency;
 	private int humidityFrequency;
+	private float minTemperature;
+	private float maxTemperature;
+	private float minHumidity;
+	private float maxHumidity;
 	private float[][] temperature;
 	private float[][] humidity;
 	private Entities entities;
@@ -44,6 +43,10 @@ public class World
 		this.random = random;
 		this.temperatureFrequency = 8192;
 		this.humidityFrequency = 4096;
+		this.minTemperature = -20;
+		this.maxTemperature = 40;
+		this.minHumidity = 0;
+		this.maxHumidity = 100;
 		this.entities = new Entities(random);
 		this.listeners = new ArrayList<>();
 	}
@@ -72,7 +75,7 @@ public class World
 			for(int y = 0; y < height; y++)
 			{
 				float noise = (float) OctaveSimplexNoise.noise((x / (float) temperatureFrequency) + xOffset, (y / (float) temperatureFrequency) + yOffset, TEMPERATURE_OCTAVES);
-				temperature[x][y] = Utils.map(noise, -1, 1, MIN_TEMPERATURE, MAX_TEMPERATURE);
+				temperature[x][y] = Utils.map(noise, -1, 1, minTemperature, maxTemperature);
 			}
 		}
 	}
@@ -86,7 +89,7 @@ public class World
 			for(int y = 0; y < height; y++)
 			{
 				float noise = (float) OctaveSimplexNoise.noise((x / (float) humidityFrequency) + xOffset, (y / (float) humidityFrequency) + yOffset, HUMIDITY_OCTAVES);
-				humidity[x][y] = Utils.map(noise, -1, 1, MIN_HUMIDITY, MAX_HUMIDITY);
+				humidity[x][y] = Utils.map(noise, -1, 1, minHumidity, maxHumidity);
 			}
 		}
 	}
@@ -134,6 +137,46 @@ public class World
 	public void setHumidityFrequency(int humidityFrequency)
 	{
 		this.humidityFrequency = humidityFrequency;
+	}
+	
+	public float getMinTemperature()
+	{
+		return minTemperature;
+	}
+	
+	public void setMinTemperature(float minTemperature)
+	{
+		this.minTemperature = minTemperature;
+	}
+	
+	public float getMaxTemperature()
+	{
+		return maxTemperature;
+	}
+	
+	public void setMaxTemperature(float maxTemperature)
+	{
+		this.maxTemperature = maxTemperature;
+	}
+	
+	public float getMinHumidity()
+	{
+		return minHumidity;
+	}
+	
+	public void setMinHumidity(float minHumidity)
+	{
+		this.minHumidity = minHumidity;
+	}
+	
+	public float getMaxHumidity()
+	{
+		return maxHumidity;
+	}
+	
+	public void setMaxHumidity(float maxHumidity)
+	{
+		this.maxHumidity = maxHumidity;
 	}
 	
 	public float[][] getTemperature()

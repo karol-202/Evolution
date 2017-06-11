@@ -61,32 +61,13 @@ public class EvolutionPanel extends JPanel implements OnWorldUpdateListener, Mou
 		addMouseMotionListener(this);
 		addMouseWheelListener(this);
 		world.addListener(this);
-		initTemperatureGradient();
-		initHumidityGradient();
 		createTemperatureImage();
 		createHumidityImage();
 	}
-	
-	private void initTemperatureGradient()
-	{
-		temperatureGradient = new Gradient();
-		temperatureGradient.addColor(new Color(0.96f, 0.04f, 0f), 45);
-		temperatureGradient.addColor(new Color(1f, 0.27f, 0.02f), 31);
-		temperatureGradient.addColor(new Color(0.8f, 0.87f, 0.02f), 18);
-		temperatureGradient.addColor(new Color(0.42f, 0.91f, 0f), 8);
-		temperatureGradient.addColor(new Color(0f, 0.85f, 0.6f), -4);
-		temperatureGradient.addColor(new Color(0.1f, 0.28f, 1f), -20);
-	}
-	
-	private void initHumidityGradient()
-	{
-		humidityGradient = new Gradient();
-		humidityGradient.addColor(Color.WHITE, 0);
-		humidityGradient.addColor(new Color(0.1f, 0.28f, 1f), 100);
-	}
-	
+
 	private void createTemperatureImage()
 	{
+		initTemperatureGradient();
 		temperatureImage = new BufferedImage(world.getWidth(), world.getHeight(), BufferedImage.TYPE_INT_RGB);
 		for(int x = 0; x < temperatureImage.getWidth(); x++)
 		{
@@ -99,8 +80,25 @@ public class EvolutionPanel extends JPanel implements OnWorldUpdateListener, Mou
 		}
 	}
 	
+	private void initTemperatureGradient()
+	{
+		temperatureGradient = new Gradient();
+		temperatureGradient.addColor(new Color(0.96f, 0.04f, 0f), getTemperatureGradientPos(1.083f));
+		temperatureGradient.addColor(new Color(1f, 0.27f, 0.02f), getTemperatureGradientPos(0.85f));
+		temperatureGradient.addColor(new Color(0.8f, 0.87f, 0.02f), getTemperatureGradientPos(0.633f));
+		temperatureGradient.addColor(new Color(0.42f, 0.91f, 0f), getTemperatureGradientPos(0.466f));
+		temperatureGradient.addColor(new Color(0f, 0.85f, 0.6f), getTemperatureGradientPos(0.233f));
+		temperatureGradient.addColor(new Color(0.1f, 0.28f, 1f), getTemperatureGradientPos(0f));
+	}
+	
+	private float getTemperatureGradientPos(float fract)
+	{
+		return Utils.map(fract, 0, 1, world.getMinTemperature(), world.getMaxTemperature());
+	}
+	
 	private void createHumidityImage()
 	{
+		initHumidityGradient();
 		humidityImage = new BufferedImage(world.getWidth(), world.getHeight(), BufferedImage.TYPE_INT_RGB);
 		for(int x = 0; x < humidityImage.getWidth(); x++)
 		{
@@ -111,6 +109,13 @@ public class EvolutionPanel extends JPanel implements OnWorldUpdateListener, Mou
 				humidityImage.setRGB(x, y, color);
 			}
 		}
+	}
+	
+	private void initHumidityGradient()
+	{
+		humidityGradient = new Gradient();
+		humidityGradient.addColor(Color.WHITE, world.getMinHumidity());
+		humidityGradient.addColor(new Color(0.1f, 0.28f, 1f), world.getMaxHumidity());
 	}
 	
 	@Override
