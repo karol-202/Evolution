@@ -3,6 +3,7 @@ package pl.karol202.evolution.entity.behaviour;
 import pl.karol202.evolution.entity.Component;
 import pl.karol202.evolution.entity.Entity;
 import pl.karol202.evolution.entity.EntityMovement;
+import pl.karol202.evolution.world.World;
 
 import java.util.ArrayList;
 import java.util.Random;
@@ -22,7 +23,14 @@ public class RandomMovingBehaviour extends Behaviour
 	@Override
 	public void update()
 	{
-		if(!movement.isMoving()) movement.setTarget(random.nextFloat() * 1023, random.nextFloat() * 1023);
+		if(!movement.isMoving()) newTarget();
+	}
+	
+	private void newTarget()
+	{
+		float x = random.nextFloat() * (World.getWorldWidth() - 1);
+		float y = random.nextFloat() * (World.getWorldHeight() - 1);
+		movement.setTarget(x, y);
 	}
 	
 	@Override

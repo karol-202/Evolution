@@ -9,23 +9,28 @@ import java.util.Random;
 
 public class World
 {
-	private static final int MIN_OFFSET = -50000;
-	private static final int MAX_OFFSET = 50000;
+	public static final int MAX_SIZE = 8192;
+	
+	private static final int MIN_OFFSET = -10000;
+	private static final int MAX_OFFSET = 10000;
 	
 	private static final float TEMPERATURE_FREQUENCY = 8192;
 	private static final float MIN_TEMPERATURE = -20f;
 	private static final float MAX_TEMPERATURE = 40f;
 	private static final double[] TEMPERATURE_OCTAVES = {
-			0.75, 0.2, 0.05
+			0.55, 0.3, 0.15
 	};
 	
-	private static final float HUMIDITY_FREQUENCY = 8192;
+	private static final float HUMIDITY_FREQUENCY = 4096;
 	private static final float MIN_HUMIDITY = 0;
 	private static final float MAX_HUMIDITY = 100;
 	private static final double[] HUMIDITY_OCTAVES = {
 			0.5, 0.25, 0.125, 0.0625, 0.03125
 	};
-
+	
+	private static int staticWidth;
+	private static int staticHeight;
+	
 	private Random random;
 	private int width;
 	private int height;
@@ -34,20 +39,22 @@ public class World
 	private Entities entities;
 	private ArrayList<OnWorldUpdateListener> listeners;
 	
-	public World(Random random, int width, int height)
+	public World(Random random)
 	{
 		this.random = random;
+		this.entities = new Entities(random);
+		this.listeners = new ArrayList<>();
+	}
+	
+	public void generateWorld(int width, int height)
+	{
+		World.staticWidth = width;
+		World.staticHeight = height;
 		this.width = width;
 		this.height = height;
 		this.temperature = new float[width][height];
 		this.humidity = new float[width][height];
-		this.entities = new Entities(random);
-		this.listeners = new ArrayList<>();
-		generateWorld();
-	}
-	
-	public void generateWorld()
-	{
+		
 		generateTemperature();
 		generateHumidity();
 		entities.generateEntities();
@@ -120,5 +127,15 @@ public class World
 	public Entities getEntities()
 	{
 		return entities;
+	}
+	
+	public static int getWorldWidth()
+	{
+		return staticWidth;
+	}
+	
+	public static int getWorldHeight()
+	{
+		return staticHeight;
 	}
 }

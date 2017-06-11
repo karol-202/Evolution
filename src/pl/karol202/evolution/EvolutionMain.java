@@ -13,14 +13,18 @@ public class EvolutionMain
 	private World world;
 	private Simulation simulation;
 	
+	private EvolutionFrame frame;
+	
 	public EvolutionMain()
 	{
 		random = new Random();
-		world = new World(random, 1024, 1024);
+		world = new World(random);
+		world.generateWorld(1024, 1024);
 		simulation = new Simulation(world, 3);
+		
 		setLookAndFeel();
 		runMainFrame();
-		while(true)
+		while(frame == null || frame.isVisible())
 		{
 			SwingUtilities.invokeLater(() -> simulation.mainLoop());
 			waitAMillisecond();
@@ -41,7 +45,7 @@ public class EvolutionMain
 	
 	private void runMainFrame()
 	{
-		SwingUtilities.invokeLater(() -> new EvolutionFrame(world, simulation));
+		SwingUtilities.invokeLater(() -> frame = new EvolutionFrame(world, simulation));
 	}
 	
 	private void waitAMillisecond()

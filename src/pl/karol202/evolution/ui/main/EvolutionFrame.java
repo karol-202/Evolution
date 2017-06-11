@@ -2,7 +2,7 @@ package pl.karol202.evolution.ui.main;
 
 import pl.karol202.evolution.simulation.Simulation;
 import pl.karol202.evolution.ui.entity.EntityPanel;
-import pl.karol202.evolution.ui.time.TimeSettingsFrame;
+import pl.karol202.evolution.ui.settings.SimulationSettingsFrame;
 import pl.karol202.evolution.utils.ButtonHovering;
 import pl.karol202.evolution.world.World;
 
@@ -23,7 +23,7 @@ public class EvolutionFrame extends JFrame implements EvolutionPanel.OnViewParam
 	private JMenuItem itemStart;
 	private JMenuItem itemPause;
 	private JMenuItem itemStep;
-	private JMenuItem itemTimeSettings;
+	private JMenuItem itemSettings;
 	
 	private JMenu menuView;
 	private ButtonGroup groupView;
@@ -92,7 +92,7 @@ public class EvolutionFrame extends JFrame implements EvolutionPanel.OnViewParam
 		initStartSimulationItem();
 		initPauseSimulationItem();
 		initStepSimulationItem();
-		initTimeSettingsItem();
+		initSettingsItem();
 	}
 	
 	private void initNewSimulationItem()
@@ -100,7 +100,7 @@ public class EvolutionFrame extends JFrame implements EvolutionPanel.OnViewParam
 		itemNew = new JMenuItem("Nowa symulacja");
 		itemNew.addActionListener(e ->
 		{
-			world.generateWorld();
+			world.generateWorld(world.getWidth(), world.getHeight());
 			simulation.reset();
 		});
 		menuSimulation.add(itemNew);
@@ -127,11 +127,11 @@ public class EvolutionFrame extends JFrame implements EvolutionPanel.OnViewParam
 		menuSimulation.add(itemStep);
 	}
 	
-	private void initTimeSettingsItem()
+	private void initSettingsItem()
 	{
-		itemTimeSettings = new JMenuItem("Ustawienia czasu");
-		itemTimeSettings.addActionListener(e -> SwingUtilities.invokeLater(() -> new TimeSettingsFrame(simulation)));
-		menuSimulation.add(itemTimeSettings);
+		itemSettings = new JMenuItem("Ustawienia symulacji");
+		itemSettings.addActionListener(e -> SwingUtilities.invokeLater(() -> new SimulationSettingsFrame(world, simulation)));
+		menuSimulation.add(itemSettings);
 	}
 	
 	private void initViewMenu()
@@ -262,7 +262,7 @@ public class EvolutionFrame extends JFrame implements EvolutionPanel.OnViewParam
 		itemStart.setEnabled(!simulation.isRunning());
 		itemPause.setEnabled(simulation.isRunning());
 		itemStep.setEnabled(!simulation.isRunning());
-		itemTimeSettings.setEnabled(!simulation.isRunning());
+		itemSettings.setEnabled(!simulation.isRunning());
 		
 		buttonStart.setEnabled(!simulation.isRunning());
 		buttonPause.setEnabled(simulation.isRunning());
