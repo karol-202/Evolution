@@ -74,7 +74,6 @@ public class Simulation
 	
 	private void update(long deltaTime)
 	{
-		System.out.println("Update, delta time: " + deltaTime);
 		Simulation.deltaTime = deltaTime / 1000f;
 		world.update();
 		listeners.forEach(OnSimulationUpdateListener::onSimulationUpdated);

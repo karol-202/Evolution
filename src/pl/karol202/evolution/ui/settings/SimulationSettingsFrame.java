@@ -10,6 +10,7 @@ import java.awt.*;
 
 public class SimulationSettingsFrame extends JFrame implements DocumentListener
 {
+	private static final Integer[] FREQUENCY_VALUES = { 256, 512, 1024, 2048, 4096, 8192, 16384, 32768 };
 	private static final int MIN_TIMESTEP = 1;
 	private static final int MAX_TIMESTEP = 30;
 	
@@ -21,6 +22,12 @@ public class SimulationSettingsFrame extends JFrame implements DocumentListener
 	private JTextField fieldX;
 	private JLabel labelY;
 	private JTextField fieldY;
+	
+	private JLabel labelTemperatureFrequency;
+	private JComboBox<Integer> comboBoxTemperatureFrequency;
+	
+	private JLabel labelHumidityFrequency;
+	private JComboBox<Integer> comboBoxHumidityFrequency;
 	
 	private JLabel labelTimestep;
 	private JSlider sliderTimeStep;
@@ -36,6 +43,8 @@ public class SimulationSettingsFrame extends JFrame implements DocumentListener
 		
 		setFrameParams();
 		initSizeSection();
+		initTemperatureFrequencySection();
+		initHumidityFrequencySection();
 		initTimeSection();
 		initFooter();
 		pack();
@@ -62,7 +71,7 @@ public class SimulationSettingsFrame extends JFrame implements DocumentListener
 	{
 		labelSize = new JLabel("Rozmiar");
 		add(labelSize, new GridBagConstraints(0, 0, 1, 1, 0, 0,
-				GridBagConstraints.LINE_START, GridBagConstraints.NONE, new Insets(7, 8, 0, 20),
+				GridBagConstraints.LINE_START, GridBagConstraints.NONE, new Insets(7, 8, 0, 10),
 				0, 0));
 	}
 	
@@ -100,6 +109,59 @@ public class SimulationSettingsFrame extends JFrame implements DocumentListener
 				0, 0));
 	}
 	
+	private void initTemperatureFrequencySection()
+	{
+		initTemperatureFrequencyLabel();
+		initTemperatureFrequencyComboBox();
+	}
+	
+	private void initTemperatureFrequencyLabel()
+	{
+		labelTemperatureFrequency = new JLabel("Częstotliwość generatora temperatury");
+		add(labelTemperatureFrequency, new GridBagConstraints(0, 1, 1, 1, 0, 0,
+				GridBagConstraints.LINE_START, GridBagConstraints.NONE, new Insets(7, 8, 0, 5),
+				0, 0));
+	}
+	
+	private void initTemperatureFrequencyComboBox()
+	{
+		comboBoxTemperatureFrequency = new JComboBox<>(FREQUENCY_VALUES);
+		comboBoxTemperatureFrequency.setSelectedIndex(getIndexOfFrequencyValue(world.getTemperatureFrequency()));
+		add(comboBoxTemperatureFrequency, new GridBagConstraints(2, 1, 4, 1, 1, 0,
+				GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL, new Insets(7, 0, 0, 5),
+				0, 0));
+	}
+	
+	private void initHumidityFrequencySection()
+	{
+		initHumidityFrequencyLabel();
+		initHumidityFrequencyComboBox();
+	}
+	
+	private void initHumidityFrequencyLabel()
+	{
+		labelHumidityFrequency = new JLabel("Częstotliwość generatora wilgotności");
+		add(labelHumidityFrequency, new GridBagConstraints(0, 2, 1, 1, 0, 0,
+				GridBagConstraints.LINE_START, GridBagConstraints.NONE, new Insets(7, 8, 0, 5),
+				0, 0));
+	}
+	
+	private void initHumidityFrequencyComboBox()
+	{
+		comboBoxHumidityFrequency = new JComboBox<>(FREQUENCY_VALUES);
+		comboBoxHumidityFrequency.setSelectedIndex(getIndexOfFrequencyValue(world.getHumidityFrequency()));
+		add(comboBoxHumidityFrequency, new GridBagConstraints(2, 2, 4, 1, 1, 0,
+				GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL, new Insets(7, 0, 0, 5),
+				0, 0));
+	}
+	
+	private int getIndexOfFrequencyValue(int frequency)
+	{
+		for(int i = 0; i < FREQUENCY_VALUES.length; i++)
+			if(FREQUENCY_VALUES[i] == frequency) return i;
+		return -1;
+	}
+	
 	private void initTimeSection()
 	{
 		initTimeStepLabel();
@@ -109,8 +171,8 @@ public class SimulationSettingsFrame extends JFrame implements DocumentListener
 	private void initTimeStepLabel()
 	{
 		labelTimestep = new JLabel("Jednostka czasu");
-		add(labelTimestep, new GridBagConstraints(0, 1, 1, 1, 0, 0,
-				GridBagConstraints.PAGE_START, GridBagConstraints.NONE, new Insets(7, 8, 0, 0),
+		add(labelTimestep, new GridBagConstraints(0, 3, 1, 1, 0, 0,
+				GridBagConstraints.LINE_START, GridBagConstraints.NONE, new Insets(-10, 8, 0, 10),
 				0, 0));
 	}
 	
@@ -122,7 +184,7 @@ public class SimulationSettingsFrame extends JFrame implements DocumentListener
 		sliderTimeStep.setPaintLabels(true);
 		sliderTimeStep.setPaintTicks(true);
 		sliderTimeStep.setFocusable(false);
-		add(sliderTimeStep, new GridBagConstraints(1, 1, 5, 1, 0, 0,
+		add(sliderTimeStep, new GridBagConstraints(1, 3, 5, 1, 0, 0,
 				GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL, new Insets(3, 0, 0, 5),
 				0, 0));
 	}
@@ -137,7 +199,7 @@ public class SimulationSettingsFrame extends JFrame implements DocumentListener
 	{
 		buttonCancel = new JButton("Anuluj");
 		buttonCancel.addActionListener(e -> closeFrame());
-		add(buttonCancel, new GridBagConstraints(2, 2, 3, 1, 1, 0,
+		add(buttonCancel, new GridBagConstraints(2, 4, 3, 1, 1, 0,
 				GridBagConstraints.LINE_END, GridBagConstraints.VERTICAL, new Insets(3, 0, 5, 2),
 				0, 0));
 	}
@@ -146,7 +208,7 @@ public class SimulationSettingsFrame extends JFrame implements DocumentListener
 	{
 		buttonOK = new JButton("OK");
 		buttonOK.addActionListener(e -> applySettings());
-		add(buttonOK, new GridBagConstraints(5, 2, 1, 1, 0, 0,
+		add(buttonOK, new GridBagConstraints(5, 4, 1, 1, 0, 0,
 				GridBagConstraints.CENTER, GridBagConstraints.BOTH, new Insets(3, 2, 5, 5),
 				0, 0));
 	}
@@ -159,8 +221,9 @@ public class SimulationSettingsFrame extends JFrame implements DocumentListener
 	
 	private void applySettings()
 	{
-		applySize();
+		applyFrequencies();
 		applyTimestep();
+		applySize();
 		closeFrame();
 	}
 	
@@ -169,6 +232,12 @@ public class SimulationSettingsFrame extends JFrame implements DocumentListener
 		int width = Integer.parseInt(fieldX.getText());
 		int height = Integer.parseInt(fieldY.getText());
 		world.generateWorld(width, height);
+	}
+	
+	private void applyFrequencies()
+	{
+		world.setTemperatureFrequency((int) comboBoxTemperatureFrequency.getSelectedItem());
+		world.setHumidityFrequency((int) comboBoxHumidityFrequency.getSelectedItem());
 	}
 	
 	private void applyTimestep()
