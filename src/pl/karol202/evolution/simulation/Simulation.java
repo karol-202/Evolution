@@ -33,6 +33,7 @@ public class Simulation
 		if(running) return;
 		running = true;
 		listeners.forEach(OnSimulationUpdateListener::onSimulationStateChanged);
+		lastUpdateTime = System.currentTimeMillis();
 	}
 	
 	public void stop()

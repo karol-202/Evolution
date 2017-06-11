@@ -8,7 +8,7 @@ import java.awt.*;
 public class TimeSettingsFrame extends JFrame
 {
 	private static final int MIN_TIMESTEP = 1;
-	private static final int MAX_TIMESTEP = 100;
+	private static final int MAX_TIMESTEP = 30;
 	
 	private Simulation simulation;
 	
@@ -49,8 +49,8 @@ public class TimeSettingsFrame extends JFrame
 	private void initTimeStepSlider()
 	{
 		sliderTimeStep = new JSlider(MIN_TIMESTEP, MAX_TIMESTEP, simulation.getTimeStep());
-		sliderTimeStep.setMajorTickSpacing(99);
-		sliderTimeStep.setMinorTickSpacing(10);
+		sliderTimeStep.setMajorTickSpacing(29);
+		sliderTimeStep.setMinorTickSpacing(5);
 		sliderTimeStep.setPaintLabels(true);
 		sliderTimeStep.setPaintTicks(true);
 		sliderTimeStep.setFocusable(false);

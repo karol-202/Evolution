@@ -74,6 +74,11 @@ public class Entity
 		return y;
 	}
 	
+	public String getCurrentBehaviourName()
+	{
+		return currentBehaviour.getName();
+	}
+	
 	public Genotype getGenotype()
 	{
 		return genotype;

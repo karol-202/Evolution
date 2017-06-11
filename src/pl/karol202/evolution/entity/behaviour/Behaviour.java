@@ -20,6 +20,8 @@ public abstract class Behaviour
 	
 	public abstract void update();
 	
+	public abstract String getName();
+	
 	protected Component getComponent(Class<? extends Component> type)
 	{
 		return components.stream().filter(c -> c.getClass() == type).findAny().orElse(null);

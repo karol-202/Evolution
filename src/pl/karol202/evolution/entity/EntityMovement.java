@@ -42,6 +42,11 @@ public class EntityMovement extends Component
 		target = null;
 	}
 	
+	public boolean isMoving()
+	{
+		return target != null;
+	}
+	
 	private Vector2 getPosition()
 	{
 		return new Vector2(entity.x, entity.y);

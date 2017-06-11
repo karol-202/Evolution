@@ -34,7 +34,7 @@ public class EntityPanel extends JPanel implements OnWorldUpdateListener
 		initTabbedPane();
 		initEntityTable();
 		initGenotypeTable();
-		setPreferredSize(new Dimension(200, (int) getPreferredSize().getHeight()));
+		setPreferredSize(new Dimension(250, (int) getPreferredSize().getHeight()));
 		
 		updateData();
 	}
