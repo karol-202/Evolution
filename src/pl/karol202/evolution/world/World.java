@@ -106,6 +106,7 @@ public class World
 	
 	public void update()
 	{
+		plants.update();
 		entities.update();
 	}
 	

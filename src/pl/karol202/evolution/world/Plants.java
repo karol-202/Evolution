@@ -52,6 +52,11 @@ public class Plants
 		return random.nextInt(MAX_OFFSET - MIN_OFFSET) + MIN_OFFSET;
 	}
 	
+	public void update()
+	{
+		plants.forEach(Plant::update);
+	}
+	
 	public int getNoiseFrequency()
 	{
 		return noiseFrequency;

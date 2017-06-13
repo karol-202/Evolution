@@ -231,8 +231,11 @@ public class EvolutionPanel extends JPanel implements OnWorldUpdateListener, Mou
 	private void drawPlant(Graphics2D g, Plant plant)
 	{
 		Rectangle bounds = getPlantBounds(plant);
+		Rectangle maskedBounds = getMaskedPlantBounds(plant);
 		g.setColor(Color.GREEN);
+		g.setClip(maskedBounds.x, maskedBounds.y, maskedBounds.width, maskedBounds.height);
 		g.fillOval(bounds.x, bounds.y, bounds.width, bounds.height);
+		g.setClip(0, 0, getWidth(), getHeight());
 		g.setColor(Color.DARK_GRAY);
 		g.setStroke(new BasicStroke(1));
 		g.drawOval(bounds.x, bounds.y, bounds.width, bounds.height);
@@ -244,6 +247,15 @@ public class EvolutionPanel extends JPanel implements OnWorldUpdateListener, Mou
 		int x = (int) ((plant.getX() * scale) + xPosition - (size / 2));
 		int y = (int) ((plant.getY() * scale) + yPosition - (size / 2));
 		return new Rectangle(x, y, (int) size, (int) size);
+	}
+	
+	private Rectangle getMaskedPlantBounds(Plant plant)
+	{
+		float health = plant.getHealth() / 100f;
+		Rectangle bounds = getPlantBounds(plant);
+		int bottom = bounds.y + bounds.height;
+		int top = bottom - (int) (bounds.height * health);
+		return new Rectangle(bounds.x, top, bounds.width, bottom - top);
 	}
 	
 	private int getScaledWorldWidth()
