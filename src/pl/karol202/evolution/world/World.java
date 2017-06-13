@@ -11,8 +11,8 @@ public class World
 {
 	public static final int MAX_SIZE = 8192;
 	
-	private static final int MIN_OFFSET = -10000;
-	private static final int MAX_OFFSET = 10000;
+	public static final int MIN_OFFSET = -10000;
+	public static final int MAX_OFFSET = 10000;
 	
 	private static final double[] TEMPERATURE_OCTAVES = {
 			0.55, 0.3, 0.15
@@ -25,6 +25,7 @@ public class World
 	private static int staticHeight;
 	
 	private Random random;
+	private ArrayList<OnWorldUpdateListener> listeners;
 	private int width;
 	private int height;
 	private int temperatureFrequency;
@@ -33,22 +34,25 @@ public class World
 	private float maxTemperature;
 	private float minHumidity;
 	private float maxHumidity;
+	
 	private float[][] temperature;
 	private float[][] humidity;
+	private Plants plants;
 	private Entities entities;
-	private ArrayList<OnWorldUpdateListener> listeners;
 	
 	public World(Random random)
 	{
 		this.random = random;
-		this.temperatureFrequency = 8192;
-		this.humidityFrequency = 4096;
-		this.minTemperature = -20;
-		this.maxTemperature = 40;
-		this.minHumidity = 0;
-		this.maxHumidity = 100;
-		this.entities = new Entities(random);
-		this.listeners = new ArrayList<>();
+		listeners = new ArrayList<>();
+		temperatureFrequency = 8192;
+		humidityFrequency = 4096;
+		minTemperature = -20;
+		maxTemperature = 40;
+		minHumidity = 0;
+		maxHumidity = 100;
+		
+		plants = new Plants(random, this);
+		entities = new Entities(random);
 	}
 	
 	public void generateWorld(int width, int height)
@@ -62,6 +66,7 @@ public class World
 		
 		generateTemperature();
 		generateHumidity();
+		plants.generatePlants();
 		entities.generateEntities();
 		listeners.forEach(OnWorldUpdateListener::onWorldUpdated);
 	}
@@ -187,6 +192,11 @@ public class World
 	public float[][] getHumidity()
 	{
 		return humidity;
+	}
+	
+	public Plants getPlants()
+	{
+		return plants;
 	}
 	
 	public Entities getEntities()

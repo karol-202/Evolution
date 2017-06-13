@@ -5,6 +5,8 @@ import pl.karol202.evolution.entity.Entity;
 import pl.karol202.evolution.utils.Gradient;
 import pl.karol202.evolution.utils.Utils;
 import pl.karol202.evolution.world.OnWorldUpdateListener;
+import pl.karol202.evolution.world.Plant;
+import pl.karol202.evolution.world.Plants;
 import pl.karol202.evolution.world.World;
 
 import javax.swing.*;
@@ -26,6 +28,7 @@ public class EvolutionPanel extends JPanel implements OnWorldUpdateListener, Mou
 	private static final double MAX_ZOOM = 16;
 	
 	private World world;
+	private Plants plants;
 	private Entities entities;
 	private OnViewParametersChangeListener viewListener;
 	
@@ -51,6 +54,7 @@ public class EvolutionPanel extends JPanel implements OnWorldUpdateListener, Mou
 	public EvolutionPanel(World world, OnViewParametersChangeListener listener)
 	{
 		this.world = world;
+		this.plants = world.getPlants();
 		this.entities = world.getEntities();
 		this.viewListener = listener;
 		this.viewMode = ViewMode.STANDARD;
@@ -135,6 +139,7 @@ public class EvolutionPanel extends JPanel implements OnWorldUpdateListener, Mou
 		drawBackground(g);
 		drawBorder(g);
 		setClipping(g);
+		drawPlants(g);
 		drawEntities(g);
 	}
 	
@@ -199,10 +204,10 @@ public class EvolutionPanel extends JPanel implements OnWorldUpdateListener, Mou
 	
 	private Rectangle getEntityBounds(Entity entity)
 	{
-		int size = (int) (entity.getSize() * scale);
-		int x = (int) (entity.getX() * scale) + xPosition - (size / 2);
-		int y = (int) (entity.getY() * scale) + yPosition - (size / 2);
-		return new Rectangle(x, y, size, size);
+		float size = (float) (entity.getSize() * scale);
+		int x = (int) ((entity.getX() * scale) + xPosition - (size / 2));
+		int y = (int) ((entity.getY() * scale) + yPosition - (size / 2));
+		return new Rectangle(x, y, (int) size, (int) size);
 	}
 	
 	private boolean isHovered(Rectangle rectangle)
@@ -216,6 +221,29 @@ public class EvolutionPanel extends JPanel implements OnWorldUpdateListener, Mou
 	private boolean isSelected(Entity entity)
 	{
 		return entity == entities.getSelectedEntity();
+	}
+	
+	private void drawPlants(Graphics2D g)
+	{
+		for(Plant plant : plants.getPlants()) drawPlant(g, plant);
+	}
+	
+	private void drawPlant(Graphics2D g, Plant plant)
+	{
+		Rectangle bounds = getPlantBounds(plant);
+		g.setColor(Color.GREEN);
+		g.fillOval(bounds.x, bounds.y, bounds.width, bounds.height);
+		g.setColor(Color.DARK_GRAY);
+		g.setStroke(new BasicStroke(1));
+		g.drawOval(bounds.x, bounds.y, bounds.width, bounds.height);
+	}
+	
+	private Rectangle getPlantBounds(Plant plant)
+	{
+		float size = (float) (10 * scale);
+		int x = (int) ((plant.getX() * scale) + xPosition - (size / 2));
+		int y = (int) ((plant.getY() * scale) + yPosition - (size / 2));
+		return new Rectangle(x, y, (int) size, (int) size);
 	}
 	
 	private int getScaledWorldWidth()
