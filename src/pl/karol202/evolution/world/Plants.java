@@ -27,8 +27,8 @@ public class Plants
 		this.random = random;
 		this.world = world;
 		noiseFrequency = 2048;
-		leastMinDistance = 30;
-		greatestMinDistance = 120;
+		leastMinDistance = 20;
+		greatestMinDistance = 200;
 	}
 	
 	public void generatePlants()

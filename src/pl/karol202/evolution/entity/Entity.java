@@ -35,7 +35,7 @@ public class Entity
 	private void setProperties()
 	{
 		size = genotype.getFloatProperty(GeneType.SIZ);
-		speed = 300;
+		speed = genotype.getFloatProperty(GeneType.SPD);
 	}
 
 	private void addComponents()

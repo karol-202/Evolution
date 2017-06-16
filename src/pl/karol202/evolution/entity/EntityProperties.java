@@ -7,7 +7,8 @@ public enum EntityProperties
 	X("X", e -> toString(e.getX())),
 	Y("Y", e -> toString(e.getY())),
 	BEHAVIOUR("Zachowanie", Entity::getCurrentBehaviourName),
-	SIZE("Wielkość", e -> toString(e.getSize()));
+	SIZE("Wielkość", e -> toString(e.getSize())),
+	SPEED("Szybkość", e -> toString(e.getSpeed()));
 	
 	private String name;
 	private Function<Entity, String> function;

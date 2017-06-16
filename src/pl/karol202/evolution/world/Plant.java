@@ -20,7 +20,7 @@ public class Plant
 	{
 		this.x = x;
 		this.y = y;
-		this.health = 50;
+		this.health = 100;
 	}
 	
 	public void update()
