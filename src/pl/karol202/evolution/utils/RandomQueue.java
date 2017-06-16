@@ -31,4 +31,9 @@ public class RandomQueue<T>
 	{
 		return items.isEmpty();
 	}
+	
+	public void clear()
+	{
+		items.clear();
+	}
 }

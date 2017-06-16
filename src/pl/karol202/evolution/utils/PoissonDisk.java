@@ -40,6 +40,8 @@ public class PoissonDisk
 				addPoint(randomPoint);
 			}
 		}
+		
+		cleanUp();
 		return allPoints;
 	}
 	
@@ -147,5 +149,12 @@ public class PoissonDisk
 	private static float getDistance(Vector2 first, Vector2 second)
 	{
 		return first.sub(second).length();
+	}
+	
+	private static void cleanUp()
+	{
+		minDistanceMap = new float[0][0];
+		grid = new Cell[0][0];
+		activePoints.clear();
 	}
 }

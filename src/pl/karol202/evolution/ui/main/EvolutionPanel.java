@@ -180,6 +180,7 @@ public class EvolutionPanel extends JPanel implements OnWorldUpdateListener, Mou
 	
 	private void setClipping(Graphics2D g)
 	{
+		g.setClip(0, 0, getWidth(), getHeight());
 		g.clipRect(xPosition, yPosition, getScaledWorldWidth(), getScaledWorldHeight());
 	}
 	
@@ -233,9 +234,9 @@ public class EvolutionPanel extends JPanel implements OnWorldUpdateListener, Mou
 		Rectangle bounds = getPlantBounds(plant);
 		Rectangle maskedBounds = getMaskedPlantBounds(plant);
 		g.setColor(Color.GREEN);
-		g.setClip(maskedBounds.x, maskedBounds.y, maskedBounds.width, maskedBounds.height);
+		g.clipRect(maskedBounds.x, maskedBounds.y, maskedBounds.width, maskedBounds.height);
 		g.fillOval(bounds.x, bounds.y, bounds.width, bounds.height);
-		g.setClip(0, 0, getWidth(), getHeight());
+		setClipping(g);
 		g.setColor(Color.DARK_GRAY);
 		g.setStroke(new BasicStroke(1));
 		g.drawOval(bounds.x, bounds.y, bounds.width, bounds.height);
