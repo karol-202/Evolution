@@ -39,6 +39,8 @@ public class EntityPanel extends JPanel implements OnWorldUpdateListener
 	private JTable tableGenotype;
 	private GenotypeTableModel tableModelGenotype;
 	
+	private int lastEntityIndex;
+	
 	public EntityPanel(World world)
 	{
 		this.entities = world.getEntities();
@@ -102,6 +104,9 @@ public class EntityPanel extends JPanel implements OnWorldUpdateListener
 	private void updateTitleLabel()
 	{
 		int index = entities.getSelectedEntityIndex();
+		if(index == lastEntityIndex) return;
+		lastEntityIndex = index;
+		
 		String title;
 		if(index == -1) title = " ";
 		else title = String.format("Istota #%d", index);
@@ -111,6 +116,7 @@ public class EntityPanel extends JPanel implements OnWorldUpdateListener
 	private void updateTableModels()
 	{
 		Entity entity = entities.getSelectedEntity();
+		
 		tableModelProperties.setEntity(entity);
 		tableModelGenotype.setEntity(entity);
 	}

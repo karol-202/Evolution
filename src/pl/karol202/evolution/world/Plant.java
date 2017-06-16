@@ -40,7 +40,7 @@ public class Plant
 	
 	public void update()
 	{
-		if(health > 100) return;
+		if(health >= 100) return;
 		health += REGENERATION_SPEED * Simulation.deltaTime;
 		if(health > 100) health = 100;
  	}

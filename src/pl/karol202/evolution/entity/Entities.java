@@ -17,6 +17,7 @@ package pl.karol202.evolution.entity;
 
 import java.util.ArrayList;
 import java.util.Random;
+import java.util.stream.Stream;
 
 public class Entities
 {
@@ -52,6 +53,7 @@ public class Entities
 	{
 		entities.forEach(Entity::update);
 		
+		if(entitiesToRemove.isEmpty()) return;
 		entitiesToRemove.forEach(entities::remove);
 		entitiesToRemove.clear();
 	}
@@ -67,9 +69,9 @@ public class Entities
 		selectedEntity = -1;
 	}
 	
-	public Entity[] getEntities()
+	public Stream<Entity> getEntitiesStream()
 	{
-		return entities.toArray(new Entity[entities.size()]);
+		return entities.stream();
 	}
 	
 	public Entity getSelectedEntity()

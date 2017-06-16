@@ -26,6 +26,8 @@ import java.awt.*;
 
 public class EvolutionFrame extends JFrame implements EvolutionPanel.OnViewParametersChangeListener, Simulation.OnSimulationUpdateListener
 {
+	private static final int REPAINT_TIME = 10;
+	
 	private World world;
 	private Simulation simulation;
 	
@@ -59,12 +61,14 @@ public class EvolutionFrame extends JFrame implements EvolutionPanel.OnViewParam
 	
 	private EntityPanel panelEntity;
 	
+	private long lastRepaintTime;
+	
 	public EvolutionFrame(World world, Simulation simulation)
 	{
 		super("Evolution");
 		this.world = world;
 		this.simulation = simulation;
-		simulation.addStateListener(this);
+		simulation.addListener(this);
 		
 		setFrameParams();
 		initEvolutionPanel();
@@ -299,8 +303,15 @@ public class EvolutionFrame extends JFrame implements EvolutionPanel.OnViewParam
 	@Override
 	public void onSimulationUpdated()
 	{
-		panelEvolution.repaint();
 		panelEntity.updateData();
+		repaintPanel();
+	}
+	
+	private void repaintPanel()
+	{
+		if(lastRepaintTime + REPAINT_TIME > System.currentTimeMillis()) return;
+		panelEvolution.repaint();
+		lastRepaintTime = System.currentTimeMillis();
 	}
 	
 	@Override

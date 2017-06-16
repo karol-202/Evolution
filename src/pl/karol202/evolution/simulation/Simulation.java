@@ -110,7 +110,7 @@ public class Simulation
 		return running;
 	}
 	
-	public void addStateListener(OnSimulationUpdateListener listener)
+	public void addListener(OnSimulationUpdateListener listener)
 	{
 		listeners.add(listener);
 	}

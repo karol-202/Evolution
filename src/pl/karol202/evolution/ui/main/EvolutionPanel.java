@@ -72,10 +72,12 @@ public class EvolutionPanel extends JPanel implements OnWorldUpdateListener, Mou
 		this.plants = world.getPlants();
 		this.entities = world.getEntities();
 		this.viewListener = listener;
+		
 		this.viewMode = ViewMode.STANDARD;
 		this.scale = 1;
 		this.xPosition = 0;
 		this.yPosition = 0;
+		
 		addMouseListener(this);
 		addMouseMotionListener(this);
 		addMouseWheelListener(this);
@@ -202,17 +204,21 @@ public class EvolutionPanel extends JPanel implements OnWorldUpdateListener, Mou
 	private void drawEntities(Graphics2D g)
 	{
 		hoveredEntity = null;
-		for(Entity entity : entities.getEntities()) drawEntity(g, entity);
+		entities.getEntitiesStream().forEach(e -> drawEntity(g, e));
 	}
 	
 	private void drawEntity(Graphics2D g, Entity entity)
 	{
 		Rectangle bounds = getEntityBounds(entity);
+		if(shouldBeClipped(bounds)) return;
+		Rectangle maskedBounds = getMaskedEntityBounds(entity);
 		boolean hovered = isHovered(bounds);
 		boolean selected = isSelected(entity);
 		if(hovered) hoveredEntity = entity;
-		g.setColor(hovered || selected ? new Color(216, 216, 216) : Color.WHITE);
+		g.setColor(hovered || selected ? new Color(191, 0, 0) : Color.RED);
+		g.clipRect(maskedBounds.x, maskedBounds.y, maskedBounds.width, maskedBounds.height);
 		g.fillOval(bounds.x, bounds.y, bounds.width, bounds.height);
+		setClipping(g);
 		g.setColor(Color.DARK_GRAY);
 		g.setStroke(new BasicStroke(1));
 		g.drawOval(bounds.x, bounds.y, bounds.width, bounds.height);
@@ -224,6 +230,13 @@ public class EvolutionPanel extends JPanel implements OnWorldUpdateListener, Mou
 		int x = (int) ((entity.getX() * scale) + xPosition - (size / 2));
 		int y = (int) ((entity.getY() * scale) + yPosition - (size / 2));
 		return new Rectangle(x, y, (int) size, (int) size);
+	}
+	
+	private Rectangle getMaskedEntityBounds(Entity entity)
+	{
+		float energy = entity.getEnergy() / entity.getMaxEnergy();
+		Rectangle bounds = getEntityBounds(entity);
+		return partiallyMaskBounds(bounds, energy);
 	}
 	
 	private boolean isHovered(Rectangle rectangle)
@@ -247,6 +260,7 @@ public class EvolutionPanel extends JPanel implements OnWorldUpdateListener, Mou
 	private void drawPlant(Graphics2D g, Plant plant)
 	{
 		Rectangle bounds = getPlantBounds(plant);
+		if(shouldBeClipped(bounds)) return;
 		Rectangle maskedBounds = getMaskedPlantBounds(plant);
 		g.setColor(Color.GREEN);
 		g.clipRect(maskedBounds.x, maskedBounds.y, maskedBounds.width, maskedBounds.height);
@@ -269,9 +283,21 @@ public class EvolutionPanel extends JPanel implements OnWorldUpdateListener, Mou
 	{
 		float health = plant.getHealth() / 100f;
 		Rectangle bounds = getPlantBounds(plant);
+		return partiallyMaskBounds(bounds, health);
+	}
+	
+	private Rectangle partiallyMaskBounds(Rectangle bounds, float part)
+	{
 		int bottom = bounds.y + bounds.height;
-		int top = bottom - (int) (bounds.height * health);
+		int top = bottom - (int) (bounds.height * part);
 		return new Rectangle(bounds.x, top, bounds.width, bottom - top);
+	}
+	
+	private boolean shouldBeClipped(Rectangle rectangle)
+	{
+		if(rectangle.x < getWidth() && rectangle.x + rectangle.width > 0) return false;
+		if(rectangle.y < getHeight() && rectangle.y + rectangle.height > 0) return false;
+		return true;
 	}
 	
 	private int getScaledWorldWidth()
