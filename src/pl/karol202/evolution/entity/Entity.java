@@ -19,6 +19,7 @@ import pl.karol202.evolution.entity.behaviour.Behaviour;
 import pl.karol202.evolution.entity.behaviour.RandomMovingBehaviour;
 import pl.karol202.evolution.genes.GeneType;
 import pl.karol202.evolution.genes.Genotype;
+import pl.karol202.evolution.simulation.Simulation;
 
 import java.util.ArrayList;
 import java.util.Random;
@@ -27,30 +28,38 @@ public class Entity
 {
 	float x;
 	float y;
+	float energy;
 	
+	private Entities entities;
 	private Genotype genotype;
 	private float size;
 	private float speed;
+	private float maxEnergy;
+	private float energyPerSecond;
 	
 	private ArrayList<Component> components;
 	private ArrayList<Behaviour> behaviours;
 	private Behaviour currentBehaviour;
 	
-	private Entity(float x, float y, Genotype genotype)
+	private Entity(Entities entities, float x, float y, Genotype genotype)
 	{
-		this.x = x;
-		this.y = y;
-		
+		this.entities = entities;
 		this.genotype = genotype;
 		setProperties();
 		addComponents();
 		addBehaviours();
+		
+		this.x = x;
+		this.y = y;
+		this.energy = maxEnergy;
 	}
 	
 	private void setProperties()
 	{
 		size = genotype.getFloatProperty(GeneType.SIZ);
 		speed = genotype.getFloatProperty(GeneType.SPD);
+		maxEnergy = genotype.getFloatProperty(GeneType.EMX);
+		energyPerSecond = genotype.getFloatProperty(GeneType.EPS);
 	}
 
 	private void addComponents()
@@ -67,16 +76,33 @@ public class Entity
 		currentBehaviour = behaviours.get(0);
 	}
 	
-	public static Entity createRandomEntity(float x, float y, Random random)
+	static Entity createRandomEntity(Entities entities, float x, float y, Random random)
 	{
 		Genotype genotype = new Genotype(random);
-		return new Entity(x, y, genotype);
+		return new Entity(entities, x, y, genotype);
 	}
 	
-	public void update()
+	void update()
 	{
 		components.forEach(Component::update);
 		currentBehaviour.update();
+		manageEnergy();
+	}
+	
+	private void manageEnergy()
+	{
+		reduceEnergy(energyPerSecond * Simulation.deltaTime);
+		if(energy < 0) die();
+	}
+	
+	void reduceEnergy(float energyAmount)
+	{
+		energy -= energyAmount;
+	}
+	
+	private void die()
+	{
+		entities.removeEntity(this);
 	}
 	
 	public float getX()
@@ -87,6 +113,11 @@ public class Entity
 	public float getY()
 	{
 		return y;
+	}
+	
+	public float getEnergy()
+	{
+		return energy;
 	}
 	
 	public String getCurrentBehaviourName()
@@ -107,5 +138,15 @@ public class Entity
 	public float getSpeed()
 	{
 		return speed;
+	}
+	
+	public float getMaxEnergy()
+	{
+		return maxEnergy;
+	}
+	
+	public float getEnergyPerSecond()
+	{
+		return energyPerSecond;
 	}
 }

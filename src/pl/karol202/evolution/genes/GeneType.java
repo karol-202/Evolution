@@ -18,7 +18,9 @@ package pl.karol202.evolution.genes;
 public enum GeneType
 {
 	SIZ(new float[] { 7, 6, 5, 4, 3, 2, 1 }),//Size
-	SPD(new float[] { 25, 25, 20, 15, 15, 12, 12, 10 }); //Speed
+	SPD(new float[] { 25, 25, 20, 15, 15, 12, 12, 10 }),//Speed
+	EMX(new float[] { 30, 30, 25, 25, 20, 20, 15, 15, 10, 10, 5, 5 }),//Max energy
+	EPS(new float[] { 1f, 0.5f, 0.5f, 0.5f, 0.5f, 0.5f, 0.25f, 0.25f }); //Energy usage per second
 	
 	private float[] propertyIngredients;
 	

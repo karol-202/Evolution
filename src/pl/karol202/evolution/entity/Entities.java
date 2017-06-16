@@ -24,23 +24,36 @@ public class Entities
 	private ArrayList<Entity> entities;
 	private int selectedEntity;
 	
+	private ArrayList<Entity> entitiesToRemove;
+	
 	public Entities(Random random)
 	{
 		this.random = random;
 		entities = new ArrayList<>();
 		selectedEntity = -1;
+		
+		entitiesToRemove = new ArrayList<>();
 	}
 	
 	public void generateEntities()
 	{
 		entities.clear();
-		entities.add(Entity.createRandomEntity(100, 100, random));
+		entities.add(Entity.createRandomEntity(this, 100, 100, random));
 		selectedEntity = -1;
+	}
+	
+	public void removeEntity(Entity entity)
+	{
+		if(getSelectedEntity() == entity) selectNothing();
+		if(entities.contains(entity)) entitiesToRemove.add(entity);
 	}
 	
 	public void update()
 	{
 		entities.forEach(Entity::update);
+		
+		entitiesToRemove.forEach(entities::remove);
+		entitiesToRemove.clear();
 	}
 	
 	public void selectEntity(Entity entity)

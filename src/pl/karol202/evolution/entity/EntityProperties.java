@@ -21,9 +21,12 @@ public enum EntityProperties
 {
 	X("X", e -> toString(e.getX())),
 	Y("Y", e -> toString(e.getY())),
+	ENERGY("Energia", e -> toString(e.getEnergy())),
 	BEHAVIOUR("Zachowanie", Entity::getCurrentBehaviourName),
 	SIZE("Wielkość", e -> toString(e.getSize())),
-	SPEED("Szybkość", e -> toString(e.getSpeed()));
+	SPEED("Szybkość", e -> toString(e.getSpeed())),
+	MAX_ENERGY("Maksymalna energia", e -> toString(e.getMaxEnergy())),
+	ENERGY_PER_SECOND("Użycie energii / s", e -> toString(e.getEnergyPerSecond()));
 	
 	private String name;
 	private Function<Entity, String> function;
