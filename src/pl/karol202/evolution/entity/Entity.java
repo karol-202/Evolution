@@ -15,8 +15,7 @@
  */
 package pl.karol202.evolution.entity;
 
-import pl.karol202.evolution.entity.behaviour.Behaviour;
-import pl.karol202.evolution.entity.behaviour.RandomMovingBehaviour;
+import pl.karol202.evolution.entity.behaviour.BehaviourManager;
 import pl.karol202.evolution.genes.GeneType;
 import pl.karol202.evolution.genes.Genotype;
 import pl.karol202.evolution.simulation.Simulation;
@@ -26,9 +25,9 @@ import java.util.Random;
 
 public class Entity
 {
-	float x;
-	float y;
-	float energy;
+	private float x;
+	private float y;
+	private float energy;
 	
 	private Entities entities;
 	private Genotype genotype;
@@ -36,10 +35,12 @@ public class Entity
 	private float speed;
 	private float maxEnergy;
 	private float energyPerSecond;
+	private float eatingSpeed;
+	private float sightRange;
+	private float eatStartEnergyThreshold;
 	
 	private ArrayList<Component> components;
-	private ArrayList<Behaviour> behaviours;
-	private Behaviour currentBehaviour;
+	private BehaviourManager behaviourManager;
 	
 	private Entity(Entities entities, float x, float y, Genotype genotype)
 	{
@@ -60,20 +61,23 @@ public class Entity
 		speed = genotype.getFloatProperty(GeneType.SPD);
 		maxEnergy = genotype.getFloatProperty(GeneType.EMX);
 		energyPerSecond = genotype.getFloatProperty(GeneType.EPS);
+		eatingSpeed = 15;
+		sightRange = 100;
+		eatStartEnergyThreshold = 0.4f;
 	}
 
 	private void addComponents()
 	{
 		components = new ArrayList<>();
 		components.add(new EntityMovement(this));
+		components.add(new EntitySight(this, entities.getPlants(), sightRange));
+		components.add(new EntityNutrition(this));
 	}
 	
 	private void addBehaviours()
 	{
-		behaviours = new ArrayList<>();
-		behaviours.add(new RandomMovingBehaviour(this, components, behaviours));
-		
-		currentBehaviour = behaviours.get(0);
+		behaviourManager = new BehaviourManager(this, components);
+		behaviourManager.addBehaviours();
 	}
 	
 	static Entity createRandomEntity(Entities entities, float x, float y, Random random)
@@ -85,7 +89,7 @@ public class Entity
 	void update()
 	{
 		components.forEach(Component::update);
-		currentBehaviour.update();
+		behaviourManager.update();
 		manageEnergy();
 	}
 	
@@ -95,9 +99,19 @@ public class Entity
 		if(energy < 0) die();
 	}
 	
+	void addEnergy(float energyAmount)
+	{
+		energy += energyAmount;
+	}
+	
 	void reduceEnergy(float energyAmount)
 	{
 		energy -= energyAmount;
+	}
+	
+	public float getReamingEnergyCapacity()
+	{
+		return maxEnergy - energy;
 	}
 	
 	private void die()
@@ -115,6 +129,16 @@ public class Entity
 		return y;
 	}
 	
+	void setX(float x)
+	{
+		this.x = x;
+	}
+	
+	void setY(float y)
+	{
+		this.y = y;
+	}
+	
 	public float getEnergy()
 	{
 		return energy;
@@ -122,7 +146,7 @@ public class Entity
 	
 	public String getCurrentBehaviourName()
 	{
-		return currentBehaviour.getName();
+		return behaviourManager.getCurrentBehaviourName();
 	}
 	
 	public Genotype getGenotype()
@@ -148,5 +172,20 @@ public class Entity
 	public float getEnergyPerSecond()
 	{
 		return energyPerSecond;
+	}
+	
+	public float getEatingSpeed()
+	{
+		return eatingSpeed;
+	}
+	
+	public float getSightRange()
+	{
+		return sightRange;
+	}
+	
+	public float getEatStartEnergyThreshold()
+	{
+		return eatStartEnergyThreshold;
 	}
 }

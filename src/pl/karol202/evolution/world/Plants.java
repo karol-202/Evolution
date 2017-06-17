@@ -22,6 +22,7 @@ import pl.karol202.evolution.utils.Utils;
 import java.util.List;
 import java.util.Random;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static pl.karol202.evolution.world.World.MAX_OFFSET;
 import static pl.karol202.evolution.world.World.MIN_OFFSET;
@@ -102,8 +103,8 @@ public class Plants
 		this.greatestMinDistance = greatestMinDistance;
 	}
 	
-	public List<Plant> getPlants()
+	public Stream<Plant> getPlantsStream()
 	{
-		return plants;
+		return plants.stream();
 	}
 }

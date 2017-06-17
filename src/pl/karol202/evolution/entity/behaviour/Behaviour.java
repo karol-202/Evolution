@@ -24,9 +24,9 @@ public abstract class Behaviour
 {
 	protected Entity entity;
 	protected ArrayList<Component> components;
-	protected ArrayList<Behaviour> behaviours;
+	protected BehaviourManager behaviours;
 	
-	public Behaviour(Entity entity, ArrayList<Component> components, ArrayList<Behaviour> behaviours)
+	public Behaviour(Entity entity, ArrayList<Component> components, BehaviourManager behaviours)
 	{
 		this.entity = entity;
 		this.components = components;
@@ -34,6 +34,8 @@ public abstract class Behaviour
 	}
 	
 	public abstract void update();
+	
+	public abstract int getId();
 	
 	public abstract String getName();
 	

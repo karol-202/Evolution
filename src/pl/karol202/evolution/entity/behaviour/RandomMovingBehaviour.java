@@ -25,10 +25,12 @@ import java.util.Random;
 
 public class RandomMovingBehaviour extends Behaviour
 {
+	public static final int BEHAVIOUR_ID = 0;
+	
 	private EntityMovement movement;
 	private Random random;
 	
-	public RandomMovingBehaviour(Entity entity, ArrayList<Component> components, ArrayList<Behaviour> behaviours)
+	public RandomMovingBehaviour(Entity entity, ArrayList<Component> components, BehaviourManager behaviours)
 	{
 		super(entity, components, behaviours);
 		movement = (EntityMovement) getComponent(EntityMovement.class);
@@ -39,6 +41,12 @@ public class RandomMovingBehaviour extends Behaviour
 	public void update()
 	{
 		if(!movement.isMoving()) newTarget();
+	}
+	
+	@Override
+	public int getId()
+	{
+		return BEHAVIOUR_ID;
 	}
 	
 	private void newTarget()

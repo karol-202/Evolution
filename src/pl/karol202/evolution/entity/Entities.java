@@ -15,6 +15,8 @@
  */
 package pl.karol202.evolution.entity;
 
+import pl.karol202.evolution.world.Plants;
+
 import java.util.ArrayList;
 import java.util.Random;
 import java.util.stream.Stream;
@@ -22,14 +24,16 @@ import java.util.stream.Stream;
 public class Entities
 {
 	private Random random;
+	private Plants plants;
 	private ArrayList<Entity> entities;
 	private int selectedEntity;
 	
 	private ArrayList<Entity> entitiesToRemove;
 	
-	public Entities(Random random)
+	public Entities(Random random, Plants plants)
 	{
 		this.random = random;
+		this.plants = plants;
 		entities = new ArrayList<>();
 		selectedEntity = -1;
 		
@@ -67,6 +71,11 @@ public class Entities
 	public void selectNothing()
 	{
 		selectedEntity = -1;
+	}
+	
+	public Plants getPlants()
+	{
+		return plants;
 	}
 	
 	public Stream<Entity> getEntitiesStream()

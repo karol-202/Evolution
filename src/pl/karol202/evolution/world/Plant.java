@@ -45,6 +45,12 @@ public class Plant
 		if(health > 100) health = 100;
  	}
 	
+ 	public void reduceHealth(float amount)
+    {
+    	health -= amount;
+    	if(health < 0) health = 0;
+    }
+ 	
 	public float getX()
 	{
 		return x;

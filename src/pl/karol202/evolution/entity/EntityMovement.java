@@ -20,7 +20,7 @@ import pl.karol202.evolution.utils.Vector2;
 
 public class EntityMovement extends Component
 {
-	private static final float CLOSE_ENOUGH_DISTANCE = 1;
+	public static final float CLOSE_ENOUGH_DISTANCE = 10;
 	
 	private Vector2 target;
 	
@@ -35,8 +35,8 @@ public class EntityMovement extends Component
 		Vector2 position = getPosition();
 		Vector2 targetDirection = target.sub(position).normalize();
 		Vector2 offset = targetDirection.mul(entity.getSpeed() * Simulation.deltaTime);
-		entity.x += offset.getX();
-		entity.y += offset.getY();
+		entity.setX(entity.getX() + offset.getX());
+		entity.setY(entity.getY() + offset.getY());
 		if(isAtTarget()) stop();
 	}
 	
@@ -44,7 +44,7 @@ public class EntityMovement extends Component
 	{
 		Vector2 difference = target.sub(getPosition());
 		float distance = difference.length();
-		return distance < CLOSE_ENOUGH_DISTANCE;
+		return distance <= CLOSE_ENOUGH_DISTANCE;
 	}
 	
 	public void setTarget(float x, float y)
@@ -62,8 +62,8 @@ public class EntityMovement extends Component
 		return target != null;
 	}
 	
-	private Vector2 getPosition()
+	public Vector2 getPosition()
 	{
-		return new Vector2(entity.x, entity.y);
+		return new Vector2(entity.getX(), entity.getY());
 	}
 }

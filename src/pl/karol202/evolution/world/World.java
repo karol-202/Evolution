@@ -67,7 +67,7 @@ public class World
 		maxHumidity = 100;
 		
 		plants = new Plants(random, this);
-		entities = new Entities(random);
+		entities = new Entities(random, plants);
 	}
 	
 	public void generateWorld(int width, int height)
