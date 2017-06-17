@@ -26,7 +26,10 @@ public enum EntityProperties
 	SIZE("Wielkość", e -> toString(e.getSize())),
 	SPEED("Szybkość", e -> toString(e.getSpeed())),
 	MAX_ENERGY("Maksymalna energia", e -> toString(e.getMaxEnergy())),
-	ENERGY_PER_SECOND("Użycie energii / s", e -> toString(e.getEnergyPerSecond()));
+	ENERGY_PER_SECOND("Użycie energii / s", e -> toString(e.getEnergyPerSecond())),
+	EATING_SPEED("Szybkość jedzenia", e -> toString(e.getEatingSpeed())),
+	SIGHT_RANGE("Zakres widzenia", e -> toString(e.getSightRange())),
+	EAT_START_ENERGY_THRESHOLD("Energia rozpoczęcia jedzenia", e -> toString(e.getEatStartEnergyThreshold()));
 	
 	private String name;
 	private Function<Entity, String> function;

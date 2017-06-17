@@ -209,8 +209,9 @@ public class EvolutionPanel extends JPanel implements OnWorldUpdateListener, Mou
 	
 	private void drawEntity(Graphics2D g, Entity entity)
 	{
+		Rectangle sightRangeBounds = getEntitySightRangeBounds(entity);
+		if(shouldBeClipped(sightRangeBounds)) return;
 		Rectangle bounds = getEntityBounds(entity);
-		if(shouldBeClipped(bounds)) return;
 		Rectangle maskedBounds = getMaskedEntityBounds(entity);
 		boolean hovered = isHovered(bounds);
 		boolean selected = isSelected(entity);
@@ -222,6 +223,8 @@ public class EvolutionPanel extends JPanel implements OnWorldUpdateListener, Mou
 		g.setColor(Color.DARK_GRAY);
 		g.setStroke(new BasicStroke(1));
 		g.drawOval(bounds.x, bounds.y, bounds.width, bounds.height);
+		
+		if(selected) drawEntitySightRange(g, sightRangeBounds);
 	}
 	
 	private Rectangle getEntityBounds(Entity entity)
@@ -252,9 +255,24 @@ public class EvolutionPanel extends JPanel implements OnWorldUpdateListener, Mou
 		return entity == entities.getSelectedEntity();
 	}
 	
+	private void drawEntitySightRange(Graphics2D g, Rectangle bounds)
+	{
+		g.setColor(new Color(0, 136, 204));
+		g.setStroke(new BasicStroke(2));
+		g.drawOval(bounds.x, bounds.y, bounds.width, bounds.height);
+	}
+	
+	private Rectangle getEntitySightRangeBounds(Entity entity)
+	{
+		float range = (float) (entity.getSightRange() * scale);
+		int x = (int) ((entity.getX() * scale) + xPosition - range);
+		int y = (int) ((entity.getY() * scale) + yPosition - range);
+		return new Rectangle(x, y, (int) range * 2, (int) range * 2);
+	}
+	
 	private void drawPlants(Graphics2D g)
 	{
-		for(Plant plant : plants.getPlants()) drawPlant(g, plant);
+		plants.getPlantsStream().forEach(p -> drawPlant(g, p));
 	}
 	
 	private void drawPlant(Graphics2D g, Plant plant)

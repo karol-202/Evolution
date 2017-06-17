@@ -57,13 +57,13 @@ public class Entity
 	
 	private void setProperties()
 	{
-		size = genotype.getFloatProperty(GeneType.SIZ);
-		speed = genotype.getFloatProperty(GeneType.SPD);
+		size = genotype.getFloatProperty(GeneType.MSZ);
+		speed = genotype.getFloatProperty(GeneType.MSP);
 		maxEnergy = genotype.getFloatProperty(GeneType.EMX);
 		energyPerSecond = genotype.getFloatProperty(GeneType.EPS);
-		eatingSpeed = 15;
-		sightRange = 100;
-		eatStartEnergyThreshold = 0.4f;
+		eatingSpeed = genotype.getFloatProperty(GeneType.FSP);
+		sightRange = genotype.getFloatProperty(GeneType.CSR);
+		eatStartEnergyThreshold = genotype.getFloatProperty(GeneType.BFS);
 	}
 
 	private void addComponents()
