@@ -16,6 +16,7 @@
 package pl.karol202.evolution.entity;
 
 import pl.karol202.evolution.world.Plants;
+import pl.karol202.evolution.world.World;
 
 import java.util.ArrayList;
 import java.util.Random;
@@ -40,11 +41,18 @@ public class Entities
 		entitiesToRemove = new ArrayList<>();
 	}
 	
-	public void generateEntities()
+	public void generateEntities(int amount)
 	{
 		entities.clear();
-		entities.add(Entity.createRandomEntity(this, 100, 100, random));
+		for(int i = 0; i < amount; i++) generateRandomEntity();
 		selectedEntity = -1;
+	}
+	
+	private void generateRandomEntity()
+	{
+		float x = random.nextFloat() * World.getWorldWidth();
+		float y = random.nextFloat() * World.getWorldHeight();
+		entities.add(Entity.createRandomEntity(this, x, y, random));
 	}
 	
 	public void removeEntity(Entity entity)

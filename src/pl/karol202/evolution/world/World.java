@@ -82,7 +82,7 @@ public class World
 		generateTemperature();
 		generateHumidity();
 		plants.generatePlants();
-		entities.generateEntities();
+		entities.generateEntities(5);
 		listeners.forEach(OnWorldUpdateListener::onWorldUpdated);
 	}
 	
