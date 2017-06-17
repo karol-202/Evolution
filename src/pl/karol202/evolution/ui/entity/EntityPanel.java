@@ -21,15 +21,17 @@ import pl.karol202.evolution.world.OnWorldUpdateListener;
 import pl.karol202.evolution.world.World;
 
 import javax.swing.*;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 import java.awt.*;
 
-public class EntityPanel extends JPanel implements OnWorldUpdateListener
+public class EntityPanel extends JPanel implements OnWorldUpdateListener, DocumentListener
 {
 	private Entities entities;
 	
 	private JLabel labelTitle;
-	
 	private JTabbedPane tabbedPane;
+	private JTextField fieldSearch;
 	
 	private JScrollPane scrollPaneProperties;
 	private JTable tableProperties;
@@ -49,8 +51,8 @@ public class EntityPanel extends JPanel implements OnWorldUpdateListener
 		setLayout(new GridBagLayout());
 		initTitleLabel();
 		initTabbedPane();
-		initEntityTable();
-		initGenotypeTable();
+		initSearchField();
+		
 		setPreferredSize(new Dimension(250, (int) getPreferredSize().getHeight()));
 		
 		updateData();
@@ -71,8 +73,10 @@ public class EntityPanel extends JPanel implements OnWorldUpdateListener
 		add(tabbedPane, new GridBagConstraints(0, 1, 1, 1, 1, 1,
 				GridBagConstraints.CENTER, GridBagConstraints.BOTH, new Insets(0, 0, 0, 0),
 				0, 0));
+		initEntityTable();
+		initGenotypeTable();
 	}
-	
+
 	private void initEntityTable()
 	{
 		tableModelProperties = new EntityTableModel();
@@ -93,6 +97,15 @@ public class EntityPanel extends JPanel implements OnWorldUpdateListener
 		
 		scrollPaneGenotype = new JScrollPane(tableGenotype);
 		tabbedPane.addTab("Genotyp", scrollPaneGenotype);
+	}
+	
+	private void initSearchField()
+	{
+		fieldSearch = new JTextField();
+		fieldSearch.getDocument().addDocumentListener(this);
+		add(fieldSearch, new GridBagConstraints(0, 2, 1, 1, 1, 0,
+				GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL, new Insets(0, 0, 0, 0),
+				0, 0));
 	}
 	
 	public void updateData()
@@ -125,5 +138,27 @@ public class EntityPanel extends JPanel implements OnWorldUpdateListener
 	public void onWorldUpdated()
 	{
 		updateData();
+	}
+	
+	@Override
+	public void insertUpdate(DocumentEvent e)
+	{
+		updateFiltering();
+	}
+	
+	@Override
+	public void removeUpdate(DocumentEvent e)
+	{
+		updateFiltering();
+	}
+	
+	@Override
+	public void changedUpdate(DocumentEvent e) { }
+	
+	private void updateFiltering()
+	{
+		String filter = fieldSearch.getText();
+		tableModelProperties.setFilter(filter);
+		tableModelGenotype.setFilter(filter);
 	}
 }

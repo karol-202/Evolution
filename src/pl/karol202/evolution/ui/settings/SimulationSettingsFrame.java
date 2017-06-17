@@ -328,6 +328,7 @@ public class SimulationSettingsFrame extends JFrame implements DocumentListener
 	private void initPlantsLeastMinDistanceField()
 	{
 		fieldPlantsLeastMinDistance = new JTextField(Float.toString(plants.getLeastMinDistance()), 6);
+		fieldPlantsLeastMinDistance.getDocument().addDocumentListener(this);
 		add(fieldPlantsLeastMinDistance, new GridBagConstraints(2, 6, 1, 1, 1, 0,
 				GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL, new Insets(7, 0, 0, 0),
 				0, 0));
@@ -344,6 +345,7 @@ public class SimulationSettingsFrame extends JFrame implements DocumentListener
 	private void initPlantsGreatestMinDistanceField()
 	{
 		fieldPlantsGreatestMinDistance = new JTextField(Float.toString(plants.getGreatestMinDistance()), 6);
+		fieldPlantsGreatestMinDistance.getDocument().addDocumentListener(this);
 		add(fieldPlantsGreatestMinDistance, new GridBagConstraints(4, 6, 2, 1, 1, 0,
 				GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL, new Insets(7, 0, 0, 5),
 				0, 0));

@@ -19,15 +19,26 @@ import pl.karol202.evolution.entity.Entity;
 import pl.karol202.evolution.entity.EntityProperties;
 
 import javax.swing.table.AbstractTableModel;
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class EntityTableModel extends AbstractTableModel
 {
 	private Entity entity;
+	private String filter;
+	private List<EntityProperties> filteredProperties;
+	
+	public EntityTableModel()
+	{
+		filter = "";
+		filter();
+	}
 	
 	@Override
 	public int getRowCount()
 	{
-		return EntityProperties.values().length;
+		return filteredProperties.size();
 	}
 	
 	@Override
@@ -45,18 +56,30 @@ public class EntityTableModel extends AbstractTableModel
 	
 	private String getPropertyName(int row)
 	{
-		return EntityProperties.values()[row].getName();
+		return filteredProperties.get(row).getName();
 	}
 	
 	private String getPropertyValue(int row)
 	{
 		if(entity == null) return "";
-		return EntityProperties.values()[row].getValueForEntity(entity);
+		return filteredProperties.get(row).getValueForEntity(entity);
 	}
 	
 	public void setEntity(Entity entity)
 	{
 		this.entity = entity;
 		fireTableDataChanged();
+	}
+	
+	public void setFilter(String filter)
+	{
+		this.filter = filter;
+		filter();
+		fireTableDataChanged();
+	}
+	
+	private void filter()
+	{
+		filteredProperties = Stream.of(EntityProperties.values()).filter(p -> p.getName().contains(filter) || filter.isEmpty()).collect(Collectors.toList());
 	}
 }

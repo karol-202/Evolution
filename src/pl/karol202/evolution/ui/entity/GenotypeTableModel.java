@@ -21,15 +21,25 @@ import pl.karol202.evolution.genes.GeneType;
 import pl.karol202.evolution.genes.Genotype;
 
 import javax.swing.table.AbstractTableModel;
+import java.util.ArrayList;
+import java.util.List;
 
 public class GenotypeTableModel extends AbstractTableModel
 {
 	private Genotype genotype;
+	private String filter;
+	private List<Gene> filteredProperties;
+	
+	public GenotypeTableModel()
+	{
+		filter = "";
+		filteredProperties = new ArrayList<>();
+	}
 	
 	@Override
 	public int getRowCount()
 	{
-		return GeneType.getAllGenesCount();
+		return filteredProperties.size();
 	}
 	
 	@Override
@@ -51,7 +61,7 @@ public class GenotypeTableModel extends AbstractTableModel
 	
 	private Gene getGeneAtRow(int row)
 	{
-		return genotype.getGeneByIndex(row);
+		return filteredProperties.get(row);
 	}
 	
 	private String getGeneName(Gene gene)
@@ -63,6 +73,30 @@ public class GenotypeTableModel extends AbstractTableModel
 	{
 		if(entity != null) genotype = entity.getGenotype();
 		else genotype = null;
+		filterAllGenes();
 		fireTableDataChanged();
+	}
+	
+	public void setFilter(String filter)
+	{
+		this.filter = filter;
+		filterAllGenes();
+		fireTableDataChanged();
+	}
+	
+	private void filterAllGenes()
+	{
+		filteredProperties.clear();
+		if(genotype == null) return;
+		for(GeneType type : GeneType.values())
+			for(int level = 0; level < type.getLevels(); level++)
+				filterGene(type, level);
+	}
+	
+	private void filterGene(GeneType type, int level)
+	{
+		Gene gene = genotype.getGeneOfTypeAndLevel(type, level);
+		String geneName = getGeneName(gene);
+		if(geneName.contains(filter) || filter.isEmpty()) filteredProperties.add(gene);
 	}
 }
