@@ -49,6 +49,7 @@ public class World
 	private float maxTemperature;
 	private float minHumidity;
 	private float maxHumidity;
+	private int entitiesAmount;
 	
 	private float[][] temperature;
 	private float[][] humidity;
@@ -65,6 +66,7 @@ public class World
 		maxTemperature = 40;
 		minHumidity = 0;
 		maxHumidity = 100;
+		entitiesAmount = 5;
 		
 		plants = new Plants(random, this);
 		entities = new Entities(random, plants);
@@ -82,7 +84,7 @@ public class World
 		generateTemperature();
 		generateHumidity();
 		plants.generatePlants();
-		entities.generateEntities(5);
+		entities.generateEntities(entitiesAmount);
 		listeners.forEach(OnWorldUpdateListener::onWorldUpdated);
 	}
 	
@@ -198,6 +200,16 @@ public class World
 	public void setMaxHumidity(float maxHumidity)
 	{
 		this.maxHumidity = maxHumidity;
+	}
+	
+	public int getEntitiesAmount()
+	{
+		return entitiesAmount;
+	}
+	
+	public void setEntitiesAmount(int entitiesAmount)
+	{
+		this.entitiesAmount = entitiesAmount;
 	}
 	
 	public float[][] getTemperature()

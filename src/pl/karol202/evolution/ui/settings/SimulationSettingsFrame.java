@@ -64,6 +64,10 @@ public class SimulationSettingsFrame extends JFrame implements DocumentListener
 	private JLabel labelPlantsMinDistanceDash;
 	private JTextField fieldPlantsGreatestMinDistance;
 	
+	private JLabel labelEntitiesAmount;
+	private JSpinner spinnerEntitiesAmount;
+	private SpinnerNumberModel modelSpinnerEntitiesAmount;
+	
 	private JLabel labelTimeStep;
 	private JSlider sliderTimeStep;
 	
@@ -85,6 +89,7 @@ public class SimulationSettingsFrame extends JFrame implements DocumentListener
 		initHumidityRangeSection();
 		initPlantsFrequencySection();
 		initPlantsMinDistanceRangeSection();
+		initEntitiesAmountSection();
 		initTimeSection();
 		initFooter();
 		pack();
@@ -351,6 +356,29 @@ public class SimulationSettingsFrame extends JFrame implements DocumentListener
 				0, 0));
 	}
 	
+	private void initEntitiesAmountSection()
+	{
+		initEntitiesAmountLabel();
+		initEntitiesAmountSpinner();
+	}
+	
+	private void initEntitiesAmountLabel()
+	{
+		labelEntitiesAmount = new JLabel("Liczba istot");
+		add(labelEntitiesAmount, new GridBagConstraints(0, 7, 1, 1, 0, 0,
+				GridBagConstraints.LINE_START, GridBagConstraints.NONE, new Insets(7, 8, 0, 5),
+				0, 0));
+	}
+	
+	private void initEntitiesAmountSpinner()
+	{
+		modelSpinnerEntitiesAmount = new SpinnerNumberModel(world.getEntitiesAmount(), 0, 10, 1);
+		spinnerEntitiesAmount = new JSpinner(modelSpinnerEntitiesAmount);
+		add(spinnerEntitiesAmount, new GridBagConstraints(2, 7, 4, 1, 1, 0,
+				GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL, new Insets(7, 0, 0, 5),
+				0, 0));
+	}
+	
 	private void initTimeSection()
 	{
 		initTimeStepLabel();
@@ -360,7 +388,7 @@ public class SimulationSettingsFrame extends JFrame implements DocumentListener
 	private void initTimeStepLabel()
 	{
 		labelTimeStep = new JLabel("Jednostka czasu");
-		add(labelTimeStep, new GridBagConstraints(0, 7, 1, 1, 0, 0,
+		add(labelTimeStep, new GridBagConstraints(0, 8, 1, 1, 0, 0,
 				GridBagConstraints.LINE_START, GridBagConstraints.NONE, new Insets(-10, 8, 0, 10),
 				0, 0));
 	}
@@ -373,7 +401,7 @@ public class SimulationSettingsFrame extends JFrame implements DocumentListener
 		sliderTimeStep.setPaintLabels(true);
 		sliderTimeStep.setPaintTicks(true);
 		sliderTimeStep.setFocusable(false);
-		add(sliderTimeStep, new GridBagConstraints(1, 7, 5, 1, 0, 0,
+		add(sliderTimeStep, new GridBagConstraints(1, 8, 5, 1, 0, 0,
 				GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL, new Insets(3, 0, 0, 5),
 				0, 0));
 	}
@@ -388,7 +416,7 @@ public class SimulationSettingsFrame extends JFrame implements DocumentListener
 	{
 		buttonCancel = new JButton("Anuluj");
 		buttonCancel.addActionListener(e -> closeFrame());
-		add(buttonCancel, new GridBagConstraints(2, 8, 3, 1, 1, 0,
+		add(buttonCancel, new GridBagConstraints(2, 9, 3, 1, 1, 0,
 				GridBagConstraints.LINE_END, GridBagConstraints.VERTICAL, new Insets(3, 0, 5, 2),
 				0, 0));
 	}
@@ -397,7 +425,7 @@ public class SimulationSettingsFrame extends JFrame implements DocumentListener
 	{
 		buttonOK = new JButton("OK");
 		buttonOK.addActionListener(e -> applySettings());
-		add(buttonOK, new GridBagConstraints(5, 8, 1, 1, 0, 0,
+		add(buttonOK, new GridBagConstraints(5, 9, 1, 1, 0, 0,
 				GridBagConstraints.CENTER, GridBagConstraints.BOTH, new Insets(3, 2, 5, 5),
 				0, 0));
 	}
@@ -412,6 +440,7 @@ public class SimulationSettingsFrame extends JFrame implements DocumentListener
 	{
 		applyFrequencies();
 		applyRanges();
+		applyEntitiesAmount();
 		applyTimestep();
 		applySize();
 		closeFrame();
@@ -450,6 +479,12 @@ public class SimulationSettingsFrame extends JFrame implements DocumentListener
 		
 		float greatestPlantsMinDistance = Float.parseFloat(fieldPlantsGreatestMinDistance.getText());
 		plants.setGreatestMinDistance(greatestPlantsMinDistance);
+	}
+	
+	private void applyEntitiesAmount()
+	{
+		int amount = (int) modelSpinnerEntitiesAmount.getNumber();
+		world.setEntitiesAmount(amount);
 	}
 	
 	private void applyTimestep()
