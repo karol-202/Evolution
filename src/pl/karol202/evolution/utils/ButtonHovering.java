@@ -15,14 +15,10 @@
  */
 package pl.karol202.evolution.utils;
 
-import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
-import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.IOException;
 
 public class ButtonHovering extends JPanel implements MouseListener
 {
@@ -32,18 +28,18 @@ public class ButtonHovering extends JPanel implements MouseListener
 	}
 	
 	private OnButtonClickListener listener;
-	private BufferedImage image;
+	private Image image;
 	private Color defaultColor;
 	private Color hoverColor;
 	private Color pressedColor;
 	private boolean pressed;
 	private boolean hover;
 	
-	public ButtonHovering(String path)
+	public ButtonHovering(Image image)
 	{
 		super();
-		setImage(path);
-		setPreferredSize(new Dimension(image.getWidth(), image.getHeight()));
+		this.image = image;
+		setPreferredSize(new Dimension(image.getWidth(null), image.getHeight(null)));
 		addMouseListener(this);
 		
 		defaultColor = UIManager.getColor("Control");
@@ -87,23 +83,11 @@ public class ButtonHovering extends JPanel implements MouseListener
 		hover = false;
 	}
 	
-	private void setImage(String path)
-	{
-		try
-		{
-			image = ImageIO.read(new File(path));
-		}
-		catch(IOException ex)
-		{
-			ex.printStackTrace();
-		}
-	}
-	
 	@Override
 	protected void paintComponent(Graphics g)
 	{
 		super.paintComponent(g);
-		g.drawImage(image, 0, 0, image.getWidth(), image.getHeight(), null);
+		g.drawImage(image, 0, 0, image.getWidth(null), image.getHeight(null), null);
 	}
 	
 	public void setListener(OnButtonClickListener listener)

@@ -19,6 +19,7 @@ import pl.karol202.evolution.simulation.Simulation;
 import pl.karol202.evolution.ui.entity.EntityPanel;
 import pl.karol202.evolution.ui.settings.SimulationSettingsFrame;
 import pl.karol202.evolution.utils.ButtonHovering;
+import pl.karol202.evolution.utils.ImageLoader;
 import pl.karol202.evolution.world.World;
 
 import javax.swing.*;
@@ -211,7 +212,7 @@ public class EvolutionFrame extends JFrame implements EvolutionPanel.OnViewParam
 	
 	private void initStartButton()
 	{
-		buttonStart = new JButton(new ImageIcon("res/start.png"));
+		buttonStart = new JButton(new ImageIcon(ImageLoader.loadImage("/res/start.png")));
 		buttonStart.setFocusable(false);
 		buttonStart.addActionListener(e -> simulation.start());
 		toolbar.add(buttonStart);
@@ -219,7 +220,7 @@ public class EvolutionFrame extends JFrame implements EvolutionPanel.OnViewParam
 	
 	private void initPauseButton()
 	{
-		buttonPause = new JButton(new ImageIcon("res/stop.png"));
+		buttonPause = new JButton(new ImageIcon(ImageLoader.loadImage("/res/stop.png")));
 		buttonPause.setFocusable(false);
 		buttonPause.addActionListener(e -> simulation.stop());
 		toolbar.add(buttonPause);
@@ -227,7 +228,7 @@ public class EvolutionFrame extends JFrame implements EvolutionPanel.OnViewParam
 	
 	private void initStepButton()
 	{
-		buttonStep = new JButton(new ImageIcon("res/step.png"));
+		buttonStep = new JButton(new ImageIcon(ImageLoader.loadImage("/res/step.png")));
 		buttonStep.setFocusable(false);
 		buttonStep.addActionListener(e -> simulation.step());
 		toolbar.add(buttonStep);
@@ -253,7 +254,7 @@ public class EvolutionFrame extends JFrame implements EvolutionPanel.OnViewParam
 	
 	private void initScaleDownButton()
 	{
-		buttonMinus = new ButtonHovering("res/minus.png");
+		buttonMinus = new ButtonHovering(ImageLoader.loadImage("/res/minus.png"));
 		buttonMinus.setListener(panelEvolution::scaleDown);
 		panelBottom.add(buttonMinus, new GridBagConstraints(0, 0, 1, 1, 1, 0,
 				GridBagConstraints.EAST, GridBagConstraints.NONE, new Insets(0, 0, 0, 0),
@@ -262,7 +263,7 @@ public class EvolutionFrame extends JFrame implements EvolutionPanel.OnViewParam
 	
 	private void initScaleUpButton()
 	{
-		buttonPlus = new ButtonHovering("res/plus.png");
+		buttonPlus = new ButtonHovering(ImageLoader.loadImage("/res/plus.png"));
 		buttonPlus.setListener(panelEvolution::scaleUp);
 		panelBottom.add(buttonPlus, new GridBagConstraints(2, 0, 1, 1, 0, 0,
 				GridBagConstraints.CENTER, GridBagConstraints.NONE, new Insets(0, 0, 0, 0),
