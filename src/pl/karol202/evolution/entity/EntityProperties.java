@@ -23,6 +23,7 @@ public enum EntityProperties
 	Y("Y", e -> toString(e.getY())),
 	ENERGY("Energia", e -> toString(e.getEnergy())),
 	BEHAVIOUR("Zachowanie", Entity::getCurrentBehaviourName),
+	SEX("Płeć", e -> e.getSex().getName()),
 	SIZE("Wielkość", e -> toString(e.getSize())),
 	SPEED("Szybkość", e -> toString(e.getSpeed())),
 	MAX_ENERGY("Maksymalna energia", e -> toString(e.getMaxEnergy())),

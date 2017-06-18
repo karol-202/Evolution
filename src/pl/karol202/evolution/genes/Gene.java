@@ -26,7 +26,7 @@ public class Gene
 	
 	public Gene(GeneType type, int level, Random random)
 	{
-		this(type, level, Allele.random(random), Allele.random(random));
+		this(type, level, createAlleleA(type, random), createAlleleB(type, random));
 	}
 	
 	public Gene(GeneType type, int level, Allele alleleA, Allele alleleB)
@@ -35,6 +35,16 @@ public class Gene
 		this.level = level;
 		this.alleleA = alleleA;
 		this.alleleB = alleleB;
+	}
+	
+	private static Allele createAlleleA(GeneType type, Random random)
+	{
+		return Allele.random(random);
+	}
+	
+	private static Allele createAlleleB(GeneType type, Random random)
+	{
+		return type.hasConstantAllele() ? type.getConstantAllele() : Allele.random(random);
 	}
 	
 	public Allele getRandomAllele(Random random)

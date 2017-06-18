@@ -372,7 +372,7 @@ public class SimulationSettingsFrame extends JFrame implements DocumentListener
 	
 	private void initEntitiesAmountSpinner()
 	{
-		modelSpinnerEntitiesAmount = new SpinnerNumberModel(world.getEntitiesAmount(), 0, 10, 1);
+		modelSpinnerEntitiesAmount = new SpinnerNumberModel(world.getEntitiesAmount(), 0, 25, 1);
 		spinnerEntitiesAmount = new JSpinner(modelSpinnerEntitiesAmount);
 		add(spinnerEntitiesAmount, new GridBagConstraints(2, 7, 4, 1, 1, 0,
 				GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL, new Insets(7, 0, 0, 5),

@@ -216,7 +216,7 @@ public class EvolutionPanel extends JPanel implements OnWorldUpdateListener, Mou
 		boolean hovered = isHovered(bounds);
 		boolean selected = isSelected(entity);
 		if(hovered) hoveredEntity = entity;
-		g.setColor(hovered || selected ? new Color(191, 0, 0) : Color.RED);
+		g.setColor(hovered || selected ? getEntityFocusedColor(entity) : getEntityStandardColor(entity));
 		g.clipRect(maskedBounds.x, maskedBounds.y, maskedBounds.width, maskedBounds.height);
 		g.fillOval(bounds.x, bounds.y, bounds.width, bounds.height);
 		setClipping(g);
@@ -253,6 +253,26 @@ public class EvolutionPanel extends JPanel implements OnWorldUpdateListener, Mou
 	private boolean isSelected(Entity entity)
 	{
 		return entity == entities.getSelectedEntity();
+	}
+	
+	private Color getEntityStandardColor(Entity entity)
+	{
+		switch(entity.getSex())
+		{
+		case MALE: return new Color(26, 99, 235);
+		case FEMALE: return Color.RED;
+		default: return Color.MAGENTA;
+		}
+	}
+	
+	private Color getEntityFocusedColor(Entity entity)
+	{
+		switch(entity.getSex())
+		{
+		case MALE: return new Color(21, 81, 192);
+		case FEMALE: return new Color(191, 0, 0);
+		default: return new Color(192, 0, 192);
+		}
 	}
 	
 	private void drawEntitySightRange(Graphics2D g, Rectangle bounds)

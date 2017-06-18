@@ -17,6 +17,7 @@ package pl.karol202.evolution.genes;
 
 public enum GeneType
 {
+	MSX(Allele.RECESSIVE), //Sex
 	MSZ(new float[] { 7, 6, 5, 4, 3, 2, 1 }),//Size
 	MSP(new float[] { 25, 25, 20, 15, 15, 12, 12, 10 }),//Speed
 	EMX(new float[] { 30, 30, 25, 25, 20, 20, 15, 15, 10, 10, 5, 5 }),//Max energy
@@ -26,8 +27,14 @@ public enum GeneType
 	BFS(new float[] { 0.1f, 0.1f, 0.05f, 0.05f, 0.05f, 0.05f, 0.04f, 0.03f, 0.03f }); //Eat start energy range
 	
 	private float[] propertyIngredients;
+	private Allele constantAllele;
 	
 	GeneType() { }
+	
+	GeneType(Allele constantAllele)
+	{
+		this.constantAllele = constantAllele;
+	}
 	
 	GeneType(float[] propertyIngredients)
 	{
@@ -40,9 +47,19 @@ public enum GeneType
 		else return propertyIngredients.length;
 	}
 	
+	public boolean hasConstantAllele()
+	{
+		return constantAllele != null;
+	}
+	
 	public float[] getPropertyIngredients()
 	{
 		return propertyIngredients;
+	}
+	
+	public Allele getConstantAllele()
+	{
+		return constantAllele;
 	}
 	
 	public static int getAllGenesCount()

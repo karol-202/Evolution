@@ -16,6 +16,8 @@
 package pl.karol202.evolution.entity;
 
 import pl.karol202.evolution.entity.behaviour.BehaviourManager;
+import pl.karol202.evolution.genes.Allele;
+import pl.karol202.evolution.genes.Gene;
 import pl.karol202.evolution.genes.GeneType;
 import pl.karol202.evolution.genes.Genotype;
 import pl.karol202.evolution.simulation.Simulation;
@@ -31,6 +33,7 @@ public class Entity
 	
 	private Entities entities;
 	private Genotype genotype;
+	private Sex sex;
 	private float size;
 	private float speed;
 	private float maxEnergy;
@@ -57,6 +60,7 @@ public class Entity
 	
 	private void setProperties()
 	{
+		sex = getSexFromGenes();
 		size = genotype.getFloatProperty(GeneType.MSZ);
 		speed = genotype.getFloatProperty(GeneType.MSP);
 		maxEnergy = genotype.getFloatProperty(GeneType.EMX);
@@ -66,6 +70,16 @@ public class Entity
 		eatStartEnergyThreshold = genotype.getFloatProperty(GeneType.BFS);
 	}
 
+	private Sex getSexFromGenes()
+	{
+		Gene sexGene = genotype.getGeneOfTypeAndLevel(GeneType.MSX, 0);
+		Allele alleleA = sexGene.getAlleleA();
+		Allele alleleB = sexGene.getAlleleB();
+		if(alleleA == Allele.DOMINANT && alleleB == Allele.DOMINANT) return Sex.NEUTER;
+		else if(alleleA == Allele.RECESSIVE && alleleB == Allele.RECESSIVE) return Sex.FEMALE;
+		else return Sex.MALE;
+	}
+	
 	private void addComponents()
 	{
 		components = new ArrayList<>();
@@ -78,12 +92,6 @@ public class Entity
 	{
 		behaviourManager = new BehaviourManager(this, components);
 		behaviourManager.addBehaviours();
-	}
-	
-	static Entity createRandomEntity(Entities entities, float x, float y, Random random)
-	{
-		Genotype genotype = new Genotype(random);
-		return new Entity(entities, x, y, genotype);
 	}
 	
 	void update()
@@ -154,6 +162,11 @@ public class Entity
 		return genotype;
 	}
 	
+	public Sex getSex()
+	{
+		return sex;
+	}
+	
 	public float getSize()
 	{
 		return size;
@@ -187,5 +200,11 @@ public class Entity
 	public float getEatStartEnergyThreshold()
 	{
 		return eatStartEnergyThreshold;
+	}
+	
+	static Entity createRandomEntity(Entities entities, float x, float y, Random random)
+	{
+		Genotype genotype = new Genotype(random);
+		return new Entity(entities, x, y, genotype);
 	}
 }
