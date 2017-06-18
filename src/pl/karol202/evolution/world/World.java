@@ -202,7 +202,7 @@ public class World
 		this.maxHumidity = maxHumidity;
 	}
 	
-	public int getEntitiesAmount()
+	public int getInitialEntitiesAmount()
 	{
 		return entitiesAmount;
 	}

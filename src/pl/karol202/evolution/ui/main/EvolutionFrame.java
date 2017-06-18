@@ -56,6 +56,7 @@ public class EvolutionFrame extends JFrame implements EvolutionPanel.OnViewParam
 	private JButton buttonStep;
 	
 	private JPanel panelBottom;
+	private JLabel labelEntities;
 	private JLabel labelScale;
 	private ButtonHovering buttonMinus;
 	private ButtonHovering buttonPlus;
@@ -79,6 +80,7 @@ public class EvolutionFrame extends JFrame implements EvolutionPanel.OnViewParam
 		initEntityPanel();
 		
 		updateMenu();
+		updateEntitiesLabel();
 	}
 	
 	private void setFrameParams()
@@ -239,16 +241,17 @@ public class EvolutionFrame extends JFrame implements EvolutionPanel.OnViewParam
 		panelBottom = new JPanel(new GridBagLayout());
 		panelBottom.setBorder(BorderFactory.createMatteBorder(1, 0, 0, 0, Color.DARK_GRAY));
 		add(panelBottom, BorderLayout.SOUTH);
-		initScaleLabel();
+		initEntitiesLabel();
 		initScaleDownButton();
+		initScaleLabel();
 		initScaleUpButton();
 	}
 	
-	private void initScaleLabel()
+	private void initEntitiesLabel()
 	{
-		labelScale = new JLabel(getScaleString());
-		panelBottom.add(labelScale, new GridBagConstraints(1, 0, 1, 1, 0, 0,
-				GridBagConstraints.EAST, GridBagConstraints.NONE, new Insets(0, 0, 0, 0),
+		labelEntities = new JLabel();
+		panelBottom.add(labelEntities, new GridBagConstraints(0, 0, 1, 1, 0, 0,
+				GridBagConstraints.LINE_START, GridBagConstraints.NONE, new Insets(0, 8, 0, 0),
 				0, 0));
 	}
 	
@@ -256,7 +259,15 @@ public class EvolutionFrame extends JFrame implements EvolutionPanel.OnViewParam
 	{
 		buttonMinus = new ButtonHovering(ImageLoader.loadImage("/res/minus.png"));
 		buttonMinus.setListener(panelEvolution::scaleDown);
-		panelBottom.add(buttonMinus, new GridBagConstraints(0, 0, 1, 1, 1, 0,
+		panelBottom.add(buttonMinus, new GridBagConstraints(1, 0, 1, 1, 1, 0,
+				GridBagConstraints.EAST, GridBagConstraints.NONE, new Insets(0, 0, 0, 0),
+				0, 0));
+	}
+	
+	private void initScaleLabel()
+	{
+		labelScale = new JLabel(getScaleString());
+		panelBottom.add(labelScale, new GridBagConstraints(2, 0, 1, 1, 0, 0,
 				GridBagConstraints.EAST, GridBagConstraints.NONE, new Insets(0, 0, 0, 0),
 				0, 0));
 	}
@@ -265,7 +276,7 @@ public class EvolutionFrame extends JFrame implements EvolutionPanel.OnViewParam
 	{
 		buttonPlus = new ButtonHovering(ImageLoader.loadImage("/res/plus.png"));
 		buttonPlus.setListener(panelEvolution::scaleUp);
-		panelBottom.add(buttonPlus, new GridBagConstraints(2, 0, 1, 1, 0, 0,
+		panelBottom.add(buttonPlus, new GridBagConstraints(3, 0, 1, 1, 0, 0,
 				GridBagConstraints.CENTER, GridBagConstraints.NONE, new Insets(0, 0, 0, 0),
 				0, 0));
 	}
@@ -289,6 +300,11 @@ public class EvolutionFrame extends JFrame implements EvolutionPanel.OnViewParam
 		buttonStep.setEnabled(!simulation.isRunning());
 	}
 	
+	private void updateEntitiesLabel()
+	{
+		labelEntities.setText(getEntitiesString());
+	}
+	
 	@Override
 	public void onViewParametersChanged()
 	{
@@ -305,6 +321,7 @@ public class EvolutionFrame extends JFrame implements EvolutionPanel.OnViewParam
 	public void onSimulationUpdated()
 	{
 		panelEntity.updateData();
+		updateEntitiesLabel();
 		repaintPanel();
 	}
 	
@@ -319,6 +336,11 @@ public class EvolutionFrame extends JFrame implements EvolutionPanel.OnViewParam
 	public void onSimulationStateChanged()
 	{
 		updateMenu();
+	}
+	
+	private String getEntitiesString()
+	{
+		return String.format("Istoty: %d/%d", world.getEntities().getEntitiesAmount(), world.getInitialEntitiesAmount());
 	}
 	
 	private String getScaleString()

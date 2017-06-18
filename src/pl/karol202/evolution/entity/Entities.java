@@ -81,7 +81,7 @@ public class Entities
 		selectedEntity = -1;
 	}
 	
-	public Plants getPlants()
+	Plants getPlants()
 	{
 		return plants;
 	}
@@ -89,6 +89,11 @@ public class Entities
 	public Stream<Entity> getEntitiesStream()
 	{
 		return entities.stream();
+	}
+	
+	public int getEntitiesAmount()
+	{
+		return entities.size();
 	}
 	
 	public Entity getSelectedEntity()
