@@ -16,6 +16,7 @@
 package pl.karol202.evolution.ui.main;
 
 import pl.karol202.evolution.simulation.Simulation;
+import pl.karol202.evolution.simulation.SimulationManager;
 import pl.karol202.evolution.ui.entity.EntityPanel;
 import pl.karol202.evolution.ui.settings.SimulationSettingsFrame;
 import pl.karol202.evolution.utils.ButtonHovering;
@@ -29,8 +30,9 @@ public class EvolutionFrame extends JFrame implements EvolutionPanel.OnViewParam
 {
 	private static final int REPAINT_TIME = 10;
 	
-	private World world;
+	private SimulationManager manager;
 	private Simulation simulation;
+	private World world;
 	
 	private EvolutionPanel panelEvolution;
 	
@@ -38,6 +40,9 @@ public class EvolutionFrame extends JFrame implements EvolutionPanel.OnViewParam
 	
 	private JMenu menuSimulation;
 	private JMenuItem itemNew;
+	private JMenuItem itemOpen;
+	private JMenuItem itemSave;
+	private JMenuItem itemSaveAs;
 	private JMenuItem itemStart;
 	private JMenuItem itemPause;
 	private JMenuItem itemStep;
@@ -65,11 +70,13 @@ public class EvolutionFrame extends JFrame implements EvolutionPanel.OnViewParam
 	
 	private long lastRepaintTime;
 	
-	public EvolutionFrame(World world, Simulation simulation)
+	public EvolutionFrame(SimulationManager manager, Simulation simulation)
 	{
 		super("Evolution");
-		this.world = world;
+		
+		this.manager = manager;
 		this.simulation = simulation;
+		this.world = simulation.getWorld();
 		simulation.addListener(this);
 		
 		setFrameParams();
@@ -110,6 +117,9 @@ public class EvolutionFrame extends JFrame implements EvolutionPanel.OnViewParam
 		menuSimulation = new JMenu("Symulacja");
 		menuBar.add(menuSimulation);
 		initNewSimulationItem();
+		initOpenSimulationItem();
+		initSaveSimulationItem();
+		initSaveAsSimulationItem();
 		menuSimulation.add(new JSeparator());
 		initStartSimulationItem();
 		initPauseSimulationItem();
@@ -120,12 +130,29 @@ public class EvolutionFrame extends JFrame implements EvolutionPanel.OnViewParam
 	private void initNewSimulationItem()
 	{
 		itemNew = new JMenuItem("Nowa symulacja");
-		itemNew.addActionListener(e ->
-		{
-			world.generateWorld(world.getWidth(), world.getHeight());
-			simulation.reset();
-		});
+		itemNew.addActionListener(e -> manager.newSimulation());
 		menuSimulation.add(itemNew);
+	}
+	
+	private void initOpenSimulationItem()
+	{
+		itemOpen = new JMenuItem("Otwórz symulację");
+		itemOpen.addActionListener(e -> manager.openSimulation(this));
+		menuSimulation.add(itemOpen);
+	}
+	
+	private void initSaveSimulationItem()
+	{
+		itemSave = new JMenuItem("Zapisz symulację");
+		itemSave.addActionListener(e -> manager.saveSimulation(this));
+		menuSimulation.add(itemSave);
+	}
+	
+	private void initSaveAsSimulationItem()
+	{
+		itemSaveAs = new JMenuItem("Zapisz symulację jako");
+		itemSaveAs.addActionListener(e -> manager.saveSimulationAs(this));
+		menuSimulation.add(itemSaveAs);
 	}
 	
 	private void initStartSimulationItem()

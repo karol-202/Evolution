@@ -94,6 +94,11 @@ public class Simulation
 		listeners.forEach(OnSimulationUpdateListener::onSimulationUpdated);
 	}
 	
+	public World getWorld()
+	{
+		return world;
+	}
+	
 	public int getTimeStep()
 	{
 		return timeStep;

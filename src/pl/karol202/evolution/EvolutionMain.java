@@ -16,17 +16,19 @@
 package pl.karol202.evolution;
 
 import pl.karol202.evolution.simulation.Simulation;
+import pl.karol202.evolution.simulation.SimulationManager;
 import pl.karol202.evolution.ui.main.EvolutionFrame;
 import pl.karol202.evolution.world.World;
 
 import javax.swing.*;
 import java.util.Random;
 
-public class EvolutionMain
+public class EvolutionMain implements SimulationManager.OnSimulationReplaceListener
 {
 	private Random random;
 	private World world;
 	private Simulation simulation;
+	private SimulationManager manager;
 	
 	private EvolutionFrame frame;
 	
@@ -36,6 +38,8 @@ public class EvolutionMain
 		world = new World(random);
 		world.generateWorld(1024, 1024);
 		simulation = new Simulation(world, 3);
+		manager = new SimulationManager(this);
+		manager.setSimulation(simulation);
 		
 		setLookAndFeel();
 		runMainFrame();
@@ -60,7 +64,7 @@ public class EvolutionMain
 	
 	private void runMainFrame()
 	{
-		SwingUtilities.invokeLater(() -> frame = new EvolutionFrame(world, simulation));
+		SwingUtilities.invokeLater(() -> frame = new EvolutionFrame(manager, simulation));
 	}
 	
 	private void waitAMillisecond()
@@ -73,6 +77,13 @@ public class EvolutionMain
 		{
 			e.printStackTrace();
 		}
+	}
+	
+	@Override
+	public void onSimulationReplaced(Simulation simulation)
+	{
+		this.simulation = simulation;
+		this.world = simulation.getWorld();
 	}
 	
 	public static void main(String[] args)
