@@ -15,12 +15,11 @@
  */
 package pl.karol202.evolution.entity.behaviour;
 
-import pl.karol202.evolution.entity.Component;
+import pl.karol202.evolution.entity.ComponentManager;
 import pl.karol202.evolution.entity.Entity;
 import pl.karol202.evolution.entity.EntityMovement;
 import pl.karol202.evolution.world.World;
 
-import java.util.ArrayList;
 import java.util.Random;
 
 public class RandomMovingBehaviour extends Behaviour
@@ -30,10 +29,10 @@ public class RandomMovingBehaviour extends Behaviour
 	private EntityMovement movement;
 	private Random random;
 	
-	public RandomMovingBehaviour(Entity entity, ArrayList<Component> components, BehaviourManager behaviours)
+	public RandomMovingBehaviour(Entity entity, ComponentManager componentManager, BehaviourManager behaviours)
 	{
-		super(entity, components, behaviours);
-		movement = (EntityMovement) getComponent(EntityMovement.class);
+		super(entity, behaviours);
+		movement = (EntityMovement) componentManager.getComponent(EntityMovement.class);
 		random = new Random();
 	}
 	

@@ -46,7 +46,7 @@ public class SimulationManager
 	
 	public void newSimulation()
 	{
-		world.generateWorld(world.getWidth(), world.getHeight());
+		world.generateRandomWorld(world.getWidth(), world.getHeight());
 		simulation.reset();
 	}
 	

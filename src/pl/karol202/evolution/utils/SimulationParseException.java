@@ -13,23 +13,12 @@
     See the License for the specific language governing permissions and
     limitations under the License.
  */
-package pl.karol202.evolution.entity;
+package pl.karol202.evolution.utils;
 
-public enum Sex
+public class SimulationParseException extends RuntimeException
 {
-	MALE("Męska"),
-	FEMALE("Żeńska"),
-	NEUTER("Obojniak");
-	
-	private String name;
-	
-	Sex(String name)
+	public SimulationParseException(String message)
 	{
-		this.name = name;
-	}
-	
-	public String getName()
-	{
-		return name;
+		super(message);
 	}
 }

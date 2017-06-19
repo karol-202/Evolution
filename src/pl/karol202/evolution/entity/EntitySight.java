@@ -59,4 +59,9 @@ public class EntitySight extends Component
 	{
 		return nearestPlant;
 	}
+	
+	public Plants getPlants()
+	{
+		return plants;
+	}
 }

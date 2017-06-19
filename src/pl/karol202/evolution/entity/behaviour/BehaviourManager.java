@@ -15,33 +15,33 @@
  */
 package pl.karol202.evolution.entity.behaviour;
 
-import pl.karol202.evolution.entity.Component;
+import pl.karol202.evolution.entity.ComponentManager;
 import pl.karol202.evolution.entity.Entity;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.stream.Stream;
 
 public class BehaviourManager
 {
 	private Entity entity;
-	private ArrayList<Component> components;
+	private ComponentManager componentManager;
 	
 	private Map<Integer, Behaviour> behaviours;
 	private Behaviour currentBehaviour;
 	
-	public BehaviourManager(Entity entity, ArrayList<Component> components)
+	public BehaviourManager(Entity entity, ComponentManager componentManager)
 	{
 		this.entity = entity;
-		this.components = components;
+		this.componentManager = componentManager;
 		
 		behaviours = new HashMap<>();
 	}
 	
 	public void addBehaviours()
 	{
-		addBehaviour(new RandomMovingBehaviour(entity, components, this));
-		addBehaviour(new FoodSeekBehaviour(entity, components, this));
+		addBehaviour(new RandomMovingBehaviour(entity, componentManager, this));
+		addBehaviour(new FoodSeekBehaviour(entity, componentManager, this));
 		
 		currentBehaviour = findBehaviour(RandomMovingBehaviour.BEHAVIOUR_ID);
 	}
@@ -88,5 +88,16 @@ public class BehaviourManager
 	{
 		if(currentBehaviour == null) return "";
 		return currentBehaviour.getName();
+	}
+	
+	public int getCurrentBehaviourId()
+	{
+		if(currentBehaviour == null) return -1;
+		return currentBehaviour.getId();
+	}
+	
+	public Stream<SavableBehaviour> getSavableBehavioursStream()
+	{
+		return behaviours.values().stream().filter(b -> b instanceof SavableBehaviour).map(b -> (SavableBehaviour) b);
 	}
 }

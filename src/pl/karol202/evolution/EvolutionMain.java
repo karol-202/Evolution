@@ -36,7 +36,7 @@ public class EvolutionMain implements SimulationManager.OnSimulationReplaceListe
 	{
 		random = new Random();
 		world = new World(random);
-		world.generateWorld(1024, 1024);
+		world.generateRandomWorld(1024, 1024);
 		simulation = new Simulation(world, 3);
 		manager = new SimulationManager(this);
 		manager.setSimulation(simulation);

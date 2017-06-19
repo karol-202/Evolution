@@ -107,4 +107,14 @@ public class Plants
 	{
 		return plants.stream();
 	}
+	
+	public int getPlantId(Plant plant)
+	{
+		return plants.indexOf(plant);
+	}
+	
+	public Plant getPlantById(int id)
+	{
+		return plants.get(id);
+	}
 }

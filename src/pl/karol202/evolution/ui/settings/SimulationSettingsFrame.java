@@ -450,7 +450,7 @@ public class SimulationSettingsFrame extends JFrame implements DocumentListener
 	{
 		int width = Integer.parseInt(fieldX.getText());
 		int height = Integer.parseInt(fieldY.getText());
-		world.generateWorld(width, height);
+		world.generateRandomWorld(width, height);
 	}
 	
 	private void applyFrequencies()

@@ -51,6 +51,10 @@ public class World
 	private float maxHumidity;
 	private int entitiesAmount;
 	
+	private int temperatureXOffset;
+	private int temperatureYOffset;
+	private int humidityXOffset;
+	private int humidityYOffset;
 	private float[][] temperature;
 	private float[][] humidity;
 	private Plants plants;
@@ -72,7 +76,7 @@ public class World
 		entities = new Entities(random, plants);
 	}
 	
-	public void generateWorld(int width, int height)
+	public void generateRandomWorld(int width, int height)
 	{
 		World.staticWidth = width;
 		World.staticHeight = height;
@@ -81,17 +85,17 @@ public class World
 		this.temperature = new float[width][height];
 		this.humidity = new float[width][height];
 		
-		generateTemperature();
-		generateHumidity();
+		generateTemperature(getRandomOffset(), getRandomOffset());
+		generateHumidity(getRandomOffset(), getRandomOffset());
 		plants.generatePlants();
 		entities.generateEntities(entitiesAmount);
 		listeners.forEach(OnWorldUpdateListener::onWorldUpdated);
 	}
 	
-	private void generateTemperature()
+	public void generateTemperature(int xOffset, int yOffset)
 	{
-		int xOffset = getRandomOffset();
-		int yOffset = getRandomOffset();
+		temperatureXOffset = xOffset;
+		temperatureYOffset = yOffset;
 		for(int x = 0; x < width; x++)
 		{
 			for(int y = 0; y < height; y++)
@@ -102,10 +106,10 @@ public class World
 		}
 	}
 	
-	private void generateHumidity()
+	public void generateHumidity(int xOffset, int yOffset)
 	{
-		int xOffset = getRandomOffset();
-		int yOffset = getRandomOffset();
+		humidityXOffset = xOffset;
+		humidityYOffset = yOffset;
 		for(int x = 0; x < width; x++)
 		{
 			for(int y = 0; y < height; y++)
@@ -210,6 +214,26 @@ public class World
 	public void setEntitiesAmount(int entitiesAmount)
 	{
 		this.entitiesAmount = entitiesAmount;
+	}
+	
+	public int getTemperatureXOffset()
+	{
+		return temperatureXOffset;
+	}
+	
+	public int getTemperatureYOffset()
+	{
+		return temperatureYOffset;
+	}
+	
+	public int getHumidityXOffset()
+	{
+		return humidityXOffset;
+	}
+	
+	public int getHumidityYOffset()
+	{
+		return humidityYOffset;
 	}
 	
 	public float[][] getTemperature()

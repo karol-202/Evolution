@@ -19,12 +19,12 @@ import pl.karol202.evolution.entity.*;
 import pl.karol202.evolution.simulation.Simulation;
 import pl.karol202.evolution.utils.Vector2;
 import pl.karol202.evolution.world.Plant;
+import pl.karol202.evolution.world.Plants;
 import pl.karol202.evolution.world.World;
 
-import java.util.ArrayList;
 import java.util.Random;
 
-public class FoodSeekBehaviour extends Behaviour
+public class FoodSeekBehaviour extends SavableBehaviour
 {
 	public static final int BEHAVIOUR_ID = 1;
 	
@@ -36,17 +36,19 @@ public class FoodSeekBehaviour extends Behaviour
 	private EntityNutrition nutrition;
 	
 	private Random random;
+	private Plants plants;
 	
 	private Plant eatenPlant;
 	
-	public FoodSeekBehaviour(Entity entity, ArrayList<Component> components, BehaviourManager behaviours)
+	public FoodSeekBehaviour(Entity entity, ComponentManager componentManager, BehaviourManager behaviours)
 	{
-		super(entity, components, behaviours);
-		movement = (EntityMovement) getComponent(EntityMovement.class);
-		sight = (EntitySight) getComponent(EntitySight.class);
-		nutrition = (EntityNutrition) getComponent(EntityNutrition.class);
+		super(entity, behaviours);
+		movement = (EntityMovement) componentManager.getComponent(EntityMovement.class);
+		sight = (EntitySight) componentManager.getComponent(EntitySight.class);
+		nutrition = (EntityNutrition) componentManager.getComponent(EntityNutrition.class);
 		
 		random = new Random();
+		plants = sight.getPlants();
 	}
 	
 	@Override
@@ -109,6 +111,20 @@ public class FoodSeekBehaviour extends Behaviour
 		if(y < 0) y = 0;
 		if(y > World.getWorldHeight()) y = World.getWorldHeight();
 		movement.setTarget(x, y);
+	}
+	
+	@Override
+	void loadState(BehaviourState state)
+	{
+		int plantId = state.getInt("eatenPlant");
+		eatenPlant = plants.getPlantById(plantId);
+	}
+	
+	@Override
+	void saveState(BehaviourState state)
+	{
+		int plantId = plants.getPlantId(eatenPlant);
+		state.putInt("eatenPlant", plantId);
 	}
 	
 	@Override

@@ -15,13 +15,15 @@
  */
 package pl.karol202.evolution.entity;
 
+import com.sun.istack.internal.Nullable;
 import pl.karol202.evolution.simulation.Simulation;
 import pl.karol202.evolution.utils.Vector2;
 
-public class EntityMovement extends Component
+public class EntityMovement extends SavableComponent
 {
 	public static final float CLOSE_ENOUGH_DISTANCE = 10;
 	
+	@Nullable
 	private Vector2 target;
 	
 	public EntityMovement(Entity entity)
@@ -65,5 +67,17 @@ public class EntityMovement extends Component
 	public Vector2 getPosition()
 	{
 		return new Vector2(entity.getX(), entity.getY());
+	}
+	
+	@Override
+	public void loadState(ComponentState state)
+	{
+		target = state.getVector("target");
+	}
+	
+	@Override
+	public void saveState(ComponentState state)
+	{
+		state.putVector("target", target);
 	}
 }

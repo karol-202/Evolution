@@ -15,21 +15,14 @@
  */
 package pl.karol202.evolution.entity;
 
-public enum Sex
+public abstract class SavableComponent extends Component
 {
-	MALE("Męska"),
-	FEMALE("Żeńska"),
-	NEUTER("Obojniak");
-	
-	private String name;
-	
-	Sex(String name)
+	public SavableComponent(Entity entity)
 	{
-		this.name = name;
+		super(entity);
 	}
 	
-	public String getName()
-	{
-		return name;
-	}
+	abstract void loadState(ComponentState state);
+	
+	abstract void saveState(ComponentState state);
 }

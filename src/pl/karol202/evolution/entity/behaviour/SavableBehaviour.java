@@ -13,23 +13,18 @@
     See the License for the specific language governing permissions and
     limitations under the License.
  */
-package pl.karol202.evolution.entity;
+package pl.karol202.evolution.entity.behaviour;
 
-public enum Sex
+import pl.karol202.evolution.entity.Entity;
+
+public abstract class SavableBehaviour extends Behaviour
 {
-	MALE("Męska"),
-	FEMALE("Żeńska"),
-	NEUTER("Obojniak");
-	
-	private String name;
-	
-	Sex(String name)
+	public SavableBehaviour(Entity entity, BehaviourManager behaviours)
 	{
-		this.name = name;
+		super(entity, behaviours);
 	}
 	
-	public String getName()
-	{
-		return name;
-	}
+	abstract void loadState(BehaviourState state);
+	
+	abstract void saveState(BehaviourState state);
 }

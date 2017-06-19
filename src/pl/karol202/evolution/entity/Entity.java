@@ -16,14 +16,15 @@
 package pl.karol202.evolution.entity;
 
 import pl.karol202.evolution.entity.behaviour.BehaviourManager;
+import pl.karol202.evolution.entity.behaviour.SavableBehaviour;
 import pl.karol202.evolution.genes.Allele;
 import pl.karol202.evolution.genes.Gene;
 import pl.karol202.evolution.genes.GeneType;
 import pl.karol202.evolution.genes.Genotype;
 import pl.karol202.evolution.simulation.Simulation;
 
-import java.util.ArrayList;
 import java.util.Random;
+import java.util.stream.Stream;
 
 public class Entity
 {
@@ -42,7 +43,7 @@ public class Entity
 	private float sightRange;
 	private float eatStartEnergyThreshold;
 	
-	private ArrayList<Component> components;
+	private ComponentManager componentManager;
 	private BehaviourManager behaviourManager;
 	
 	private Entity(Entities entities, float x, float y, Genotype genotype)
@@ -82,21 +83,19 @@ public class Entity
 	
 	private void addComponents()
 	{
-		components = new ArrayList<>();
-		components.add(new EntityMovement(this));
-		components.add(new EntitySight(this, entities.getPlants(), sightRange));
-		components.add(new EntityNutrition(this));
+		componentManager = new ComponentManager(this, entities);
+		componentManager.addComponents();
 	}
 	
 	private void addBehaviours()
 	{
-		behaviourManager = new BehaviourManager(this, components);
+		behaviourManager = new BehaviourManager(this, componentManager);
 		behaviourManager.addBehaviours();
 	}
 	
 	void update()
 	{
-		components.forEach(Component::update);
+		componentManager.update();
 		behaviourManager.update();
 		manageEnergy();
 	}
@@ -152,9 +151,24 @@ public class Entity
 		return energy;
 	}
 	
+	public Stream<SavableComponent> getSavableComponentsStream()
+	{
+		return componentManager.getSavableComponentsStream();
+	}
+	
+	public Stream<SavableBehaviour> getSavableBehavioursStream()
+	{
+		return behaviourManager.getSavableBehavioursStream();
+	}
+	
 	public String getCurrentBehaviourName()
 	{
 		return behaviourManager.getCurrentBehaviourName();
+	}
+	
+	public int getCurrentBehaviourId()
+	{
+		return behaviourManager.getCurrentBehaviourId();
 	}
 	
 	public Genotype getGenotype()
