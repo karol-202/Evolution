@@ -108,6 +108,16 @@ public class Plants
 		return plants.stream();
 	}
 	
+	public void removePlants()
+	{
+		plants.clear();
+	}
+	
+	public void addPlant(Plant plant)
+	{
+		plants.add(plant);
+	}
+	
 	public int getPlantId(Plant plant)
 	{
 		return plants.indexOf(plant);

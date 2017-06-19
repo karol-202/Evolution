@@ -33,9 +33,14 @@ public class Plant
 	
 	public Plant(float x, float y)
 	{
+		this(x, y, 100);
+	}
+	
+	public Plant(float x, float y, float health)
+	{
 		this.x = x;
 		this.y = y;
-		this.health = 100;
+		this.health = health;
 	}
 	
 	public void update()

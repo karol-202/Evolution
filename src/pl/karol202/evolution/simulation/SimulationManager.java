@@ -15,6 +15,7 @@
  */
 package pl.karol202.evolution.simulation;
 
+import org.xml.sax.SAXException;
 import pl.karol202.evolution.world.World;
 
 import javax.swing.*;
@@ -52,7 +53,24 @@ public class SimulationManager
 	
 	public void openSimulation(Component parentForDialog)
 	{
-		
+		JFileChooser fileChooser = new JFileChooser();
+		fileChooser.setFileFilter(new SimulationFileFilter());
+		int result = fileChooser.showOpenDialog(parentForDialog);
+		if(result == JFileChooser.APPROVE_OPTION) open(fileChooser.getSelectedFile(), parentForDialog);
+	}
+	
+	private void open(File file, Component parentForDialog)
+	{
+		try
+		{
+			if(!hasProperExtension(file)) JOptionPane.showMessageDialog(parentForDialog, "Nieobsługiwany format pliku.",
+																		"Błąd otwierania", JOptionPane.ERROR_MESSAGE);
+			loader.parseSimulation(file, simulation);
+		}
+		catch(IOException | SAXException | ParserConfigurationException e)
+		{
+			e.printStackTrace();
+		}
 	}
 	
 	public void saveSimulation(Component parentForDialog)
