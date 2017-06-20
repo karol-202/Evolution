@@ -21,25 +21,28 @@ import pl.karol202.evolution.ui.main.EvolutionFrame;
 import pl.karol202.evolution.world.World;
 
 import javax.swing.*;
+import java.io.File;
 import java.util.Random;
 
-public class EvolutionMain implements SimulationManager.OnSimulationReplaceListener
+public class EvolutionMain
 {
 	private Random random;
 	private World world;
 	private Simulation simulation;
 	private SimulationManager manager;
-	
 	private EvolutionFrame frame;
 	
-	public EvolutionMain()
+	private File fileToOpen;
+	
+	public EvolutionMain(File fileToOpen)
 	{
 		random = new Random();
 		world = new World(random);
 		world.generateRandomWorld(1024, 1024);
 		simulation = new Simulation(world, 3);
-		manager = new SimulationManager(this);
-		manager.setSimulation(simulation);
+		manager = new SimulationManager(simulation);
+		
+		this.fileToOpen = fileToOpen;
 		
 		setLookAndFeel();
 		runMainFrame();
@@ -64,7 +67,10 @@ public class EvolutionMain implements SimulationManager.OnSimulationReplaceListe
 	
 	private void runMainFrame()
 	{
-		SwingUtilities.invokeLater(() -> frame = new EvolutionFrame(manager, simulation));
+		SwingUtilities.invokeLater(() -> {
+			frame = new EvolutionFrame(manager, simulation);
+			if(fileToOpen != null) manager.openFile(fileToOpen, frame);
+		});
 	}
 	
 	private void waitAMillisecond()
@@ -79,15 +85,9 @@ public class EvolutionMain implements SimulationManager.OnSimulationReplaceListe
 		}
 	}
 	
-	@Override
-	public void onSimulationReplaced(Simulation simulation)
-	{
-		this.simulation = simulation;
-		this.world = simulation.getWorld();
-	}
-	
 	public static void main(String[] args)
 	{
-		new EvolutionMain();
+		if(args.length == 0) new EvolutionMain(null);
+		else new EvolutionMain(new File(args[0]));
 	}
 }

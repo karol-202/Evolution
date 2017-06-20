@@ -28,19 +28,14 @@ import java.io.IOException;
 
 public class SimulationManager
 {
-	public interface OnSimulationReplaceListener
-	{
-		void onSimulationReplaced(Simulation simulation);
-	}
-	
 	private Simulation simulation;
 	private World world;
-	private OnSimulationReplaceListener listener;
 	private SimulationLoader loader;
 	
-	public SimulationManager(OnSimulationReplaceListener listener)
+	public SimulationManager(Simulation simulation)
 	{
-		this.listener = listener;
+		this.simulation = simulation;
+		this.world = simulation.getWorld();
 		this.loader = new SimulationLoader();
 	}
 	
@@ -55,10 +50,10 @@ public class SimulationManager
 		JFileChooser fileChooser = new JFileChooser();
 		fileChooser.setFileFilter(new SimulationFileFilter());
 		int result = fileChooser.showOpenDialog(parentForDialog);
-		if(result == JFileChooser.APPROVE_OPTION) open(fileChooser.getSelectedFile(), parentForDialog);
+		if(result == JFileChooser.APPROVE_OPTION) openFile(fileChooser.getSelectedFile(), parentForDialog);
 	}
 	
-	private void open(File file, Component parentForDialog)
+	public void openFile(File file, Component parentForDialog)
 	{
 		try
 		{
@@ -82,10 +77,10 @@ public class SimulationManager
 		JFileChooser fileChooser = new JFileChooser();
 		fileChooser.setFileFilter(new SimulationFileFilter());
 		int result = fileChooser.showSaveDialog(parentForDialog);
-		if(result == JFileChooser.APPROVE_OPTION) saveAs(fileChooser.getSelectedFile(), parentForDialog);
+		if(result == JFileChooser.APPROVE_OPTION) saveFile(fileChooser.getSelectedFile(), parentForDialog);
 	}
 	
-	private void saveAs(File file, Component parentForDialog)
+	private void saveFile(File file, Component parentForDialog)
 	{
 		try
 		{
@@ -108,12 +103,6 @@ public class SimulationManager
 	private File fixExtension(File file)
 	{
 		return new File(file.getAbsolutePath() + ".evo");
-	}
-	
-	public void setSimulation(Simulation simulation)
-	{
-		this.simulation = simulation;
-		this.world = simulation.getWorld();
 	}
 	
 	public static Element getElement(Element parent, String name)
