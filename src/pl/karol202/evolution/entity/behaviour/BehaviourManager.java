@@ -96,6 +96,11 @@ public class BehaviourManager
 		return currentBehaviour.getId();
 	}
 	
+	public void setCurrentBehaviourId(int id)
+	{
+		currentBehaviour = behaviours.get(id);
+	}
+	
 	public Stream<SavableBehaviour> getSavableBehavioursStream()
 	{
 		return behaviours.values().stream().filter(b -> b instanceof SavableBehaviour).map(b -> (SavableBehaviour) b);

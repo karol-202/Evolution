@@ -50,7 +50,7 @@ public class ComponentManager
 		return components.stream().filter(c -> c.getClass() == type).findAny().orElse(null);
 	}
 	
-	public Stream<SavableComponent> getSavableComponentsStream()
+	Stream<SavableComponent> getSavableComponentsStream()
 	{
 		return components.stream().filter(c -> c instanceof SavableComponent).map(c -> (SavableComponent) c);
 	}

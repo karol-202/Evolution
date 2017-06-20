@@ -33,7 +33,9 @@ public class BehaviourState
 	
 	public static BehaviourState createForBehaviour(SavableBehaviour behaviour, Document document)
 	{
-		Element element = document.createElement(behaviour.getClass().getName());
+		Element element = document.createElement("behaviour");
+		element.setAttribute("id", String.valueOf(behaviour.getId()));
+		
 		BehaviourState state = new BehaviourState(document, element);
 		behaviour.saveState(state);
 		return state;

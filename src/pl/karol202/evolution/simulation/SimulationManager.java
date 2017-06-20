@@ -15,6 +15,7 @@
  */
 package pl.karol202.evolution.simulation;
 
+import org.w3c.dom.Element;
 import org.xml.sax.SAXException;
 import pl.karol202.evolution.world.World;
 
@@ -36,13 +37,11 @@ public class SimulationManager
 	private World world;
 	private OnSimulationReplaceListener listener;
 	private SimulationLoader loader;
-	private SimulationSaver saver;
 	
 	public SimulationManager(OnSimulationReplaceListener listener)
 	{
 		this.listener = listener;
 		this.loader = new SimulationLoader();
-		this.saver = new SimulationSaver();
 	}
 	
 	public void newSimulation()
@@ -83,20 +82,21 @@ public class SimulationManager
 		JFileChooser fileChooser = new JFileChooser();
 		fileChooser.setFileFilter(new SimulationFileFilter());
 		int result = fileChooser.showSaveDialog(parentForDialog);
-		if(result == JFileChooser.APPROVE_OPTION) saveAs(fileChooser.getSelectedFile());
+		if(result == JFileChooser.APPROVE_OPTION) saveAs(fileChooser.getSelectedFile(), parentForDialog);
 	}
 	
-	private void saveAs(File file)
+	private void saveAs(File file, Component parentForDialog)
 	{
 		try
 		{
 			if(!hasProperExtension(file)) file = fixExtension(file);
 			file.createNewFile();
-			saver.saveSimulation(simulation, file);
+			loader.saveSimulation(simulation, file);
 		}
 		catch(ParserConfigurationException | TransformerException | IOException e)
 		{
 			e.printStackTrace();
+			JOptionPane.showMessageDialog(parentForDialog, "Nie można zapisać pliku.", "Błąd zapisu", JOptionPane.ERROR_MESSAGE);
 		}
 	}
 	
@@ -114,5 +114,25 @@ public class SimulationManager
 	{
 		this.simulation = simulation;
 		this.world = simulation.getWorld();
+	}
+	
+	public static Element getElement(Element parent, String name)
+	{
+		return (Element) parent.getElementsByTagName(name).item(0);
+	}
+	
+	public static int getIntAttribute(Element element, String name)
+	{
+		return Integer.parseInt(element.getAttribute(name));
+	}
+	
+	public static float getFloatAttribute(Element element, String name)
+	{
+		return Float.parseFloat(element.getAttribute(name));
+	}
+	
+	public static void setNumberAttribute(Element element, String attribute, Number value)
+	{
+		element.setAttribute(attribute, value.toString());
 	}
 }

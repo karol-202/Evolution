@@ -38,7 +38,7 @@ public class Plants
 	private float greatestMinDistance;
 	private List<Plant> plants;
 	
-	public Plants(Random random, World world)
+	Plants(Random random, World world)
 	{
 		this.random = random;
 		this.world = world;
@@ -47,7 +47,7 @@ public class Plants
 		greatestMinDistance = 200;
 	}
 	
-	public void generatePlants()
+	void generatePlants()
 	{
 		int width = world.getWidth();
 		int height = world.getHeight();
@@ -108,12 +108,12 @@ public class Plants
 		return plants.stream();
 	}
 	
-	public void removePlants()
+	void removePlants()
 	{
 		plants.clear();
 	}
 	
-	public void addPlant(Plant plant)
+	void addPlant(Plant plant)
 	{
 		plants.add(plant);
 	}
@@ -125,6 +125,7 @@ public class Plants
 	
 	public Plant getPlantById(int id)
 	{
+		if(id == -1) return null;
 		return plants.get(id);
 	}
 }

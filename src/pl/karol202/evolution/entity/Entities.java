@@ -55,20 +55,20 @@ public class Entities
 		entities.add(Entity.createRandomEntity(this, x, y, random));
 	}
 	
-	public void addEntity(Entity entity)
+	void removeAllEntities()
+	{
+		entities.clear();
+	}
+	
+	void addEntity(Entity entity)
 	{
 		entities.add(entity);
 	}
 	
-	public void removeEntity(Entity entity)
+	void removeEntity(Entity entity)
 	{
 		if(getSelectedEntity() == entity) selectNothing();
 		if(entities.contains(entity)) entitiesToRemove.add(entity);
-	}
-	
-	public void removeAllEntities()
-	{
-		entities.clear();
 	}
 	
 	public void update()
@@ -117,7 +117,7 @@ public class Entities
 		return selectedEntity;
 	}
 	
-	public void setSelectedEntityIndex(int selectedEntity)
+	void setSelectedEntityIndex(int selectedEntity)
 	{
 		this.selectedEntity = selectedEntity;
 	}

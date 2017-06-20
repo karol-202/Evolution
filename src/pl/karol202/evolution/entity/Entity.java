@@ -151,24 +151,34 @@ public class Entity
 		return energy;
 	}
 	
-	public Stream<SavableComponent> getSavableComponentsStream()
+	void setEnergy(float energy)
+	{
+		this.energy = energy;
+	}
+	
+	Stream<SavableComponent> getSavableComponentsStream()
 	{
 		return componentManager.getSavableComponentsStream();
 	}
 	
-	public Stream<SavableBehaviour> getSavableBehavioursStream()
+	Stream<SavableBehaviour> getSavableBehavioursStream()
 	{
 		return behaviourManager.getSavableBehavioursStream();
 	}
 	
-	public String getCurrentBehaviourName()
+	String getCurrentBehaviourName()
 	{
 		return behaviourManager.getCurrentBehaviourName();
 	}
 	
-	public int getCurrentBehaviourId()
+	int getCurrentBehaviourId()
 	{
 		return behaviourManager.getCurrentBehaviourId();
+	}
+	
+	void setCurrentBehaviourId(int id)
+	{
+		behaviourManager.setCurrentBehaviourId(id);
 	}
 	
 	public Genotype getGenotype()

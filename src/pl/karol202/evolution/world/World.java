@@ -76,7 +76,7 @@ public class World
 		entities = new Entities(random, plants);
 	}
 	
-	public void generateEmptyWorld(int width, int height)
+	void generateEmptyWorld(int width, int height)
 	{
 		World.staticWidth = width;
 		World.staticHeight = height;
@@ -101,7 +101,7 @@ public class World
 		entities.generateEntities(entitiesAmount);
 	}
 	
-	public void generateTemperature(int xOffset, int yOffset)
+	void generateTemperature(int xOffset, int yOffset)
 	{
 		temperatureXOffset = xOffset;
 		temperatureYOffset = yOffset;
@@ -116,7 +116,7 @@ public class World
 		listeners.forEach(OnWorldUpdateListener::onWorldUpdated);
 	}
 	
-	public void generateHumidity(int xOffset, int yOffset)
+	void generateHumidity(int xOffset, int yOffset)
 	{
 		humidityXOffset = xOffset;
 		humidityYOffset = yOffset;
@@ -227,22 +227,22 @@ public class World
 		this.entitiesAmount = entitiesAmount;
 	}
 	
-	public int getTemperatureXOffset()
+	int getTemperatureXOffset()
 	{
 		return temperatureXOffset;
 	}
 	
-	public int getTemperatureYOffset()
+	int getTemperatureYOffset()
 	{
 		return temperatureYOffset;
 	}
 	
-	public int getHumidityXOffset()
+	int getHumidityXOffset()
 	{
 		return humidityXOffset;
 	}
 	
-	public int getHumidityYOffset()
+	int getHumidityYOffset()
 	{
 		return humidityYOffset;
 	}

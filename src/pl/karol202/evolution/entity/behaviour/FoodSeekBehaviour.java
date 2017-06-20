@@ -114,7 +114,7 @@ public class FoodSeekBehaviour extends SavableBehaviour
 	}
 	
 	@Override
-	void loadState(BehaviourState state)
+	public void loadState(BehaviourState state)
 	{
 		int plantId = state.getInt("eatenPlant");
 		eatenPlant = plants.getPlantById(plantId);

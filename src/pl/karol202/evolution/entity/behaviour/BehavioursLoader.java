@@ -15,16 +15,7 @@
  */
 package pl.karol202.evolution.entity.behaviour;
 
-import pl.karol202.evolution.entity.Entity;
-
-public abstract class SavableBehaviour extends Behaviour
+public class BehavioursLoader
 {
-	public SavableBehaviour(Entity entity, BehaviourManager behaviours)
-	{
-		super(entity, behaviours);
-	}
-	
-	public abstract void loadState(BehaviourState state);
-	
-	abstract void saveState(BehaviourState state);
+
 }
