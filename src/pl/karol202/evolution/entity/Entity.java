@@ -46,7 +46,7 @@ public class Entity
 	private ComponentManager componentManager;
 	private BehaviourManager behaviourManager;
 	
-	private Entity(Entities entities, float x, float y, Genotype genotype)
+	public Entity(Entities entities, float x, float y, Genotype genotype)
 	{
 		this.entities = entities;
 		this.genotype = genotype;

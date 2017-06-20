@@ -272,7 +272,7 @@ public class SimulationSaver
 	
 	private void createEntitiesElement()
 	{
-		elementEntities = document.createElement("entites");
+		elementEntities = document.createElement("entities");
 		createSelectedEntityAttribute();
 		entities.getEntitiesStream().forEach(this::createEntityElement);
 		elementWorld.appendChild(elementEntities);

@@ -77,7 +77,7 @@ public class Genotype
 		return gene.checkGene();
 	}
 	
-	public Gene[] getGenesOfType(GeneType type)
+	private Gene[] getGenesOfType(GeneType type)
 	{
 		Gene[] filtered = new Gene[type.getLevels()];
 		for(Gene gene : genes) if(gene.getType() == type) filtered[gene.getLevel()] = gene;
@@ -89,8 +89,10 @@ public class Genotype
 		return getGenesOfType(type)[level];
 	}
 	
-	public Gene getGeneByIndex(int index)
+	public void setGene(Gene gene)
 	{
-		return genes[index];
+		Gene existingGene = getGeneOfTypeAndLevel(gene.getType(), gene.getLevel());
+		existingGene.setAlleleA(gene.getAlleleA());
+		existingGene.setAlleleB(gene.getAlleleB());
 	}
 }

@@ -68,4 +68,11 @@ public enum GeneType
 		for(GeneType type : values()) count += type.getLevels();
 		return count;
 	}
+	
+	public static GeneType getTypeByName(String name)
+	{
+		for(GeneType type : values())
+			if(type.name().equals(name)) return type;
+		return null;
+	}
 }

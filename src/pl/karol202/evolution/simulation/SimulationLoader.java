@@ -19,6 +19,12 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
+import pl.karol202.evolution.entity.Entities;
+import pl.karol202.evolution.entity.Entity;
+import pl.karol202.evolution.genes.Allele;
+import pl.karol202.evolution.genes.Gene;
+import pl.karol202.evolution.genes.GeneType;
+import pl.karol202.evolution.genes.Genotype;
 import pl.karol202.evolution.world.Plant;
 import pl.karol202.evolution.world.Plants;
 import pl.karol202.evolution.world.World;
@@ -28,6 +34,7 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import java.io.File;
 import java.io.IOException;
+import java.util.Random;
 
 public class SimulationLoader
 {
@@ -38,12 +45,14 @@ public class SimulationLoader
 	private Simulation simulation;
 	private World world;
 	private Plants plants;
+	private Entities entities;
 	
 	public void parseSimulation(File file, Simulation simulation) throws IOException, ParserConfigurationException, SAXException
 	{
 		this.simulation = simulation;
 		this.world = simulation.getWorld();
 		this.plants = world.getPlants();
+		this.entities = world.getEntities();
 		
 		DocumentBuilderFactory builderFactory = DocumentBuilderFactory.newInstance();
 		DocumentBuilder builder = builderFactory.newDocumentBuilder();
@@ -55,13 +64,13 @@ public class SimulationLoader
 	{
 		root = document.getDocumentElement();
 		parseVersion();
-		simulation.setTimeStep(Integer.parseInt(root.getAttribute("timeStep")));
+		simulation.setTimeStep(getIntAttribute(root, "timeStep"));
 		parseWorld();
 	}
 	
 	private void parseVersion()
 	{
-		version = Integer.parseInt(root.getAttribute("version"));
+		version = getIntAttribute(root, "version");
 		if(version != SimulationSaver.VERSION) updateBeforeParsing();
 	}
 	
@@ -78,25 +87,26 @@ public class SimulationLoader
 		int height = Integer.parseInt(elementWorld.getAttribute("height"));
 		world.generateEmptyWorld(width, height);
 		
-		world.setTemperatureFrequency(Integer.parseInt(elementWorld.getAttribute("temperatureFrequency")));
-		world.setHumidityFrequency(Integer.parseInt(elementWorld.getAttribute("humidityFrequency")));
-		world.setMinTemperature(Float.parseFloat(elementWorld.getAttribute("minTemperature")));
-		world.setMaxTemperature(Float.parseFloat(elementWorld.getAttribute("maxTemperature")));
-		world.setMinHumidity(Float.parseFloat(elementWorld.getAttribute("minHumidity")));
-		world.setMaxHumidity(Float.parseFloat(elementWorld.getAttribute("maxHumidity")));
-		world.setEntitiesAmount(Integer.parseInt(elementWorld.getAttribute("entitiesAmount")));
+		world.setTemperatureFrequency(getIntAttribute(elementWorld, "temperatureFrequency"));
+		world.setHumidityFrequency(getIntAttribute(elementWorld, "humidityFrequency"));
+		world.setMinTemperature(getFloatAttribute(elementWorld, "minTemperature"));
+		world.setMaxTemperature(getFloatAttribute(elementWorld, "maxTemperature"));
+		world.setMinHumidity(getFloatAttribute(elementWorld, "minHumidity"));
+		world.setMaxHumidity(getFloatAttribute(elementWorld, "maxHumidity"));
+		world.setEntitiesAmount(getIntAttribute(elementWorld, "entitiesAmount"));
 		
-		int temperatureXOffset = Integer.parseInt(elementWorld.getAttribute("temperatureXOffset"));
-		int temperatureYOffset = Integer.parseInt(elementWorld.getAttribute("temperatureYOffset"));
-		int humidityXOffset = Integer.parseInt(elementWorld.getAttribute("humidityXOffset"));
-		int humidityYOffset = Integer.parseInt(elementWorld.getAttribute("humidityYOffset"));
+		int temperatureXOffset = getIntAttribute(elementWorld, "temperatureXOffset");
+		int temperatureYOffset = getIntAttribute(elementWorld, "temperatureYOffset");
+		int humidityXOffset = getIntAttribute(elementWorld, "humidityXOffset");
+		int humidityYOffset = getIntAttribute(elementWorld, "humidityYOffset");
 		world.generateTemperature(temperatureXOffset, temperatureYOffset);
 		world.generateHumidity(humidityXOffset, humidityYOffset);
 		
-		parsePlants(world.getPlants(), elementWorld);
+		parsePlants(elementWorld);
+		parseEntities(elementWorld);
 	}
 	
-	private void parsePlants(Plants plants, Element worldElement)
+	private void parsePlants(Element worldElement)
 	{
 		Element elementPlants = getElement(worldElement, "plants");
 		
@@ -115,14 +125,74 @@ public class SimulationLoader
 	
 	private Plant parsePlant(Element plantElement)
 	{
-		float x = Float.parseFloat(plantElement.getAttribute("x"));
-		float y = Float.parseFloat(plantElement.getAttribute("y"));
-		float health = Float.parseFloat(plantElement.getAttribute("health"));
+		float x = getFloatAttribute(plantElement, "x");
+		float y = getFloatAttribute(plantElement, "y");
+		float health = getFloatAttribute(plantElement, "health");
 		return new Plant(x, y, health);
+	}
+	
+	private void parseEntities(Element worldElement)
+	{
+		Element elementEntities = getElement(worldElement, "entities");
+		
+		entities.setSelectedEntityIndex(getIntAttribute(elementEntities, "selectedEntity"));
+		
+		entities.removeAllEntities();
+		NodeList entitiesNodes = elementEntities.getChildNodes();
+		for(int i = 0; i < entitiesNodes.getLength(); i++)
+		{
+			Element elementEntity = (Element) entitiesNodes.item(i);
+			entities.addEntity(parseEntity(elementEntity));
+		}
+	}
+	
+	private Entity parseEntity(Element entityElement)
+	{
+		float x = getFloatAttribute(entityElement, "x");
+		float y = getFloatAttribute(entityElement, "y");
+		Genotype genotype = parseGenotype(entityElement);
+		//Components and behaviours
+		Entity entity = new Entity(entities, x, y, genotype);
+		
+		return entity;
+	}
+	
+	private Genotype parseGenotype(Element entityElement)
+	{
+		Element elementGenotype = getElement(entityElement, "genotype");
+		
+		Genotype genotype = new Genotype(new Random());
+		
+		NodeList genesNodes = elementGenotype.getChildNodes();
+		for(int i = 0; i < genesNodes.getLength(); i++)
+		{
+			Element elementGene = (Element) genesNodes.item(i);
+			genotype.setGene(parseGene(elementGene));
+		}
+		return genotype;
+	}
+	
+	private Gene parseGene(Element geneElement)
+	{
+		GeneType type = GeneType.getTypeByName(geneElement.getAttribute("type"));
+		int level = getIntAttribute(geneElement, "level");
+		Allele alleleA = Allele.getAlleleByName(geneElement.getAttribute("alleleA"));
+		Allele alleleB = Allele.getAlleleByName(geneElement.getAttribute("alleleB"));
+		return new Gene(type, level, alleleA, alleleB);
 	}
 	
 	private Element getElement(Element parent, String name)
 	{
 		return (Element) parent.getElementsByTagName(name).item(0);
+	}
+
+	private int getIntAttribute(Element element, String name)
+	{
+		return Integer.parseInt(element.getAttribute(name));
+	}
+	
+	private float getFloatAttribute(Element element, String name)
+	{
+		return Float.parseFloat(element.getAttribute(name));
 	}
 }

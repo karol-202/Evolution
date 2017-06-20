@@ -83,8 +83,18 @@ public class Gene
 		return alleleA;
 	}
 	
+	public void setAlleleA(Allele alleleA)
+	{
+		this.alleleA = alleleA;
+	}
+	
 	public Allele getAlleleB()
 	{
 		return alleleB;
+	}
+	
+	public void setAlleleB(Allele alleleB)
+	{
+		this.alleleB = alleleB;
 	}
 }

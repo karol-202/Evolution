@@ -39,4 +39,11 @@ public enum Allele
 	{
 		return random.nextBoolean() ? DOMINANT : RECESSIVE;
 	}
+	
+	public static Allele getAlleleByName(String name)
+	{
+		for(Allele allele : values())
+			if(allele.name().equals(name)) return allele;
+		return null;
+	}
 }
