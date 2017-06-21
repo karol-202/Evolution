@@ -26,7 +26,7 @@ import java.util.Random;
 
 public class FoodSeekBehaviour extends SavableBehaviour
 {
-	public static final int BEHAVIOUR_ID = 1;
+	static final int BEHAVIOUR_ID = 1;
 	
 	private static final float MAX_RANDOM_DISTANCE = 200f;
 	private static final float MAX_ENERGY_THRESHOLD = 0.98f;
@@ -40,7 +40,7 @@ public class FoodSeekBehaviour extends SavableBehaviour
 	
 	private Plant eatenPlant;
 	
-	public FoodSeekBehaviour(Entity entity, ComponentManager componentManager, BehaviourManager behaviours)
+	FoodSeekBehaviour(Entity entity, ComponentManager componentManager, BehaviourManager behaviours)
 	{
 		super(entity, behaviours);
 		movement = (EntityMovement) componentManager.getComponent(EntityMovement.class);

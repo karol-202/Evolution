@@ -102,7 +102,7 @@ public class EntitiesLoader
 	
 	private void parseEntityBehaviour(Entity entity, Element elementBehaviour)
 	{
-		BehaviourState state = new BehaviourState(document, elementBehaviour);
+		BehaviourState state = new BehaviourState(elementBehaviour);
 		
 		int behaviourId = getIntAttribute(elementBehaviour, "id");
 		entity.getSavableBehavioursStream().filter(sb -> sb.getId() == behaviourId).forEach(sb -> sb.loadState(state));

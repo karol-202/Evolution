@@ -19,7 +19,7 @@ import pl.karol202.evolution.entity.Entity;
 
 public abstract class SavableBehaviour extends Behaviour
 {
-	public SavableBehaviour(Entity entity, BehaviourManager behaviours)
+	SavableBehaviour(Entity entity, BehaviourManager behaviours)
 	{
 		super(entity, behaviours);
 	}

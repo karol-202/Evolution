@@ -24,12 +24,12 @@ import java.util.Random;
 
 public class RandomMovingBehaviour extends Behaviour
 {
-	public static final int BEHAVIOUR_ID = 0;
+	static final int BEHAVIOUR_ID = 0;
 	
 	private EntityMovement movement;
 	private Random random;
 	
-	public RandomMovingBehaviour(Entity entity, ComponentManager componentManager, BehaviourManager behaviours)
+	RandomMovingBehaviour(Entity entity, ComponentManager componentManager, BehaviourManager behaviours)
 	{
 		super(entity, behaviours);
 		movement = (EntityMovement) componentManager.getComponent(EntityMovement.class);

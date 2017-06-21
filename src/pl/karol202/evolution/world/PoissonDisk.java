@@ -13,7 +13,10 @@
     See the License for the specific language governing permissions and
     limitations under the License.
  */
-package pl.karol202.evolution.utils;
+package pl.karol202.evolution.world;
+
+import pl.karol202.evolution.utils.Utils;
+import pl.karol202.evolution.utils.Vector2;
 
 import java.awt.*;
 import java.util.ArrayList;

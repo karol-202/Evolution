@@ -66,7 +66,7 @@ public class EvolutionPanel extends JPanel implements OnWorldUpdateListener, Mou
 	private int mouseY;
 	private Entity hoveredEntity;
 	
-	public EvolutionPanel(World world, OnViewParametersChangeListener listener)
+	EvolutionPanel(World world, OnViewParametersChangeListener listener)
 	{
 		this.world = world;
 		this.plants = world.getPlants();
@@ -333,9 +333,8 @@ public class EvolutionPanel extends JPanel implements OnWorldUpdateListener, Mou
 	
 	private boolean shouldBeClipped(Rectangle rectangle)
 	{
-		if(rectangle.x < getWidth() && rectangle.x + rectangle.width > 0) return false;
-		if(rectangle.y < getHeight() && rectangle.y + rectangle.height > 0) return false;
-		return true;
+		return rectangle.x + rectangle.width < 0 || rectangle.x > getWidth() ||
+			   rectangle.y + rectangle.height < 0 || rectangle.y > getHeight();
 	}
 	
 	private int getScaledWorldWidth()
@@ -348,18 +347,18 @@ public class EvolutionPanel extends JPanel implements OnWorldUpdateListener, Mou
 		return (int) Math.round(world.getHeight() * scale);
 	}
 	
-	public void setViewMode(ViewMode viewMode)
+	void setViewMode(ViewMode viewMode)
 	{
 		this.viewMode = viewMode;
 		repaint();
 	}
 	
-	public double getScale()
+	double getScale()
 	{
 		return scale;
 	}
 	
-	public void scaleDown()
+	void scaleDown()
 	{
 		double oldScale = scale;
 		scaleDownInternal();
@@ -375,7 +374,7 @@ public class EvolutionPanel extends JPanel implements OnWorldUpdateListener, Mou
 		if(viewListener != null) viewListener.onViewParametersChanged();
 	}
 	
-	public void scaleUp()
+	void scaleUp()
 	{
 		double oldScale = scale;
 		scaleUpInternal();
@@ -463,7 +462,7 @@ public class EvolutionPanel extends JPanel implements OnWorldUpdateListener, Mou
 		yPosition -= Math.round((scaledWorldSizeY - oldScaledWorldSizeY) * yMultiplier);
 	}
 	
-	public void centerView()
+	void centerView()
 	{
 		xPosition = (getWidth() / 2) - (getScaledWorldWidth() / 2);
 		yPosition = (getHeight() / 2) - (getScaledWorldHeight() / 2);

@@ -13,9 +13,42 @@
     See the License for the specific language governing permissions and
     limitations under the License.
  */
-package pl.karol202.evolution.entity.behaviour;
+package pl.karol202.evolution.world;
 
-public class BehavioursLoader
+import java.util.ArrayList;
+import java.util.Random;
+
+class RandomQueue<T>
 {
-
+	private ArrayList<T> items;
+	private Random random;
+	
+	RandomQueue()
+	{
+		items = new ArrayList<T>();
+		random = new Random();
+	}
+	
+	void add(T item)
+	{
+		int index = random.nextInt(items.size() + 1);
+		items.add(index, item);
+	}
+	
+	T poll()
+	{
+		T item = items.get(items.size() - 1);
+		items.remove(item);
+		return item;
+	}
+	
+	boolean isEmpty()
+	{
+		return items.isEmpty();
+	}
+	
+	void clear()
+	{
+		items.clear();
+	}
 }

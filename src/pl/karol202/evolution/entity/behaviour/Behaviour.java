@@ -19,10 +19,10 @@ import pl.karol202.evolution.entity.Entity;
 
 public abstract class Behaviour
 {
-	protected Entity entity;
-	protected BehaviourManager behaviours;
+	Entity entity;
+	BehaviourManager behaviours;
 	
-	public Behaviour(Entity entity, BehaviourManager behaviours)
+	Behaviour(Entity entity, BehaviourManager behaviours)
 	{
 		this.entity = entity;
 		this.behaviours = behaviours;

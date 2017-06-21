@@ -19,7 +19,7 @@ public abstract class Component
 {
 	protected Entity entity;
 	
-	public Component(Entity entity)
+	Component(Entity entity)
 	{
 		this.entity = entity;
 	}

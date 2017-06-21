@@ -15,19 +15,15 @@
  */
 package pl.karol202.evolution.entity.behaviour;
 
-import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
-import pl.karol202.evolution.utils.SimulationParseException;
 
 public class BehaviourState
 {
-	private Document document;
 	private Element element;
 	
-	public BehaviourState(Document document, Element element)
+	public BehaviourState(Element element)
 	{
-		this.document = document;
 		this.element = element;
 	}
 	
@@ -36,23 +32,19 @@ public class BehaviourState
 		Element element = document.createElement("behaviour");
 		element.setAttribute("id", String.valueOf(behaviour.getId()));
 		
-		BehaviourState state = new BehaviourState(document, element);
+		BehaviourState state = new BehaviourState(element);
 		behaviour.saveState(state);
 		return state;
 	}
 	
-	public int getInt(String key)
+	int getInt(String key)
 	{
-		Attr attr = element.getAttributeNode(key);
-		if(attr == null) throw new SimulationParseException("Int attribute not found: " + key);
-		return Integer.parseInt(attr.getValue());
+		return Integer.parseInt(element.getAttribute(key));
 	}
 	
-	public void putInt(String key, int value)
+	void putInt(String key, int value)
 	{
-		Attr attr = document.createAttribute(key);
-		attr.setValue(String.valueOf(value));
-		element.setAttributeNode(attr);
+		element.setAttribute(key, String.valueOf(value));
 	}
 	
 	public Element getElement()

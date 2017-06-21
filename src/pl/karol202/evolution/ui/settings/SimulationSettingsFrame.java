@@ -531,6 +531,7 @@ public class SimulationSettingsFrame extends JFrame implements DocumentListener
 		}
 	}
 	
+	@SuppressWarnings("ResultOfMethodCallIgnored")
 	private boolean isTextValidFloat(JTextField field)
 	{
 		try

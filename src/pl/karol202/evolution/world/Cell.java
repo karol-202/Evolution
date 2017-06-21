@@ -13,20 +13,28 @@
     See the License for the specific language governing permissions and
     limitations under the License.
  */
-package pl.karol202.evolution.utils;
+package pl.karol202.evolution.world;
 
-public class OctaveSimplexNoise
+import pl.karol202.evolution.utils.Vector2;
+
+import java.util.ArrayList;
+
+class Cell
 {
-	public static double noise(double x, double y, double[] octaves)
+	private ArrayList<Vector2> points;
+	
+	Cell()
 	{
-		double noiseSum = 0;
-		double scale = 1;
-		for(double octave : octaves)
-		{
-			double noise = SimplexNoise.noise(x * scale, y * scale);
-			noiseSum += noise * octave;
-			scale *= 2;
-		}
-		return noiseSum;
+		this.points = new ArrayList<>();
+	}
+	
+	void addPoint(Vector2 point)
+	{
+		points.add(point);
+	}
+	
+	ArrayList<Vector2> getPoints()
+	{
+		return points;
 	}
 }

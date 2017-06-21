@@ -35,12 +35,12 @@ public enum Allele
 		return name;
 	}
 	
-	public static Allele random(Random random)
+	static Allele random(Random random)
 	{
 		return random.nextBoolean() ? DOMINANT : RECESSIVE;
 	}
 	
-	public static Allele getAlleleByName(String name)
+	static Allele getAlleleByName(String name)
 	{
 		for(Allele allele : values())
 			if(allele.name().equals(name)) return allele;

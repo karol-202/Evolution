@@ -24,12 +24,12 @@ public class Gene
 	private Allele alleleA;
 	private Allele alleleB;
 	
-	public Gene(GeneType type, int level, Random random)
+	Gene(GeneType type, int level, Random random)
 	{
-		this(type, level, createAlleleA(type, random), createAlleleB(type, random));
+		this(type, level, createAlleleA(random), createAlleleB(type, random));
 	}
 	
-	public Gene(GeneType type, int level, Allele alleleA, Allele alleleB)
+	Gene(GeneType type, int level, Allele alleleA, Allele alleleB)
 	{
 		this.type = type;
 		this.level = level;
@@ -37,7 +37,7 @@ public class Gene
 		this.alleleB = alleleB;
 	}
 	
-	private static Allele createAlleleA(GeneType type, Random random)
+	private static Allele createAlleleA(Random random)
 	{
 		return Allele.random(random);
 	}
@@ -47,17 +47,17 @@ public class Gene
 		return type.hasConstantAllele() ? type.getConstantAllele() : Allele.random(random);
 	}
 	
-	public Allele getRandomAllele(Random random)
+	Allele getRandomAllele(Random random)
 	{
 		return random.nextBoolean() ? alleleA : alleleB;
 	}
 	
-	public boolean isCorrespondingGene(Gene gene)
+	boolean isCorrespondingGene(Gene gene)
 	{
 		return type == gene.type && level == gene.level;
 	}
 	
-	public boolean checkGene()
+	boolean checkGene()
 	{
 		return alleleA == Allele.DOMINANT || alleleB == Allele.DOMINANT;
 	}
@@ -83,7 +83,7 @@ public class Gene
 		return alleleA;
 	}
 	
-	public void setAlleleA(Allele alleleA)
+	void setAlleleA(Allele alleleA)
 	{
 		this.alleleA = alleleA;
 	}
@@ -93,7 +93,7 @@ public class Gene
 		return alleleB;
 	}
 	
-	public void setAlleleB(Allele alleleB)
+	void setAlleleB(Allele alleleB)
 	{
 		this.alleleB = alleleB;
 	}

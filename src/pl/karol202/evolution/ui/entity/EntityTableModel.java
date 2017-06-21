@@ -29,7 +29,7 @@ public class EntityTableModel extends AbstractTableModel
 	private String filter;
 	private List<EntityProperties> filteredProperties;
 	
-	public EntityTableModel()
+	EntityTableModel()
 	{
 		filter = "";
 		filter();
@@ -71,7 +71,7 @@ public class EntityTableModel extends AbstractTableModel
 		fireTableDataChanged();
 	}
 	
-	public void setFilter(String filter)
+	void setFilter(String filter)
 	{
 		this.filter = filter;
 		filter();
@@ -80,6 +80,8 @@ public class EntityTableModel extends AbstractTableModel
 	
 	private void filter()
 	{
-		filteredProperties = Stream.of(EntityProperties.values()).filter(p -> p.getName().contains(filter) || filter.isEmpty()).collect(Collectors.toList());
+		filteredProperties = Stream.of(EntityProperties.values())
+								   .filter(p -> p.getName().contains(filter) || filter.isEmpty())
+								   .collect(Collectors.toList());
 	}
 }

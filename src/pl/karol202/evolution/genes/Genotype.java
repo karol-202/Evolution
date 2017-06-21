@@ -89,7 +89,7 @@ public class Genotype
 		return getGenesOfType(type)[level];
 	}
 	
-	public void setGene(Gene gene)
+	void setGene(Gene gene)
 	{
 		Gene existingGene = getGeneOfTypeAndLevel(gene.getType(), gene.getLevel());
 		existingGene.setAlleleA(gene.getAlleleA());

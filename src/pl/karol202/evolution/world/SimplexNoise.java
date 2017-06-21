@@ -13,7 +13,7 @@
     See the License for the specific language governing permissions and
     limitations under the License.
  */
-package pl.karol202.evolution.utils;
+package pl.karol202.evolution.world;
 
 /*
  * A speed-improved simplex noise algorithm for 2D, 3D and 4D in Java.

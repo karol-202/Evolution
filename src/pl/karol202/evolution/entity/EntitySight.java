@@ -27,7 +27,7 @@ public class EntitySight extends Component
 	
 	private Plant nearestPlant;
 	
-	public EntitySight(Entity entity, Plants plants, float sightRange)
+	EntitySight(Entity entity, Plants plants, float sightRange)
 	{
 		super(entity);
 		this.plants = plants;

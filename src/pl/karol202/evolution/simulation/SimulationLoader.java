@@ -36,7 +36,7 @@ import static pl.karol202.evolution.simulation.SimulationManager.setNumberAttrib
 
 class SimulationLoader
 {
-	static final int VERSION = 1;
+	private static final int VERSION = 1;
 	
 	private Document document;
 	

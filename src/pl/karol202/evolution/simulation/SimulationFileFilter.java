@@ -20,7 +20,7 @@ import java.io.File;
 
 public class SimulationFileFilter extends FileFilter
 {
-	public static final String EVOLUTION_FILE = "evo";
+	static final String EVOLUTION_FILE = "evo";
 	
 	@Override
 	public boolean accept(File file)

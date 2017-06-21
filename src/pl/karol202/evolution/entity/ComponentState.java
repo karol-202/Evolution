@@ -24,13 +24,13 @@ public class ComponentState
 	private Document document;
 	private Element element;
 	
-	public ComponentState(Document document, Element element)
+	ComponentState(Document document, Element element)
 	{
 		this.document = document;
 		this.element = element;
 	}
 	
-	public static ComponentState createForComponent(SavableComponent component, Document document)
+	static ComponentState createForComponent(SavableComponent component, Document document)
 	{
 		Element element = document.createElement(component.getClass().getName());
 		ComponentState state = new ComponentState(document, element);
@@ -38,21 +38,16 @@ public class ComponentState
 		return state;
 	}
 	
-	public String getString(String key)
+	String getString(String key)
 	{
-		Attr attr = element.getAttributeNode(key);
-		if(attr == null) throw new SimulationParseException("String attribute not found: " + key);
-		return attr.getValue();
+		return element.getAttribute(key);
 	}
 	
-	public Vector2 getVector(String key)
+	Vector2 getVector(String key)
 	{
 		Element vectorElement = getVectorElementFromListByName(key);
 		if(vectorElement == null) throw new SimulationParseException("Vector element not found: " + key);
-		Attr attrX = vectorElement.getAttributeNode("x");
-		Attr attrY = vectorElement.getAttributeNode("y");
-		if(attrX == null || attrY == null) throw new SimulationParseException("Corrupted vector node");
-		return new Vector2(Float.parseFloat(attrX.getValue()), Float.parseFloat(attrY.getValue()));
+		return new Vector2(Float.parseFloat(element.getAttribute("x")), Float.parseFloat(element.getAttribute("y")));
 	}
 	
 	private Element getVectorElementFromListByName(String name)
@@ -61,31 +56,23 @@ public class ComponentState
 		for(int i = 0; i < nodeList.getLength(); i++)
 		{
 			Element element = (Element) nodeList.item(i);
-			Attr attrName = element.getAttributeNode("name");
-			if(attrName == null) throw new SimulationParseException("Corrupted vector node");
-			if(attrName.getValue().equals(name)) return element;
+			String vectorName = element.getAttribute("name");
+			if(vectorName.equals(name)) return element;
 		}
 		return null;
 	}
 	
-	public void putString(String key, String value)
+	void putString(String key, String value)
 	{
 		Attr attr = document.createAttribute(key);
 		attr.setValue(value);
 		element.setAttributeNode(attr);
 	}
 	
-	public void putVector(String key, Vector2 value)
+	void putVector(String key, Vector2 value)
 	{
 		if(value == null) tryToRemoveVector(key);
-		else
-		{
-			Element elementVector = document.createElement("vector");
-			createVectorNameAttribute(key, elementVector);
-			createVectorXAttribute(value, elementVector);
-			createVectorYAttribute(value, elementVector);
-			element.appendChild(elementVector);
-		}
+		else createVectorElement(key, value);
 	}
 	
 	private void tryToRemoveVector(String name)
@@ -94,28 +81,16 @@ public class ComponentState
 		if(vectorElement != null) element.removeChild(vectorElement);
 	}
 	
-	private void createVectorNameAttribute(String name, Element vectorElement)
+	private void createVectorElement(String key, Vector2 value)
 	{
-		Attr attrVectorName = document.createAttribute("name");
-		attrVectorName.setValue(name);
-		vectorElement.setAttributeNode(attrVectorName);
+		Element elementVector = document.createElement("vector");
+		elementVector.setAttribute("name", key);
+		elementVector.setAttribute("x", String.valueOf(value.getX()));
+		elementVector.setAttribute("y", String.valueOf(value.getY()));
+		element.appendChild(elementVector);
 	}
 	
-	private void createVectorXAttribute(Vector2 vector, Element vectorElement)
-	{
-		Attr attrVectorX = document.createAttribute("x");
-		attrVectorX.setValue(String.valueOf(vector.getX()));
-		vectorElement.setAttributeNode(attrVectorX);
-	}
-	
-	private void createVectorYAttribute(Vector2 vector, Element vectorElement)
-	{
-		Attr attrVectorY = document.createAttribute("y");
-		attrVectorY.setValue(String.valueOf(vector.getY()));
-		vectorElement.setAttributeNode(attrVectorY);
-	}
-	
-	public Element getElement()
+	Element getElement()
 	{
 		return element;
 	}

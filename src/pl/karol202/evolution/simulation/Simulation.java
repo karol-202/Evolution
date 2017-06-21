@@ -64,7 +64,7 @@ public class Simulation
 		update(timeStep);
 	}
 	
-	public void reset()
+	void reset()
 	{
 		running = false;
 		listeners.forEach(OnSimulationUpdateListener::onSimulationStateChanged);

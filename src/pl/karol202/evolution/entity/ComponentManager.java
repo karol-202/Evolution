@@ -25,7 +25,7 @@ public class ComponentManager
 	
 	private ArrayList<Component> components;
 	
-	public ComponentManager(Entity entity, Entities entities)
+	ComponentManager(Entity entity, Entities entities)
 	{
 		this.entity = entity;
 		this.entities = entities;
@@ -33,14 +33,14 @@ public class ComponentManager
 		components = new ArrayList<>();
 	}
 	
-	public void addComponents()
+	void addComponents()
 	{
 		components.add(new EntityMovement(entity));
 		components.add(new EntitySight(entity, entities.getPlants(), entity.getSightRange()));
 		components.add(new EntityNutrition(entity));
 	}
 	
-	public void update()
+	void update()
 	{
 		components.forEach(Component::update);
 	}

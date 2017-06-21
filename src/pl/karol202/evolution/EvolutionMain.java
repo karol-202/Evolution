@@ -26,7 +26,6 @@ import java.util.Random;
 
 public class EvolutionMain
 {
-	private Random random;
 	private World world;
 	private Simulation simulation;
 	private SimulationManager manager;
@@ -34,10 +33,9 @@ public class EvolutionMain
 	
 	private File fileToOpen;
 	
-	public EvolutionMain(File fileToOpen)
+	EvolutionMain(File fileToOpen)
 	{
-		random = new Random();
-		world = new World(random);
+		world = new World(new Random());
 		world.generateRandomWorld(1024, 1024);
 		simulation = new Simulation(world, 3);
 		manager = new SimulationManager(simulation);

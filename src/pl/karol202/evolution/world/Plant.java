@@ -26,17 +26,17 @@ public class Plant
 	private float y;
 	private float health;
 	
-	public Plant(Vector2 vector)
+	Plant(Vector2 vector)
 	{
 		this(vector.getX(), vector.getY());
 	}
 	
-	public Plant(float x, float y)
+	Plant(float x, float y)
 	{
 		this(x, y, 100);
 	}
 	
-	public Plant(float x, float y, float health)
+	Plant(float x, float y, float health)
 	{
 		this.x = x;
 		this.y = y;

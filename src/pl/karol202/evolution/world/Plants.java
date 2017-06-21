@@ -15,8 +15,6 @@
  */
 package pl.karol202.evolution.world;
 
-import pl.karol202.evolution.utils.OctaveSimplexNoise;
-import pl.karol202.evolution.utils.PoissonDisk;
 import pl.karol202.evolution.utils.Utils;
 
 import java.util.List;

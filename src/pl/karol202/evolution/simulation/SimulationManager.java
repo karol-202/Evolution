@@ -80,6 +80,7 @@ public class SimulationManager
 		if(result == JFileChooser.APPROVE_OPTION) saveFile(fileChooser.getSelectedFile(), parentForDialog);
 	}
 	
+	@SuppressWarnings("ResultOfMethodCallIgnored")
 	private void saveFile(File file, Component parentForDialog)
 	{
 		try

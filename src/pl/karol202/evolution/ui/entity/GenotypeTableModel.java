@@ -30,7 +30,7 @@ public class GenotypeTableModel extends AbstractTableModel
 	private String filter;
 	private List<Gene> filteredProperties;
 	
-	public GenotypeTableModel()
+	GenotypeTableModel()
 	{
 		filter = "";
 		filteredProperties = new ArrayList<>();
@@ -77,7 +77,7 @@ public class GenotypeTableModel extends AbstractTableModel
 		fireTableDataChanged();
 	}
 	
-	public void setFilter(String filter)
+	void setFilter(String filter)
 	{
 		this.filter = filter;
 		filterAllGenes();

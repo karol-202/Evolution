@@ -26,7 +26,7 @@ public class EntityMovement extends SavableComponent
 	@Nullable
 	private Vector2 target;
 	
-	public EntityMovement(Entity entity)
+	EntityMovement(Entity entity)
 	{
 		super(entity);
 	}
@@ -70,13 +70,13 @@ public class EntityMovement extends SavableComponent
 	}
 	
 	@Override
-	public void loadState(ComponentState state)
+	void loadState(ComponentState state)
 	{
 		target = state.getVector("target");
 	}
 	
 	@Override
-	public void saveState(ComponentState state)
+	void saveState(ComponentState state)
 	{
 		state.putVector("target", target);
 	}

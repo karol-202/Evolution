@@ -17,7 +17,7 @@ package pl.karol202.evolution.entity;
 
 public class EntityNutrition extends Component
 {
-	public EntityNutrition(Entity entity)
+	EntityNutrition(Entity entity)
 	{
 		super(entity);
 	}

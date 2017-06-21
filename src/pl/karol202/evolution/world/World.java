@@ -16,7 +16,6 @@
 package pl.karol202.evolution.world;
 
 import pl.karol202.evolution.entity.Entities;
-import pl.karol202.evolution.utils.OctaveSimplexNoise;
 import pl.karol202.evolution.utils.Utils;
 
 import java.util.ArrayList;
@@ -26,8 +25,8 @@ public class World
 {
 	public static final int MAX_SIZE = 8192;
 	
-	public static final int MIN_OFFSET = -10000;
-	public static final int MAX_OFFSET = 10000;
+	static final int MIN_OFFSET = -10000;
+	static final int MAX_OFFSET = 10000;
 	
 	private static final double[] TEMPERATURE_OCTAVES = {
 			0.55, 0.3, 0.15
