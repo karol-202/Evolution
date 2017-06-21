@@ -18,6 +18,7 @@ package pl.karol202.evolution.genes;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
+import pl.karol202.evolution.utils.SimulationParseException;
 
 import java.util.Random;
 
@@ -50,6 +51,7 @@ public class GenesLoader
 		int level = getIntAttribute(geneElement, "level");
 		Allele alleleA = Allele.getAlleleByName(geneElement.getAttribute("alleleA"));
 		Allele alleleB = Allele.getAlleleByName(geneElement.getAttribute("alleleB"));
+		if(alleleA == null || alleleB == null) throw new SimulationParseException("Unknown allele");
 		return new Gene(type, level, alleleA, alleleB);
 	}
 	

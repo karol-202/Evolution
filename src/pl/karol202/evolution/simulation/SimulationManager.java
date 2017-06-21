@@ -17,6 +17,7 @@ package pl.karol202.evolution.simulation;
 
 import org.w3c.dom.Element;
 import org.xml.sax.SAXException;
+import pl.karol202.evolution.utils.SimulationParseException;
 import pl.karol202.evolution.world.World;
 
 import javax.swing.*;
@@ -31,6 +32,8 @@ public class SimulationManager
 	private Simulation simulation;
 	private World world;
 	private SimulationLoader loader;
+	
+	private File lastFile;
 	
 	public SimulationManager(Simulation simulation)
 	{
@@ -59,17 +62,22 @@ public class SimulationManager
 		{
 			if(!hasProperExtension(file)) JOptionPane.showMessageDialog(parentForDialog, "Nieobsługiwany format pliku.",
 																		"Błąd otwierania", JOptionPane.ERROR_MESSAGE);
-			loader.parseSimulation(file, simulation);
+			else
+			{
+				loader.parseSimulation(file, simulation);
+				lastFile = file;
+			}
 		}
-		catch(IOException | SAXException | ParserConfigurationException e)
+		catch(IOException | SAXException | ParserConfigurationException | NumberFormatException | SimulationParseException | ArrayIndexOutOfBoundsException e)
 		{
-			e.printStackTrace();
+			JOptionPane.showMessageDialog(parentForDialog, "Nie można otworzyć pliku.", "Błąd otwierania", JOptionPane.ERROR_MESSAGE);
 		}
 	}
 	
 	public void saveSimulation(Component parentForDialog)
 	{
-		
+		if(lastFile != null) saveFile(lastFile, parentForDialog);
+		else saveSimulationAs(parentForDialog);
 	}
 	
 	public void saveSimulationAs(Component parentForDialog)
@@ -87,6 +95,7 @@ public class SimulationManager
 		{
 			if(!hasProperExtension(file)) file = fixExtension(file);
 			file.createNewFile();
+			lastFile = file;
 			loader.saveSimulation(simulation, file);
 		}
 		catch(ParserConfigurationException | TransformerException | IOException e)

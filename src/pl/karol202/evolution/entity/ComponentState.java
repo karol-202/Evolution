@@ -15,8 +15,10 @@
  */
 package pl.karol202.evolution.entity;
 
-import org.w3c.dom.*;
-import pl.karol202.evolution.utils.SimulationParseException;
+import org.w3c.dom.Attr;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.NodeList;
 import pl.karol202.evolution.utils.Vector2;
 
 public class ComponentState
@@ -46,8 +48,8 @@ public class ComponentState
 	Vector2 getVector(String key)
 	{
 		Element vectorElement = getVectorElementFromListByName(key);
-		if(vectorElement == null) throw new SimulationParseException("Vector element not found: " + key);
-		return new Vector2(Float.parseFloat(element.getAttribute("x")), Float.parseFloat(element.getAttribute("y")));
+		if(vectorElement == null) return null;
+		return new Vector2(Float.parseFloat(vectorElement.getAttribute("x")), Float.parseFloat(vectorElement.getAttribute("y")));
 	}
 	
 	private Element getVectorElementFromListByName(String name)
