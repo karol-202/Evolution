@@ -26,8 +26,12 @@ public enum EntityProperties
 	SEX("Płeć", e -> e.getSex().getName()),
 	SIZE("Wielkość", e -> toString(e.getSize())),
 	SPEED("Szybkość", e -> toString(e.getSpeed())),
+	OPTIMAL_TEMPERATURE("Temperatura optymalna", e -> toString(e.getOptimalTemperature())),
+	OPTIMAL_HUMIDITY("Wilgotność optymalna", e -> toString(e.getOptimalHumidity())),
 	MAX_ENERGY("Maksymalna energia", e -> toString(e.getMaxEnergy())),
 	ENERGY_PER_SECOND("Użycie energii / s", e -> toString(e.getEnergyPerSecond())),
+	TEMPERATURE_ENERGY_LOSS("Spadek energii (temperatura)", e -> toString(e.getTemperatureEnergyLoss()) + " / 20°"),
+	HUMIDITY_ENERGY_LOSS("Spadek energii (wilgotność)", e -> toString(e.getHumidityEnergyLoss()) + " / 33%"),
 	EATING_SPEED("Szybkość jedzenia", e -> toString(e.getEatingSpeed())),
 	SIGHT_RANGE("Zakres widzenia", e -> toString(e.getSightRange())),
 	EAT_START_ENERGY_THRESHOLD("Energia rozpoczęcia jedzenia", e -> toString(e.getEatStartEnergyThreshold()));

@@ -42,8 +42,12 @@ public class Entity
 	private Sex sex;
 	private float size;
 	private float speed;
+	private float optimalTemperature;
+	private float optimalHumidity;
 	private float maxEnergy;
 	private float energyPerSecond;
+	private float temperatureEnergyLoss;
+	private float humidityEnergyLoss;
 	private float eatingSpeed;
 	private float sightRange;
 	private float eatStartEnergyThreshold;
@@ -76,8 +80,12 @@ public class Entity
 		sex = getSexFromGenes();
 		size = genotype.getFloatProperty(GeneType.MSZ);
 		speed = genotype.getFloatProperty(GeneType.MSP);
+		optimalTemperature = genotype.getFloatProperty(GeneType.MOT);
+		optimalHumidity = clamp(genotype.getFloatProperty(GeneType.MOH), 0, 100);
 		maxEnergy = genotype.getFloatProperty(GeneType.EMX);
 		energyPerSecond = genotype.getFloatProperty(GeneType.EPS);
+		temperatureEnergyLoss = clamp(genotype.getFloatProperty(GeneType.ETL), 0.1f, 2.5f);
+		humidityEnergyLoss = clamp(genotype.getFloatProperty(GeneType.EHL), 0.1f, 2f);
 		eatingSpeed = genotype.getFloatProperty(GeneType.FSP);
 		sightRange = genotype.getFloatProperty(GeneType.CSR);
 		eatStartEnergyThreshold = genotype.getFloatProperty(GeneType.BFS);
@@ -91,6 +99,13 @@ public class Entity
 		if(alleleA == Allele.DOMINANT && alleleB == Allele.DOMINANT) return Sex.NEUTER;
 		else if(alleleA == Allele.RECESSIVE && alleleB == Allele.RECESSIVE) return Sex.FEMALE;
 		else return Sex.MALE;
+	}
+	
+	private float clamp(float value, float min, float max)
+	{
+		if(value < min) value = min;
+		if(value > max) value = max;
+		return value;
 	}
 	
 	private void addComponents()
@@ -115,7 +130,25 @@ public class Entity
 	private void manageEnergy()
 	{
 		reduceEnergy(energyPerSecond * Simulation.deltaTime);
+		reduceEnergyDueToTemperature();
+		reduceEnergyDueToHumidity();
 		if(energy < 0) die();
+	}
+	
+	private void reduceEnergyDueToTemperature()
+	{
+		float temperature = entities.getTemperature(x, y);
+		float difference = Math.abs(temperature - optimalTemperature);
+		float energyLoss = (difference / 20) * temperatureEnergyLoss * Simulation.deltaTime;
+		reduceEnergy(energyLoss);
+	}
+	
+	private void reduceEnergyDueToHumidity()
+	{
+		float humidity = entities.getHumidity(x, y);
+		float difference = Math.abs(humidity - optimalHumidity);
+		float energyLoss = (difference / 20) * humidityEnergyLoss * Simulation.deltaTime;
+		reduceEnergy(energyLoss);
 	}
 	
 	void addEnergy(float energyAmount)
@@ -218,6 +251,16 @@ public class Entity
 		return speed;
 	}
 	
+	public float getOptimalTemperature()
+	{
+		return optimalTemperature;
+	}
+	
+	public float getOptimalHumidity()
+	{
+		return optimalHumidity;
+	}
+	
 	public float getMaxEnergy()
 	{
 		return maxEnergy;
@@ -226,6 +269,16 @@ public class Entity
 	public float getEnergyPerSecond()
 	{
 		return energyPerSecond;
+	}
+	
+	public float getTemperatureEnergyLoss()
+	{
+		return temperatureEnergyLoss;
+	}
+	
+	public float getHumidityEnergyLoss()
+	{
+		return humidityEnergyLoss;
 	}
 	
 	public float getEatingSpeed()

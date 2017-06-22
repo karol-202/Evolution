@@ -25,16 +25,18 @@ import java.util.stream.Stream;
 public class Entities
 {
 	private Random random;
+	private World world;
 	private Plants plants;
 	private ArrayList<Entity> entities;
 	private int selectedEntity;
 	
 	private ArrayList<Entity> entitiesToRemove;
 	
-	public Entities(Random random, Plants plants)
+	public Entities(Random random, World world)
 	{
 		this.random = random;
-		this.plants = plants;
+		this.world = world;
+		this.plants = world.getPlants();
 		entities = new ArrayList<>();
 		selectedEntity = -1;
 		
@@ -58,6 +60,7 @@ public class Entities
 	void removeAllEntities()
 	{
 		entities.clear();
+		selectedEntity = -1;
 	}
 	
 	void addEntity(Entity entity)
@@ -68,7 +71,18 @@ public class Entities
 	void removeEntity(Entity entity)
 	{
 		if(getSelectedEntity() == entity) selectNothing();
+		else if(selectedEntity > entities.indexOf(entity)) selectedEntity--;
 		if(entities.contains(entity)) entitiesToRemove.add(entity);
+	}
+	
+	float getTemperature(float x, float y)
+	{
+		return world.getTemperature(x, y);
+	}
+	
+	float getHumidity(float x, float y)
+	{
+		return world.getHumidity(x, y);
 	}
 	
 	public void update()

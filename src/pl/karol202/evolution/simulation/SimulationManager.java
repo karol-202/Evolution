@@ -16,8 +16,6 @@
 package pl.karol202.evolution.simulation;
 
 import org.w3c.dom.Element;
-import org.xml.sax.SAXException;
-import pl.karol202.evolution.utils.SimulationParseException;
 import pl.karol202.evolution.world.World;
 
 import javax.swing.*;
@@ -68,7 +66,7 @@ public class SimulationManager
 				lastFile = file;
 			}
 		}
-		catch(IOException | SAXException | ParserConfigurationException | NumberFormatException | SimulationParseException | ArrayIndexOutOfBoundsException e)
+		catch(Exception e)
 		{
 			JOptionPane.showMessageDialog(parentForDialog, "Nie można otworzyć pliku.", "Błąd otwierania", JOptionPane.ERROR_MESSAGE);
 		}

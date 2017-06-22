@@ -72,7 +72,7 @@ public class World
 		entitiesAmount = 5;
 		
 		plants = new Plants(random, this);
-		entities = new Entities(random, plants);
+		entities = new Entities(random, this);
 	}
 	
 	void generateEmptyWorld(int width, int height)
@@ -108,7 +108,9 @@ public class World
 		{
 			for(int y = 0; y < height; y++)
 			{
-				float noise = (float) OctaveSimplexNoise.noise((x / (float) temperatureFrequency) + xOffset, (y / (float) temperatureFrequency) + yOffset, TEMPERATURE_OCTAVES);
+				float noiseX = (x / (float) temperatureFrequency) + xOffset;
+				float noiseY = (y / (float) temperatureFrequency) + yOffset;
+				float noise = (float) OctaveSimplexNoise.noise(noiseX, noiseY, TEMPERATURE_OCTAVES);
 				temperature[x][y] = Utils.map(noise, -1, 1, minTemperature, maxTemperature);
 			}
 		}
@@ -133,6 +135,40 @@ public class World
 	private int getRandomOffset()
 	{
 		return random.nextInt(MAX_OFFSET - MIN_OFFSET) + MIN_OFFSET;
+	}
+	
+	public float getTemperature(float x, float y)
+	{
+		return interpolateFromMap(temperature, x, y);
+	}
+	
+	public float getHumidity(float x, float y)
+	{
+		return interpolateFromMap(humidity, x, y);
+	}
+	
+	private float interpolateFromMap(float[][] map, float x, float y)
+	{
+		int xInt = (int) x;
+		int yInt = (int) y;
+		float xFract = x - xInt;
+		float yFract = y - yInt;
+		float leftTop = getValueFromMapOrClamp(map, xInt, yInt);
+		float rightTop = getValueFromMapOrClamp(map, xInt + 1, yInt);
+		float leftBottom = getValueFromMapOrClamp(map, xInt, yInt + 1);
+		float rightBottom = getValueFromMapOrClamp(map, xInt + 1, yInt + 1);
+		float interpolatedTop = Utils.lerp(xFract, leftTop, rightTop);
+		float interpolatedBottom = Utils.lerp(xFract, leftBottom, rightBottom);
+		return Utils.lerp(yFract, interpolatedTop, interpolatedBottom);
+	}
+	
+	private float getValueFromMapOrClamp(float[][] map, int x, int y)
+	{
+		if(x < 0) x = 0;
+		if(y < 0) y = 0;
+		if(x >= width) x = width - 1;
+		if(y >= height) y = height - 1;
+		return map[x][y];
 	}
 	
 	public void update()
