@@ -31,11 +31,13 @@ import java.awt.image.BufferedImage;
 
 public class EvolutionPanel extends JPanel implements OnWorldUpdateListener, MouseWheelListener, MouseMotionListener, MouseListener
 {
-	public interface OnViewParametersChangeListener
+	public interface OnViewChangeListener
 	{
 		void onViewParametersChanged();
 		
 		void onEntitySelectionChanged();
+		
+		void onMousePositionChanged(int x, int y);
 	}
 	
 	private static final double SQRT2 = Math.sqrt(2);
@@ -45,7 +47,7 @@ public class EvolutionPanel extends JPanel implements OnWorldUpdateListener, Mou
 	private World world;
 	private Plants plants;
 	private Entities entities;
-	private OnViewParametersChangeListener viewListener;
+	private OnViewChangeListener viewListener;
 	
 	private Gradient temperatureGradient;
 	private BufferedImage temperatureImage;
@@ -66,7 +68,7 @@ public class EvolutionPanel extends JPanel implements OnWorldUpdateListener, Mou
 	private int mouseY;
 	private Entity hoveredEntity;
 	
-	EvolutionPanel(World world, OnViewParametersChangeListener listener)
+	EvolutionPanel(World world, OnViewChangeListener listener)
 	{
 		this.world = world;
 		this.plants = world.getPlants();
@@ -354,6 +356,16 @@ public class EvolutionPanel extends JPanel implements OnWorldUpdateListener, Mou
 		repaint();
 	}
 	
+	public int getXPosition()
+	{
+		return xPosition;
+	}
+	
+	public int getYPosition()
+	{
+		return yPosition;
+	}
+	
 	double getScale()
 	{
 		return scale;
@@ -524,6 +536,7 @@ public class EvolutionPanel extends JPanel implements OnWorldUpdateListener, Mou
 	{
 		mouseX = e.getX();
 		mouseY = e.getY();
+		viewListener.onMousePositionChanged(mouseX, mouseY);
 		repaint();
 	}
 	

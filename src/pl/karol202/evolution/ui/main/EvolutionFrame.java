@@ -21,12 +21,13 @@ import pl.karol202.evolution.ui.entity.EntityPanel;
 import pl.karol202.evolution.ui.settings.SimulationSettingsFrame;
 import pl.karol202.evolution.utils.ButtonHovering;
 import pl.karol202.evolution.utils.ImageLoader;
+import pl.karol202.evolution.utils.Vector2;
 import pl.karol202.evolution.world.World;
 
 import javax.swing.*;
 import java.awt.*;
 
-public class EvolutionFrame extends JFrame implements EvolutionPanel.OnViewParametersChangeListener, Simulation.OnSimulationUpdateListener
+public class EvolutionFrame extends JFrame implements EvolutionPanel.OnViewChangeListener, Simulation.OnSimulationUpdateListener
 {
 	private static final int REPAINT_TIME = 10;
 	
@@ -62,6 +63,8 @@ public class EvolutionFrame extends JFrame implements EvolutionPanel.OnViewParam
 	
 	private JPanel panelBottom;
 	private JLabel labelEntities;
+	private JLabel labelTemperature;
+	private JLabel labelHumidity;
 	private JLabel labelScale;
 	private ButtonHovering buttonMinus;
 	private ButtonHovering buttonPlus;
@@ -88,6 +91,7 @@ public class EvolutionFrame extends JFrame implements EvolutionPanel.OnViewParam
 		
 		updateMenu();
 		updateEntitiesLabel();
+		updateWorldInfo(0, 0);
 	}
 	
 	private void setFrameParams()
@@ -269,6 +273,8 @@ public class EvolutionFrame extends JFrame implements EvolutionPanel.OnViewParam
 		panelBottom.setBorder(BorderFactory.createMatteBorder(1, 0, 0, 0, Color.DARK_GRAY));
 		add(panelBottom, BorderLayout.SOUTH);
 		initEntitiesLabel();
+		initTemperatureLabel();
+		initHumidityLabel();
 		initScaleDownButton();
 		initScaleLabel();
 		initScaleUpButton();
@@ -278,6 +284,22 @@ public class EvolutionFrame extends JFrame implements EvolutionPanel.OnViewParam
 	{
 		labelEntities = new JLabel();
 		panelBottom.add(labelEntities, new GridBagConstraints(0, 0, 1, 1, 0, 0,
+				GridBagConstraints.LINE_START, GridBagConstraints.NONE, new Insets(0, 8, 0, 7),
+				0, 0));
+	}
+	
+	private void initTemperatureLabel()
+	{
+		labelTemperature = new JLabel();
+		panelBottom.add(labelTemperature, new GridBagConstraints(1, 0, 1, 1, 0, 0,
+				GridBagConstraints.LINE_START, GridBagConstraints.NONE, new Insets(0, 8, 0, 7),
+				0, 0));
+	}
+	
+	private void initHumidityLabel()
+	{
+		labelHumidity = new JLabel();
+		panelBottom.add(labelHumidity, new GridBagConstraints(2, 0, 1, 1, 1, 0,
 				GridBagConstraints.LINE_START, GridBagConstraints.NONE, new Insets(0, 8, 0, 0),
 				0, 0));
 	}
@@ -286,16 +308,16 @@ public class EvolutionFrame extends JFrame implements EvolutionPanel.OnViewParam
 	{
 		buttonMinus = new ButtonHovering(ImageLoader.loadImage("/res/minus.png"));
 		buttonMinus.setListener(panelEvolution::scaleDown);
-		panelBottom.add(buttonMinus, new GridBagConstraints(1, 0, 1, 1, 1, 0,
-				GridBagConstraints.EAST, GridBagConstraints.NONE, new Insets(0, 0, 0, 0),
+		panelBottom.add(buttonMinus, new GridBagConstraints(3, 0, 1, 1, 0, 0,
+				GridBagConstraints.CENTER, GridBagConstraints.NONE, new Insets(0, 0, 0, 0),
 				0, 0));
 	}
 	
 	private void initScaleLabel()
 	{
 		labelScale = new JLabel(getScaleString());
-		panelBottom.add(labelScale, new GridBagConstraints(2, 0, 1, 1, 0, 0,
-				GridBagConstraints.EAST, GridBagConstraints.NONE, new Insets(0, 0, 0, 0),
+		panelBottom.add(labelScale, new GridBagConstraints(4, 0, 1, 1, 0, 0,
+				GridBagConstraints.CENTER, GridBagConstraints.NONE, new Insets(0, 0, 0, 0),
 				0, 0));
 	}
 	
@@ -303,7 +325,7 @@ public class EvolutionFrame extends JFrame implements EvolutionPanel.OnViewParam
 	{
 		buttonPlus = new ButtonHovering(ImageLoader.loadImage("/res/plus.png"));
 		buttonPlus.setListener(panelEvolution::scaleUp);
-		panelBottom.add(buttonPlus, new GridBagConstraints(3, 0, 1, 1, 0, 0,
+		panelBottom.add(buttonPlus, new GridBagConstraints(5, 0, 1, 1, 0, 0,
 				GridBagConstraints.CENTER, GridBagConstraints.NONE, new Insets(0, 0, 0, 0),
 				0, 0));
 	}
@@ -332,6 +354,24 @@ public class EvolutionFrame extends JFrame implements EvolutionPanel.OnViewParam
 		labelEntities.setText(getEntitiesString());
 	}
 	
+	private void updateWorldInfo(int x, int y)
+	{
+		Vector2 worldPos = mouseToWorld(x, y);
+		
+		float temperature = world.getTemperature(worldPos.getX(), worldPos.getY());
+		labelTemperature.setText(String.format("Temperatura: %.1f°", temperature));
+		
+		float humidity = world.getHumidity(worldPos.getX(), worldPos.getY());
+		labelHumidity.setText(String.format("Wilgotność: %.1f%%", humidity));
+	}
+	
+	private Vector2 mouseToWorld(int x, int y)
+	{
+		float worldX = (float) ((x - panelEvolution.getXPosition()) / panelEvolution.getScale());
+		float worldY = (float) ((y - panelEvolution.getYPosition()) / panelEvolution.getScale());
+		return new Vector2(worldX, worldY);
+	}
+	
 	@Override
 	public void onViewParametersChanged()
 	{
@@ -342,6 +382,12 @@ public class EvolutionFrame extends JFrame implements EvolutionPanel.OnViewParam
 	public void onEntitySelectionChanged()
 	{
 		panelEntity.updateData();
+	}
+	
+	@Override
+	public void onMousePositionChanged(int x, int y)
+	{
+		updateWorldInfo(x, y);
 	}
 	
 	@Override
