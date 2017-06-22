@@ -17,7 +17,9 @@ package pl.karol202.evolution.entity.behaviour;
 
 import pl.karol202.evolution.entity.ComponentManager;
 import pl.karol202.evolution.entity.Entity;
+import pl.karol202.evolution.ui.main.ViewInfo;
 
+import java.awt.*;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Stream;
@@ -82,6 +84,11 @@ public class BehaviourManager
 	void abandonCurrentBehaviour()
 	{
 		currentBehaviour = null;
+	}
+	
+	public void drawCurrentBehaviour(Graphics2D g, ViewInfo viewInfo)
+	{
+		if(currentBehaviour != null) currentBehaviour.drawBehaviour(g, viewInfo);
 	}
 	
 	public String getCurrentBehaviourName()

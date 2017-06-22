@@ -18,12 +18,16 @@ package pl.karol202.evolution.entity.behaviour;
 import pl.karol202.evolution.entity.ComponentManager;
 import pl.karol202.evolution.entity.Entity;
 import pl.karol202.evolution.entity.EntityMovement;
+import pl.karol202.evolution.ui.main.ViewInfo;
 import pl.karol202.evolution.world.World;
 
+import java.awt.*;
 import java.util.Random;
 
 public class RandomMovingBehaviour extends Behaviour
 {
+	public static final float MAX_RANDOM_DISTANCE = 512f;
+	
 	static final int BEHAVIOUR_ID = 0;
 	
 	private EntityMovement movement;
@@ -42,17 +46,43 @@ public class RandomMovingBehaviour extends Behaviour
 		if(!movement.isMoving()) newTarget();
 	}
 	
+	private void newTarget()
+	{
+		float randomDistance = random.nextFloat() * MAX_RANDOM_DISTANCE;
+		float randomAngle = (float) (random.nextFloat() * 2 * Math.PI);
+		float randomXOffset = (float) (randomDistance * Math.cos(randomAngle));
+		float randomYOffset = (float) (randomDistance * Math.sin(randomAngle));
+		float x = entity.getBornPosition().getX() + randomXOffset;
+		float y = entity.getBornPosition().getY() + randomYOffset;
+		if(x < 0) x = 0;
+		if(x > World.getWorldWidth()) x = World.getWorldWidth();
+		if(y < 0) y = 0;
+		if(y > World.getWorldHeight()) y = World.getWorldHeight();
+		movement.setTarget(x, y);
+	}
+	
+	@Override
+	public void drawBehaviour(Graphics2D g, ViewInfo viewInfo)
+	{
+		Rectangle bounds = getMovementAreaBounds(viewInfo);
+		
+		g.setColor(new Color(0, 0, 0, 32));
+		g.fillOval(bounds.x, bounds.y, bounds.width, bounds.height);
+	}
+	
+	private Rectangle getMovementAreaBounds(ViewInfo viewInfo)
+	{
+		int size = (int) (MAX_RANDOM_DISTANCE * 2 * viewInfo.getScale());
+		float left = (entity.getBornPosition().getX() * viewInfo.getScale()) + viewInfo.getXPosition() - (size / 2);
+		float top = (entity.getBornPosition().getY() * viewInfo.getScale()) + viewInfo.getYPosition() - (size / 2);
+		
+		return new Rectangle((int) left, (int) top, size, size);
+	}
+	
 	@Override
 	public int getId()
 	{
 		return BEHAVIOUR_ID;
-	}
-	
-	private void newTarget()
-	{
-		float x = random.nextFloat() * (World.getWorldWidth() - 1);
-		float y = random.nextFloat() * (World.getWorldHeight() - 1);
-		movement.setTarget(x, y);
 	}
 	
 	@Override

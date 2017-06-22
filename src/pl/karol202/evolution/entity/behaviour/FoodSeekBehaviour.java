@@ -17,11 +17,13 @@ package pl.karol202.evolution.entity.behaviour;
 
 import pl.karol202.evolution.entity.*;
 import pl.karol202.evolution.simulation.Simulation;
+import pl.karol202.evolution.ui.main.ViewInfo;
 import pl.karol202.evolution.utils.Vector2;
 import pl.karol202.evolution.world.Plant;
 import pl.karol202.evolution.world.Plants;
 import pl.karol202.evolution.world.World;
 
+import java.awt.*;
 import java.util.Random;
 
 public class FoodSeekBehaviour extends SavableBehaviour
@@ -112,6 +114,9 @@ public class FoodSeekBehaviour extends SavableBehaviour
 		if(y > World.getWorldHeight()) y = World.getWorldHeight();
 		movement.setTarget(x, y);
 	}
+	
+	@Override
+	public void drawBehaviour(Graphics2D g, ViewInfo viewInfo) { }
 	
 	@Override
 	public void loadState(BehaviourState state)

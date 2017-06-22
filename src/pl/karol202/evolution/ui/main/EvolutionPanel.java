@@ -225,6 +225,7 @@ public class EvolutionPanel extends JPanel implements OnWorldUpdateListener, Mou
 		g.drawOval(bounds.x, bounds.y, bounds.width, bounds.height);
 		
 		if(selected) drawEntitySightRange(g, sightRangeBounds);
+		if(selected) entity.drawCurrentBehaviour(g, new ViewInfo((float) scale, xPosition, yPosition));
 	}
 	
 	private Rectangle getEntityBounds(Entity entity)

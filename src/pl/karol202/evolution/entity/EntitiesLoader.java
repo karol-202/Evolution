@@ -22,6 +22,7 @@ import pl.karol202.evolution.entity.behaviour.BehaviourState;
 import pl.karol202.evolution.entity.behaviour.SavableBehaviour;
 import pl.karol202.evolution.genes.GenesLoader;
 import pl.karol202.evolution.genes.Genotype;
+import pl.karol202.evolution.utils.Vector2;
 
 import static pl.karol202.evolution.simulation.SimulationManager.*;
 
@@ -57,13 +58,25 @@ public class EntitiesLoader
 		float x = getFloatAttribute(elementEntity, "x");
 		float y = getFloatAttribute(elementEntity, "y");
 		Genotype genotype = genesLoader.parseGenotype(elementEntity);
-		Entity entity = new Entity(entities, x, y, genotype);
+		Vector2 bornPosition = parseEntityBornPosition(elementEntity);
+		
+		Entity entity = new Entity(entities, x, y, genotype, bornPosition);
 		entity.setEnergy(getFloatAttribute(elementEntity, "energy"));
 		
 		parseEntityComponents(entity, elementEntity);
 		parseEntityBehaviours(entity, elementEntity);
 		
 		return entity;
+	}
+	
+	private Vector2 parseEntityBornPosition(Element elementEntity)
+	{
+		Element elementVector = getElement(elementEntity, "bornPosition");
+		
+		float x = getFloatAttribute(elementVector, "x");
+		float y = getFloatAttribute(elementVector, "y");
+		
+		return new Vector2(x, y);
 	}
 	
 	private void parseEntityComponents(Entity entity, Element elementEntity)
@@ -130,9 +143,18 @@ public class EntitiesLoader
 		setNumberAttribute(elementEntity, "y", entity.getY());
 		setNumberAttribute(elementEntity, "energy", entity.getEnergy());
 		elementEntity.appendChild(genesLoader.getGenotypeElement(document, entity.getGenotype()));
+		elementEntity.appendChild(createEntityBornPosition(entity.getBornPosition()));
 		elementEntity.appendChild(createEntityComponentsElement(entity));
 		elementEntity.appendChild(createEntityBehavioursElement(entity));
 		return elementEntity;
+	}
+	
+	private Element createEntityBornPosition(Vector2 bornPosition)
+	{
+		Element elementBornPosition = document.createElement("bornPosition");
+		setNumberAttribute(elementBornPosition, "x", bornPosition.getX());
+		setNumberAttribute(elementBornPosition, "y", bornPosition.getY());
+		return elementBornPosition;
 	}
 	
 	private Element createEntityComponentsElement(Entity entity)

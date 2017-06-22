@@ -22,12 +22,17 @@ import pl.karol202.evolution.genes.Gene;
 import pl.karol202.evolution.genes.GeneType;
 import pl.karol202.evolution.genes.Genotype;
 import pl.karol202.evolution.simulation.Simulation;
+import pl.karol202.evolution.ui.main.ViewInfo;
+import pl.karol202.evolution.utils.Vector2;
 
+import java.awt.*;
 import java.util.Random;
 import java.util.stream.Stream;
 
 public class Entity
 {
+	private final Vector2 bornPosition;
+	
 	private float x;
 	private float y;
 	private float energy;
@@ -48,6 +53,13 @@ public class Entity
 	
 	public Entity(Entities entities, float x, float y, Genotype genotype)
 	{
+		this(entities, x, y, genotype, new Vector2(x, y));
+	}
+	
+	Entity(Entities entities, float x, float y, Genotype genotype, Vector2 bornPosition)
+	{
+		this.bornPosition = bornPosition;
+		
 		this.entities = entities;
 		this.genotype = genotype;
 		setProperties();
@@ -124,6 +136,11 @@ public class Entity
 	private void die()
 	{
 		entities.removeEntity(this);
+	}
+	
+	public void drawCurrentBehaviour(Graphics2D g, ViewInfo viewInfo)
+	{
+		behaviourManager.drawCurrentBehaviour(g, viewInfo);
 	}
 	
 	public float getX()
@@ -224,6 +241,11 @@ public class Entity
 	public float getEatStartEnergyThreshold()
 	{
 		return eatStartEnergyThreshold;
+	}
+	
+	public Vector2 getBornPosition()
+	{
+		return bornPosition;
 	}
 	
 	static Entity createRandomEntity(Entities entities, float x, float y, Random random)

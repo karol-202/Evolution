@@ -13,29 +13,33 @@
     See the License for the specific language governing permissions and
     limitations under the License.
  */
-package pl.karol202.evolution.entity.behaviour;
+package pl.karol202.evolution.ui.main;
 
-import pl.karol202.evolution.entity.Entity;
-import pl.karol202.evolution.ui.main.ViewInfo;
-
-import java.awt.*;
-
-public abstract class Behaviour
+public class ViewInfo
 {
-	Entity entity;
-	BehaviourManager behaviours;
+	private float scale;
+	private int xPosition;
+	private int yPosition;
 	
-	Behaviour(Entity entity, BehaviourManager behaviours)
+	public ViewInfo(float scale, int xPosition, int yPosition)
 	{
-		this.entity = entity;
-		this.behaviours = behaviours;
+		this.scale = scale;
+		this.xPosition = xPosition;
+		this.yPosition = yPosition;
 	}
 	
-	public abstract void update();
+	public float getScale()
+	{
+		return scale;
+	}
 	
-	public abstract void drawBehaviour(Graphics2D g, ViewInfo viewInfo);
+	public int getXPosition()
+	{
+		return xPosition;
+	}
 	
-	public abstract int getId();
-	
-	public abstract String getName();
+	public int getYPosition()
+	{
+		return yPosition;
+	}
 }
