@@ -33,11 +33,11 @@ public class EvolutionMain
 	
 	private File fileToOpen;
 	
-	EvolutionMain(File fileToOpen)
+	private EvolutionMain(File fileToOpen)
 	{
 		world = new World(new Random());
 		world.generateRandomWorld(1024, 1024);
-		simulation = new Simulation(world, 3);
+		simulation = new Simulation(world, 1);
 		manager = new SimulationManager(simulation);
 		
 		this.fileToOpen = fileToOpen;
@@ -47,7 +47,7 @@ public class EvolutionMain
 		while(frame == null || frame.isVisible())
 		{
 			SwingUtilities.invokeLater(() -> simulation.mainLoop());
-			waitAMillisecond();
+			waitAMoment();
 		}
 	}
 	
@@ -71,7 +71,7 @@ public class EvolutionMain
 		});
 	}
 	
-	private void waitAMillisecond()
+	private void waitAMoment()
 	{
 		try
 		{

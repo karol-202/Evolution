@@ -29,10 +29,10 @@ public class World
 	static final int MAX_OFFSET = 10000;
 	
 	private static final double[] TEMPERATURE_OCTAVES = {
-			0.55, 0.3, 0.15
+			0.55, 0.3
 	};
 	private static final double[] HUMIDITY_OCTAVES = {
-			0.5, 0.25, 0.125, 0.0625, 0.03125
+			0.5, 0.25
 	};
 	
 	private static int staticWidth;
@@ -125,7 +125,9 @@ public class World
 		{
 			for(int y = 0; y < height; y++)
 			{
-				float noise = (float) OctaveSimplexNoise.noise((x / (float) humidityFrequency) + xOffset, (y / (float) humidityFrequency) + yOffset, HUMIDITY_OCTAVES);
+				float noiseX = (x / (float) humidityFrequency) + xOffset;
+				float noiseY = (y / (float) humidityFrequency) + yOffset;
+				float noise = (float) OctaveSimplexNoise.noise(noiseX, noiseY, HUMIDITY_OCTAVES);
 				humidity[x][y] = Utils.map(noise, -1, 1, minHumidity, maxHumidity);
 			}
 		}

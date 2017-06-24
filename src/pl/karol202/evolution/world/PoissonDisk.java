@@ -22,7 +22,7 @@ import java.awt.*;
 import java.util.ArrayList;
 import java.util.Random;
 
-public class PoissonDisk
+class PoissonDisk
 {
 	private static Random random = new Random();
 	private static float[][] minDistanceMap;
@@ -33,7 +33,7 @@ public class PoissonDisk
 	private static ArrayList<Vector2> allPoints;
 	private static RandomQueue<Vector2> activePoints;
 	
-	public static ArrayList<Vector2> poissonDisk(float[][] minDistanceMap, float greatestMinDistance, float k)
+	static ArrayList<Vector2> poissonDisk(float[][] minDistanceMap, float greatestMinDistance, float k)
 	{
 		PoissonDisk.minDistanceMap = minDistanceMap;
 		width = minDistanceMap.length;
@@ -45,7 +45,6 @@ public class PoissonDisk
 		activePoints = new RandomQueue<>();
 		
 		addPoint(createRandomPoint());
-		
 		while(!activePoints.isEmpty())
 		{
 			Vector2 currentPoint = activePoints.poll();

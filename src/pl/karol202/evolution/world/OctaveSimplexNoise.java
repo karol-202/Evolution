@@ -15,9 +15,9 @@
  */
 package pl.karol202.evolution.world;
 
-public class OctaveSimplexNoise
+class OctaveSimplexNoise
 {
-	public static double noise(double x, double y, double[] octaves)
+	static double noise(double x, double y, double[] octaves)
 	{
 		double noiseSum = 0;
 		double scale = 1;

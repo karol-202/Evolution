@@ -16,6 +16,7 @@
 package pl.karol202.evolution.ui.settings;
 
 import pl.karol202.evolution.simulation.Simulation;
+import pl.karol202.evolution.utils.Utils;
 import pl.karol202.evolution.world.Plants;
 import pl.karol202.evolution.world.World;
 
@@ -401,6 +402,7 @@ public class SimulationSettingsFrame extends JFrame implements DocumentListener
 		sliderTimeStep.setPaintLabels(true);
 		sliderTimeStep.setPaintTicks(true);
 		sliderTimeStep.setFocusable(false);
+		sliderTimeStep.addChangeListener(e -> updateOKButton());
 		add(sliderTimeStep, new GridBagConstraints(1, 8, 5, 1, 0, 0,
 				GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL, new Insets(3, 0, 0, 5),
 				0, 0));
@@ -514,7 +516,7 @@ public class SimulationSettingsFrame extends JFrame implements DocumentListener
 							  isTextValidFloat(fieldMinTemperature) && isTextValidFloat(fieldMaxTemperature) &&
 							  isTextValidFloat(fieldMinHumidity) && isTextValidFloat(fieldMaxHumidity) &&
 							  isTextValidPositiveFloat(fieldPlantsLeastMinDistance) &&
-							  isTextValidPositiveFloat(fieldPlantsGreatestMinDistance);
+							  isTextValidPositiveFloat(fieldPlantsGreatestMinDistance) && fixTimeStepIfNeeded();
 		buttonOK.setEnabled(dataCorrect);
 	}
 	
@@ -556,5 +558,19 @@ public class SimulationSettingsFrame extends JFrame implements DocumentListener
 		{
 			return false;
 		}
+	}
+	
+	private boolean fixTimeStepIfNeeded()
+	{
+		int width = Integer.parseInt(fieldX.getText());
+		int height = Integer.parseInt(fieldY.getText());
+		int area = width * height;
+		int sqrt = (int) Math.round(Math.sqrt(area));
+		int minTimeStep = Math.round(Utils.map(sqrt, 4096, 8192, 5, 20));
+		if(minTimeStep < 1) minTimeStep = 1;
+		
+		int timeStep = sliderTimeStep.getValue();
+		if(timeStep < minTimeStep) sliderTimeStep.setValue(minTimeStep);
+		return true;
 	}
 }

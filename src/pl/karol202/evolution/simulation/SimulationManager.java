@@ -68,6 +68,7 @@ public class SimulationManager
 		}
 		catch(Exception e)
 		{
+			e.printStackTrace();
 			JOptionPane.showMessageDialog(parentForDialog, "Nie można otworzyć pliku.", "Błąd otwierania", JOptionPane.ERROR_MESSAGE);
 		}
 	}
