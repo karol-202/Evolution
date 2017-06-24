@@ -36,6 +36,7 @@ public class Entity
 	private float x;
 	private float y;
 	private float energy;
+	private float timeOfLife;
 	
 	private Entities entities;
 	private Genotype genotype;
@@ -44,6 +45,7 @@ public class Entity
 	private float speed;
 	private float optimalTemperature;
 	private float optimalHumidity;
+	private float maxTimeOfLife;
 	private float maxEnergy;
 	private float energyPerSecond;
 	private float temperatureEnergyLoss;
@@ -73,6 +75,7 @@ public class Entity
 		this.x = x;
 		this.y = y;
 		this.energy = maxEnergy;
+		this.timeOfLife = 0;
 	}
 	
 	private void setProperties()
@@ -82,6 +85,7 @@ public class Entity
 		speed = genotype.getFloatProperty(GeneType.MSP);
 		optimalTemperature = genotype.getFloatProperty(GeneType.MOT);
 		optimalHumidity = clamp(genotype.getFloatProperty(GeneType.MOH), 0, 100);
+		maxTimeOfLife = clamp(genotype.getFloatProperty(GeneType.MLT), 20, 300);
 		maxEnergy = genotype.getFloatProperty(GeneType.EMX);
 		energyPerSecond = genotype.getFloatProperty(GeneType.EPS);
 		temperatureEnergyLoss = clamp(genotype.getFloatProperty(GeneType.ETL), 0.1f, 2.5f);
@@ -125,6 +129,7 @@ public class Entity
 		componentManager.update();
 		behaviourManager.update();
 		manageEnergy();
+		manageTimeOfLife();
 	}
 	
 	private void manageEnergy()
@@ -149,6 +154,12 @@ public class Entity
 		float difference = Math.abs(humidity - optimalHumidity);
 		float energyLoss = (difference / 20) * humidityEnergyLoss * Simulation.deltaTime;
 		reduceEnergy(energyLoss);
+	}
+	
+	private void manageTimeOfLife()
+	{
+		timeOfLife += Simulation.deltaTime;
+		if(timeOfLife >= maxTimeOfLife) die();
 	}
 	
 	void addEnergy(float energyAmount)
@@ -206,6 +217,16 @@ public class Entity
 		this.energy = energy;
 	}
 	
+	public float getTimeOfLife()
+	{
+		return timeOfLife;
+	}
+	
+	void setTimeOfLife(float timeOfLife)
+	{
+		this.timeOfLife = timeOfLife;
+	}
+	
 	Stream<SavableComponent> getSavableComponentsStream()
 	{
 		return componentManager.getSavableComponentsStream();
@@ -259,6 +280,11 @@ public class Entity
 	public float getOptimalHumidity()
 	{
 		return optimalHumidity;
+	}
+	
+	public float getMaxTimeOfLife()
+	{
+		return maxTimeOfLife;
 	}
 	
 	public float getMaxEnergy()

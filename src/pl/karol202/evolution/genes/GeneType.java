@@ -22,6 +22,7 @@ public enum GeneType
 	MSP(new float[] { 25, 25, 20, 15, 15, 12, 12, 10 }), //Speed
 	MOT(new float[] { 10, -10, 8, -8, 5, -5, 3, -3, 1, -1, 5, 3, 2 }), //Optimal temperature
 	MOH(new float[] { 30, -15, 20, -10, 10, -5, 5, -3, 7, 1, -2, 9, 3 }), //Optimal humidity
+	MLT(new float[] { 60, 45, 45, 30, 30, 15, 15, 15, 15, 10, 10, 5, 5, -30, -20, -20, -15, -15 }), //Max time of life
 	EMX(new float[] { 30, 30, 25, 25, 20, 20, 15, 15, 10, 10, 5, 5 }), //Max energy
 	EPS(new float[] { 1f, 1f, 0.5f, 0.5f, 0.5f, 0.5f, 0.25f, 0.25f }), //Energy usage per second
 	ETL(new float[] { 0.7f, -0.4f, 0.6f, -0.25f, 0.45f, -0.2f, 0.3f, -0.15f, 0.2f, -0.1f, 0.1f }), //Energy loss per second per 20° of optimal and current temperature difference

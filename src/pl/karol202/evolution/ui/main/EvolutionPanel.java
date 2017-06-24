@@ -223,8 +223,9 @@ public class EvolutionPanel extends JPanel implements OnWorldUpdateListener, Mou
 		g.fillOval(bounds.x, bounds.y, bounds.width, bounds.height);
 		setClipping(g);
 		g.setColor(Color.DARK_GRAY);
-		g.setStroke(new BasicStroke(1));
-		g.drawOval(bounds.x, bounds.y, bounds.width, bounds.height);
+		g.setStroke(new BasicStroke(2));
+		int angle = (int) Utils.map(entity.getTimeOfLife(), 0, entity.getMaxTimeOfLife(), -360, 0);
+		g.drawArc(bounds.x, bounds.y, bounds.width, bounds.height, 90, angle);
 		
 		if(selected) drawEntitySightRange(g, sightRangeBounds);
 		if(selected) entity.drawCurrentBehaviour(g, new ViewInfo((float) scale, xPosition, yPosition));

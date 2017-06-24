@@ -62,6 +62,7 @@ public class EntitiesLoader
 		
 		Entity entity = new Entity(entities, x, y, genotype, bornPosition);
 		entity.setEnergy(getFloatAttribute(elementEntity, "energy"));
+		entity.setTimeOfLife(getFloatAttribute(elementEntity, "timeOfLife"));
 		
 		parseEntityComponents(entity, elementEntity);
 		parseEntityBehaviours(entity, elementEntity);
@@ -142,6 +143,7 @@ public class EntitiesLoader
 		setNumberAttribute(elementEntity, "x", entity.getX());
 		setNumberAttribute(elementEntity, "y", entity.getY());
 		setNumberAttribute(elementEntity, "energy", entity.getEnergy());
+		setNumberAttribute(elementEntity, "timeOfLife", entity.getTimeOfLife());
 		elementEntity.appendChild(genesLoader.getGenotypeElement(document, entity.getGenotype()));
 		elementEntity.appendChild(createEntityBornPosition(entity.getBornPosition()));
 		elementEntity.appendChild(createEntityComponentsElement(entity));
