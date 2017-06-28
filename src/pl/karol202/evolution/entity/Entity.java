@@ -16,6 +16,7 @@
 package pl.karol202.evolution.entity;
 
 import pl.karol202.evolution.entity.behaviour.BehaviourManager;
+import pl.karol202.evolution.entity.behaviour.ReproduceBehaviour;
 import pl.karol202.evolution.entity.behaviour.SavableBehaviour;
 import pl.karol202.evolution.genes.Allele;
 import pl.karol202.evolution.genes.Gene;
@@ -23,6 +24,7 @@ import pl.karol202.evolution.genes.GeneType;
 import pl.karol202.evolution.genes.Genotype;
 import pl.karol202.evolution.simulation.Simulation;
 import pl.karol202.evolution.ui.main.ViewInfo;
+import pl.karol202.evolution.utils.Utils;
 import pl.karol202.evolution.utils.Vector2;
 
 import java.awt.*;
@@ -37,6 +39,7 @@ public class Entity
 	private float y;
 	private float energy;
 	private float timeOfLife;
+	private float reproduceCooldown;
 	
 	private Entities entities;
 	private Genotype genotype;
@@ -53,6 +56,9 @@ public class Entity
 	private float eatingSpeed;
 	private float sightRange;
 	private float eatStartEnergyThreshold;
+	private float reproduceReadyEnergyThreshold;
+	private float minReproduceCooldown;
+	private float maxReproduceCooldown;
 	
 	private ComponentManager componentManager;
 	private BehaviourManager behaviourManager;
@@ -76,6 +82,7 @@ public class Entity
 		this.y = y;
 		this.energy = maxEnergy;
 		this.timeOfLife = 0;
+		setReproduceCooldown();
 	}
 	
 	private void setProperties()
@@ -93,6 +100,9 @@ public class Entity
 		eatingSpeed = genotype.getFloatProperty(GeneType.FSP);
 		sightRange = genotype.getFloatProperty(GeneType.CSR);
 		eatStartEnergyThreshold = genotype.getFloatProperty(GeneType.BFS);
+		reproduceReadyEnergyThreshold = genotype.getFloatProperty(GeneType.BRR);
+		minReproduceCooldown = clamp(genotype.getFloatProperty(GeneType.BRN), 15, 45);
+		maxReproduceCooldown = clamp(genotype.getFloatProperty(GeneType.BRX), 60, 83);
 	}
 
 	private Sex getSexFromGenes()
@@ -130,6 +140,7 @@ public class Entity
 		behaviourManager.update();
 		manageEnergy();
 		manageTimeOfLife();
+		reproduceCooldown -= Simulation.deltaTime;
 	}
 	
 	private void manageEnergy()
@@ -182,6 +193,28 @@ public class Entity
 		entities.removeEntity(this);
 	}
 	
+	public boolean shouldEat()
+	{
+		return energy < eatStartEnergyThreshold * maxEnergy;
+	}
+	
+	public boolean isReadyToReproduce()
+	{
+		return energy >= reproduceReadyEnergyThreshold * maxEnergy && reproduceCooldown <= 0;
+	}
+	
+	public ReproduceBehaviour reproduceWith(Entity partner)
+	{
+		ReproduceBehaviour behaviour = behaviourManager.reproduce();
+		behaviour.reproduceWith(partner);
+		return behaviour;
+	}
+	
+	private void setReproduceCooldown()
+	{
+		this.reproduceCooldown = Utils.randomFloat(minReproduceCooldown, maxReproduceCooldown);
+	}
+	
 	public void drawCurrentBehaviour(Graphics2D g, ViewInfo viewInfo)
 	{
 		behaviourManager.drawCurrentBehaviour(g, viewInfo);
@@ -225,6 +258,16 @@ public class Entity
 	void setTimeOfLife(float timeOfLife)
 	{
 		this.timeOfLife = timeOfLife;
+	}
+	
+	float getReproduceCooldown()
+	{
+		return reproduceCooldown;
+	}
+	
+	void setReproduceCooldown(float reproduceCooldown)
+	{
+		this.reproduceCooldown = reproduceCooldown;
 	}
 	
 	Stream<SavableComponent> getSavableComponentsStream()
@@ -320,6 +363,21 @@ public class Entity
 	public float getEatStartEnergyThreshold()
 	{
 		return eatStartEnergyThreshold;
+	}
+	
+	public float getReproduceReadyEnergyThreshold()
+	{
+		return reproduceReadyEnergyThreshold;
+	}
+	
+	public float getMinReproduceCooldown()
+	{
+		return minReproduceCooldown;
+	}
+	
+	public float getMaxReproduceCooldown()
+	{
+		return maxReproduceCooldown;
 	}
 	
 	public Vector2 getBornPosition()

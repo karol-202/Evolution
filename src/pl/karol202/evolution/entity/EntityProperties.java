@@ -23,6 +23,7 @@ public enum EntityProperties
 	Y("Y", e -> toString(e.getY())),
 	ENERGY("Energia", e -> toString(e.getEnergy())),
 	TIME_OF_LIFE("Czas życia", e -> toString(e.getTimeOfLife())),
+	REPRODUCE_COOLDOWN("Czas do rozmnażania", e -> toString(e.getReproduceCooldown())),
 	BEHAVIOUR("Zachowanie", Entity::getCurrentBehaviourName),
 	SEX("Płeć", e -> e.getSex().getName()),
 	SIZE("Wielkość", e -> toString(e.getSize())),
@@ -36,7 +37,10 @@ public enum EntityProperties
 	HUMIDITY_ENERGY_LOSS("Spadek energii (wilgotność)", e -> toString(e.getHumidityEnergyLoss()) + " / 33%"),
 	EATING_SPEED("Szybkość jedzenia", e -> toString(e.getEatingSpeed())),
 	SIGHT_RANGE("Zakres widzenia", e -> toString(e.getSightRange())),
-	EAT_START_ENERGY_THRESHOLD("Energia rozpoczęcia jedzenia", e -> toString(e.getEatStartEnergyThreshold()));
+	EAT_START_ENERGY_THRESHOLD("Energia rozpoczęcia jedzenia", e -> String.format("< %f", e.getEatStartEnergyThreshold())),
+	REPRODUCE_READY_ENERGY_THRESHOLD("Energia rozmnażania", e -> String.format(">= %f", e.getReproduceReadyEnergyThreshold())),
+	MIN_REPRODUCE_COOLDOWN("Min. czas do rozmnażania", e -> toString(e.getMinReproduceCooldown())),
+	MAX_REPRODUCE_COOLDOWN("Maks. czas do rozmnażania", e -> toString(e.getMaxReproduceCooldown()));
 	
 	private String name;
 	private Function<Entity, String> function;

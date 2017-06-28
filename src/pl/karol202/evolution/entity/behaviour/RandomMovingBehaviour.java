@@ -26,7 +26,7 @@ import java.util.Random;
 
 public class RandomMovingBehaviour extends Behaviour
 {
-	public static final float MAX_RANDOM_DISTANCE = 512f;
+	private static final float MAX_RANDOM_DISTANCE = 512f;
 	
 	static final int BEHAVIOUR_ID = 0;
 	

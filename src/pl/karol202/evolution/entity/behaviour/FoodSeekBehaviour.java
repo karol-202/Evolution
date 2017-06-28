@@ -56,6 +56,7 @@ public class FoodSeekBehaviour extends SavableBehaviour
 	@Override
 	public void update()
 	{
+		sight.enablePlantMode();
 		Plant nearestPlant = sight.getNearestPlant();
 		if(nearestPlant != null && hasReachedPlant(nearestPlant)) eat(nearestPlant);
 		else if(eatenPlant != null) eat(eatenPlant);

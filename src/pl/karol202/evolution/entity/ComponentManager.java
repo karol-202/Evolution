@@ -36,7 +36,7 @@ public class ComponentManager
 	void addComponents()
 	{
 		components.add(new EntityMovement(entity));
-		components.add(new EntitySight(entity, entities.getPlants(), entity.getSightRange()));
+		components.add(new EntitySight(entity, entities.getPlants(), entities, entity.getSightRange()));
 		components.add(new EntityNutrition(entity));
 	}
 	

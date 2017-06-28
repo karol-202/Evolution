@@ -15,6 +15,8 @@
  */
 package pl.karol202.evolution.utils;
 
+import java.util.Random;
+
 public class Utils
 {
 	public static float map(float src, float srcMin, float srcMax, float dstMin, float dstMax)
@@ -26,5 +28,11 @@ public class Utils
 	public static float lerp(float value, float v1, float v2)
 	{
 		return v1 + value * (v2 - v1);
+	}
+	
+	public static float randomFloat(float min, float max)
+	{
+		float range = max - min;
+		return (new Random().nextFloat() * range) + min;
 	}
 }

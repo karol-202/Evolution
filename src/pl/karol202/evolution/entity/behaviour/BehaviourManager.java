@@ -44,6 +44,7 @@ public class BehaviourManager
 	{
 		addBehaviour(new RandomMovingBehaviour(entity, componentManager, this));
 		addBehaviour(new FoodSeekBehaviour(entity, componentManager, this));
+		addBehaviour(new ReproduceBehaviour(entity, componentManager, this));
 		
 		currentBehaviour = findBehaviour(RandomMovingBehaviour.BEHAVIOUR_ID);
 	}
@@ -67,23 +68,27 @@ public class BehaviourManager
 	
 	private void chooseBehaviourWhenNotBusy()
 	{
-		if(shouldEat()) currentBehaviour = findBehaviour(FoodSeekBehaviour.BEHAVIOUR_ID);
+		if(entity.shouldEat()) currentBehaviour = findBehaviour(FoodSeekBehaviour.BEHAVIOUR_ID);
+		else if(entity.isReadyToReproduce()) currentBehaviour = findBehaviour(ReproduceBehaviour.BEHAVIOUR_ID);
 		else currentBehaviour = findBehaviour(RandomMovingBehaviour.BEHAVIOUR_ID);
 	}
 	
 	private void chooseBehaviourWhenBusy()
 	{
-		if(shouldEat()) currentBehaviour = findBehaviour(FoodSeekBehaviour.BEHAVIOUR_ID);
-	}
-	
-	private boolean shouldEat()
-	{
-		return entity.getEnergy() < entity.getEatStartEnergyThreshold() * entity.getMaxEnergy();
+		if(currentBehaviour.getId() == FoodSeekBehaviour.BEHAVIOUR_ID) return;
+		if(entity.shouldEat()) currentBehaviour = findBehaviour(FoodSeekBehaviour.BEHAVIOUR_ID);
+		else if(entity.isReadyToReproduce()) currentBehaviour = findBehaviour(ReproduceBehaviour.BEHAVIOUR_ID);
 	}
 	
 	void abandonCurrentBehaviour()
 	{
 		currentBehaviour = null;
+	}
+	
+	public ReproduceBehaviour reproduce()
+	{
+		currentBehaviour = findBehaviour(ReproduceBehaviour.BEHAVIOUR_ID);
+		return (ReproduceBehaviour) currentBehaviour;
 	}
 	
 	public void drawCurrentBehaviour(Graphics2D g, ViewInfo viewInfo)
