@@ -68,6 +68,7 @@ public class Simulation
 	{
 		running = false;
 		listeners.forEach(OnSimulationUpdateListener::onSimulationStateChanged);
+		listeners.forEach(OnSimulationUpdateListener::onSimulationUpdated);
 	}
 	
 	public void mainLoop()
@@ -118,5 +119,11 @@ public class Simulation
 	public void addListener(OnSimulationUpdateListener listener)
 	{
 		listeners.add(listener);
+	}
+	
+	public void notifyChnage()
+	{
+		listeners.forEach(OnSimulationUpdateListener::onSimulationStateChanged);
+		listeners.forEach(OnSimulationUpdateListener::onSimulationUpdated);
 	}
 }

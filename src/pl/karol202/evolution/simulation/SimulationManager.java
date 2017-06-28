@@ -63,6 +63,7 @@ public class SimulationManager
 			else
 			{
 				loader.parseSimulation(file, simulation);
+				simulation.notifyChnage();
 				lastFile = file;
 			}
 		}

@@ -75,7 +75,7 @@ public class BehaviourManager
 	
 	private void chooseBehaviourWhenBusy()
 	{
-		if(currentBehaviour.getId() == FoodSeekBehaviour.BEHAVIOUR_ID) return;
+		if(isEating() || isActivelyReproducing()) return;
 		if(entity.shouldEat()) currentBehaviour = findBehaviour(FoodSeekBehaviour.BEHAVIOUR_ID);
 		else if(entity.isReadyToReproduce()) currentBehaviour = findBehaviour(ReproduceBehaviour.BEHAVIOUR_ID);
 	}
@@ -95,6 +95,21 @@ public class BehaviourManager
 		if(!(currentBehaviour instanceof ReproduceBehaviour))
 			currentBehaviour = getReproduceBehaviour();
 		return (ReproduceBehaviour) currentBehaviour;
+	}
+	
+	private boolean isEating()
+	{
+		return currentBehaviour instanceof FoodSeekBehaviour;
+	}
+	
+	public boolean isReproducing()
+	{
+		return currentBehaviour instanceof ReproduceBehaviour;
+	}
+	
+	public boolean isActivelyReproducing()
+	{
+		return isReproducing() && ((ReproduceBehaviour) currentBehaviour).isBusy();
 	}
 	
 	public void drawCurrentBehaviour(Graphics2D g, ViewInfo viewInfo)

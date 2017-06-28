@@ -201,8 +201,12 @@ public class Entity
 	
 	public boolean isReadyToReproduce()
 	{
-		ReproduceBehaviour reproduce = behaviourManager.getReproduceBehaviour();
-		return energy >= reproduceReadyEnergyThreshold && reproduceCooldown <= 0 && !reproduce.isBusy();
+		return energy >= reproduceReadyEnergyThreshold && reproduceCooldown <= 0 && !behaviourManager.isActivelyReproducing();
+	}
+	
+	public boolean isReproducing()
+	{
+		return behaviourManager.isReproducing();
 	}
 	
 	public ReproduceBehaviour reproduce(Reproduction reproduction)

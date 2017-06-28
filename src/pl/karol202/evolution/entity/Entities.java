@@ -30,6 +30,7 @@ public class Entities
 	private ArrayList<Entity> entities;
 	private int selectedEntity;
 	
+	private ArrayList<Entity> entitiesToAdd;
 	private ArrayList<Entity> entitiesToRemove;
 	
 	public Entities(Random random, World world)
@@ -40,6 +41,7 @@ public class Entities
 		entities = new ArrayList<>();
 		selectedEntity = -1;
 		
+		entitiesToAdd = new ArrayList<>();
 		entitiesToRemove = new ArrayList<>();
 	}
 	
@@ -63,9 +65,9 @@ public class Entities
 		selectedEntity = -1;
 	}
 	
-	void addEntity(Entity entity)
+	public void addEntity(Entity entity)
 	{
-		entities.add(entity);
+		entitiesToAdd.add(entity);
 	}
 	
 	void removeEntity(Entity entity)
@@ -88,7 +90,19 @@ public class Entities
 	public void update()
 	{
 		entities.forEach(Entity::update);
-		
+		addEntities();
+		removeEntities();
+	}
+	
+	private void addEntities()
+	{
+		if(entitiesToAdd.isEmpty()) return;
+		entitiesToAdd.forEach(entities::add);
+		entitiesToAdd.clear();
+	}
+	
+	private void removeEntities()
+	{
 		if(entitiesToRemove.isEmpty()) return;
 		entitiesToRemove.forEach(entities::remove);
 		entitiesToRemove.clear();

@@ -15,25 +15,33 @@
  */
 package pl.karol202.evolution.entity.behaviour;
 
+import pl.karol202.evolution.entity.Entities;
 import pl.karol202.evolution.entity.Entity;
+import pl.karol202.evolution.genes.Genotype;
+import pl.karol202.evolution.simulation.Simulation;
+import pl.karol202.evolution.utils.Utils;
+
+import java.util.Random;
 
 public class Reproduction
 {
-	private static final int REPRODUCING_TIME = 4 * 1000;
+	static final int REPRODUCING_TIME = 4;
 	
+	private Entities entities;
 	private Entity entityA;
 	private Entity entityB;
 	private ReproduceBehaviour behaviourA;
 	private ReproduceBehaviour behaviourB;
 	
-	private long startTime;
+	private int reamingTime;
 	
-	Reproduction(Entity entityA, Entity entityB)
+	Reproduction(Entities entities, Entity entityA, Entity entityB)
 	{
+		this.entities = entities;
 		this.entityA = entityA;
 		this.entityB = entityB;
 		
-		startTime = System.currentTimeMillis();
+		reamingTime = REPRODUCING_TIME;
 		
 		startReproducing();
 	}
@@ -46,6 +54,7 @@ public class Reproduction
 	
 	void update()
 	{
+		reamingTime -= Simulation.deltaTime;
 		if(isReproducingDone())
 		{
 			createChild();
@@ -55,12 +64,17 @@ public class Reproduction
 	
 	private boolean isReproducingDone()
 	{
-		return startTime + REPRODUCING_TIME <= System.currentTimeMillis();
+		return reamingTime <= 0;
 	}
 	
 	private void createChild()
 	{
-		System.out.println("child!!!");
+		float x = Utils.lerp(0.5f, entityA.getX(), entityB.getX());
+		float y = Utils.lerp(0.5f, entityA.getY(), entityB.getY());
+		Genotype genotype = new Genotype(new Random(), entityA.getGenotype(), entityB.getGenotype());
+		
+		Entity entity = new Entity(entities, x, y, genotype);
+		entities.addEntity(entity);
 	}
 	
 	private void endReproducing()
@@ -74,5 +88,10 @@ public class Reproduction
 		if(entity == entityA) return entityB;
 		if(entity == entityB) return entityA;
 		return null;
+	}
+	
+	int getReamingTime()
+	{
+		return reamingTime;
 	}
 }

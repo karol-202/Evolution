@@ -17,6 +17,7 @@ package pl.karol202.evolution.entity.behaviour;
 
 import pl.karol202.evolution.entity.*;
 import pl.karol202.evolution.ui.main.ViewInfo;
+import pl.karol202.evolution.utils.Utils;
 import pl.karol202.evolution.utils.Vector2;
 import pl.karol202.evolution.world.World;
 
@@ -29,6 +30,7 @@ public class ReproduceBehaviour extends SavableBehaviour
 	static final int BEHAVIOUR_ID = 2;
 	
 	private static final float MAX_RANDOM_DISTANCE = 128;
+	private static final float ARC_DIAMETER = 60;
 	
 	private EntityMovement movement;
 	private EntitySight sight;
@@ -56,7 +58,7 @@ public class ReproduceBehaviour extends SavableBehaviour
 		if(partner == null) findPartner();
 		else if(isReproducing()) reproduction.update();
 		else if(!hasReachedPartner()) goToPartner();
-		else reproduction = new Reproduction(entity, partner);
+		else reproduction = new Reproduction(entities, entity, partner);
 	}
 	
 	private void findPartner()
@@ -117,7 +119,8 @@ public class ReproduceBehaviour extends SavableBehaviour
 	{
 		if(isReproducing()) throw new RuntimeException("Trying to reproduce with entity that is already reproducing.");
 		this.reproduction = reproduction;
-		partner = reproduction.getPartner(entity);
+		this.partner = reproduction.getPartner(entity);
+		movement.stop();
 	}
 	
 	void endReproducing()
@@ -133,6 +136,7 @@ public class ReproduceBehaviour extends SavableBehaviour
 	{
 		if(partner == null) return;
 		drawLine(g, viewInfo);
+		if(reproduction != null) drawArc(g, viewInfo);
 	}
 	
 	private void drawLine(Graphics2D g, ViewInfo info)
@@ -148,6 +152,28 @@ public class ReproduceBehaviour extends SavableBehaviour
 	private Point transform(ViewInfo info, float x, float y)
 	{
 		return new Point((int) (x * info.getScale() + info.getXPosition()), (int) (y * info.getScale() + info.getYPosition()));
+	}
+	
+	private void drawArc(Graphics2D g, ViewInfo info)
+	{
+		Rectangle bounds = getReproductionBounds(info);
+		int reamingTime = reproduction.getReamingTime();
+		int angle = (int) Utils.map(reamingTime, Reproduction.REPRODUCING_TIME, 0, 0, -360);
+		
+		g.setColor(Color.MAGENTA);
+		g.setStroke(new BasicStroke(4));
+		g.drawArc(bounds.x, bounds.y, bounds.width, bounds.height, 90, angle);
+	}
+	
+	private Rectangle getReproductionBounds(ViewInfo info)
+	{
+		float worldX = Utils.lerp(0.5f, entity.getX(), partner.getX());
+		float worldY = Utils.lerp(0.5f, entity.getY(), partner.getY());
+		
+		int size = (int) (ARC_DIAMETER * info.getScale());
+		int screenX = (int) ((worldX * info.getScale()) + info.getXPosition() - (size / 2));
+		int screenY = (int) ((worldY * info.getScale()) + info.getYPosition() - (size / 2));
+		return new Rectangle(screenX, screenY, size, size);
 	}
 	
 	@Override
