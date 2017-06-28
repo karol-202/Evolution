@@ -28,7 +28,6 @@ public class ReproduceBehaviour extends SavableBehaviour
 {
 	static final int BEHAVIOUR_ID = 2;
 	
-	private static final int REPRODUCING_TIME = 4 * 1000;
 	private static final float MAX_RANDOM_DISTANCE = 128;
 	
 	private EntityMovement movement;
@@ -37,10 +36,8 @@ public class ReproduceBehaviour extends SavableBehaviour
 	private Entities entities;
 	private Random random;
 	
+	private Reproduction reproduction;
 	private Entity partner;
-	private ReproduceBehaviour partnerBehaviour;
-	private boolean reproducing;
-	private long reproducingStartTime;
 	
 	ReproduceBehaviour(Entity entity, ComponentManager components, BehaviourManager behaviours)
 	{
@@ -57,17 +54,16 @@ public class ReproduceBehaviour extends SavableBehaviour
 	public void update()
 	{
 		if(partner == null) findPartner();
-		else if(reproducing) updateWhileReproducing();
-		else if(!movement.isMoving() && !hasReachedPartner()) goToPartner();
-		else if(hasReachedPartner()) startReproducing();
+		else if(isReproducing()) reproduction.update();
+		else if(!hasReachedPartner()) goToPartner();
+		else reproduction = new Reproduction(entity, partner);
 	}
 	
 	private void findPartner()
 	{
 		sight.enablePartnerMode();
 		partner = getNearestPartnerReadyToReproduce();
-		if(partner != null) partnerBehaviour = partner.reproduceWith(entity);
-		else if(!movement.isMoving()) newRandomTarget();
+		if(partner == null && !movement.isMoving()) newRandomTarget();
 	}
 	
 	private Entity getNearestPartnerReadyToReproduce()
@@ -107,50 +103,51 @@ public class ReproduceBehaviour extends SavableBehaviour
 		movement.setTarget(partner.getX(), partner.getY());
 	}
 	
-	private void startReproducing()
+	private boolean isReproducing()
 	{
-		reproducing = true;
-		reproducingStartTime = System.currentTimeMillis();
+		return reproduction != null;
 	}
 	
-	private void updateWhileReproducing()
+	public boolean isBusy()
 	{
-		if(isReproducingDone() && partnerBehaviour.isReproducingDone())
-		{
-			partnerBehaviour.endReproducing();
-			createChild();
-			endReproducing();
-		}
+		return partner != null;
 	}
 	
-	private boolean isReproducingDone()
+	public void reproduce(Reproduction reproduction)
 	{
-		return reproducingStartTime + REPRODUCING_TIME <= System.currentTimeMillis();
+		if(isReproducing()) throw new RuntimeException("Trying to reproduce with entity that is already reproducing.");
+		this.reproduction = reproduction;
+		partner = reproduction.getPartner(entity);
 	}
 	
-	private void endReproducing()
+	void endReproducing()
 	{
+		reproduction = null;
 		partner = null;
-		partnerBehaviour = null;
-		reproducing = false;
-		reproducingStartTime = -1;
+		entity.setRandomReproduceCooldown();
 		behaviours.abandonCurrentBehaviour();
-	}
-	
-	private void createChild()
-	{
-		System.out.println("child!!!");
-	}
-	
-	public void reproduceWith(Entity entity)
-	{
-		partner = entity;
 	}
 	
 	@Override
 	public void drawBehaviour(Graphics2D g, ViewInfo viewInfo)
 	{
+		if(partner == null) return;
+		drawLine(g, viewInfo);
+	}
+	
+	private void drawLine(Graphics2D g, ViewInfo info)
+	{
+		Point entityPos = transform(info, entity.getX(), entity.getY());
+		Point partnerPos = transform(info, partner.getX(), partner.getY());
 		
+		g.setColor(Color.MAGENTA);
+		g.setStroke(new BasicStroke(4));
+		g.drawLine(entityPos.x, entityPos.y, partnerPos.x, partnerPos.y);
+	}
+	
+	private Point transform(ViewInfo info, float x, float y)
+	{
+		return new Point((int) (x * info.getScale() + info.getXPosition()), (int) (y * info.getScale() + info.getYPosition()));
 	}
 	
 	@Override

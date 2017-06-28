@@ -85,9 +85,15 @@ public class BehaviourManager
 		currentBehaviour = null;
 	}
 	
+	public ReproduceBehaviour getReproduceBehaviour()
+	{
+		return (ReproduceBehaviour) findBehaviour(ReproduceBehaviour.BEHAVIOUR_ID);
+	}
+	
 	public ReproduceBehaviour reproduce()
 	{
-		currentBehaviour = findBehaviour(ReproduceBehaviour.BEHAVIOUR_ID);
+		if(!(currentBehaviour instanceof ReproduceBehaviour))
+			currentBehaviour = getReproduceBehaviour();
 		return (ReproduceBehaviour) currentBehaviour;
 	}
 	

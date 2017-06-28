@@ -17,6 +17,7 @@ package pl.karol202.evolution.entity;
 
 import pl.karol202.evolution.entity.behaviour.BehaviourManager;
 import pl.karol202.evolution.entity.behaviour.ReproduceBehaviour;
+import pl.karol202.evolution.entity.behaviour.Reproduction;
 import pl.karol202.evolution.entity.behaviour.SavableBehaviour;
 import pl.karol202.evolution.genes.Allele;
 import pl.karol202.evolution.genes.Gene;
@@ -82,7 +83,7 @@ public class Entity
 		this.y = y;
 		this.energy = maxEnergy;
 		this.timeOfLife = 0;
-		setReproduceCooldown();
+		setRandomReproduceCooldown();
 	}
 	
 	private void setProperties()
@@ -99,8 +100,8 @@ public class Entity
 		humidityEnergyLoss = clamp(genotype.getFloatProperty(GeneType.EHL), 0.1f, 2f);
 		eatingSpeed = genotype.getFloatProperty(GeneType.FSP);
 		sightRange = genotype.getFloatProperty(GeneType.CSR);
-		eatStartEnergyThreshold = genotype.getFloatProperty(GeneType.BFS);
-		reproduceReadyEnergyThreshold = genotype.getFloatProperty(GeneType.BRR);
+		eatStartEnergyThreshold = genotype.getFloatProperty(GeneType.BFS) * maxEnergy;
+		reproduceReadyEnergyThreshold = genotype.getFloatProperty(GeneType.BRR) * maxEnergy;
 		minReproduceCooldown = clamp(genotype.getFloatProperty(GeneType.BRN), 15, 45);
 		maxReproduceCooldown = clamp(genotype.getFloatProperty(GeneType.BRX), 60, 83);
 	}
@@ -195,22 +196,23 @@ public class Entity
 	
 	public boolean shouldEat()
 	{
-		return energy < eatStartEnergyThreshold * maxEnergy;
+		return energy < eatStartEnergyThreshold;
 	}
 	
 	public boolean isReadyToReproduce()
 	{
-		return energy >= reproduceReadyEnergyThreshold * maxEnergy && reproduceCooldown <= 0;
+		ReproduceBehaviour reproduce = behaviourManager.getReproduceBehaviour();
+		return energy >= reproduceReadyEnergyThreshold && reproduceCooldown <= 0 && !reproduce.isBusy();
 	}
 	
-	public ReproduceBehaviour reproduceWith(Entity partner)
+	public ReproduceBehaviour reproduce(Reproduction reproduction)
 	{
 		ReproduceBehaviour behaviour = behaviourManager.reproduce();
-		behaviour.reproduceWith(partner);
+		behaviour.reproduce(reproduction);
 		return behaviour;
 	}
 	
-	private void setReproduceCooldown()
+	public void setRandomReproduceCooldown()
 	{
 		this.reproduceCooldown = Utils.randomFloat(minReproduceCooldown, maxReproduceCooldown);
 	}
