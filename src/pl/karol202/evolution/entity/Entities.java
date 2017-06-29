@@ -149,4 +149,15 @@ public class Entities
 	{
 		this.selectedEntity = selectedEntity;
 	}
+	
+	public int getEntityIndex(Entity entity)
+	{
+		return entities.indexOf(entity);
+	}
+	
+	public Entity getEntityById(int id)
+	{
+		if(id == -1) return null;
+		return entities.get(id);
+	}
 }

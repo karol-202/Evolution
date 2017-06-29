@@ -58,7 +58,7 @@ public class ReproduceBehaviour extends SavableBehaviour
 		if(partner == null) findPartner();
 		else if(isReproducing()) reproduction.update();
 		else if(!hasReachedPartner()) goToPartner();
-		else reproduction = new Reproduction(entities, entity, partner);
+		else new Reproduction(entities, entity, partner);
 	}
 	
 	private void findPartner()
@@ -103,6 +103,7 @@ public class ReproduceBehaviour extends SavableBehaviour
 	private void goToPartner()
 	{
 		movement.setTarget(partner.getX(), partner.getY());
+		if(partner.isReproducing()) partner = null;
 	}
 	
 	private boolean isReproducing()
@@ -132,11 +133,11 @@ public class ReproduceBehaviour extends SavableBehaviour
 	}
 	
 	@Override
-	public void drawBehaviour(Graphics2D g, ViewInfo viewInfo)
+	public void drawBehaviour(Graphics2D g, ViewInfo viewInfo, boolean selected)
 	{
 		if(partner == null) return;
 		drawLine(g, viewInfo);
-		if(reproduction != null) drawArc(g, viewInfo);
+		if(reproduction != null && selected) drawArc(g, viewInfo);
 	}
 	
 	private void drawLine(Graphics2D g, ViewInfo info)
@@ -144,8 +145,8 @@ public class ReproduceBehaviour extends SavableBehaviour
 		Point entityPos = transform(info, entity.getX(), entity.getY());
 		Point partnerPos = transform(info, partner.getX(), partner.getY());
 		
-		g.setColor(Color.MAGENTA);
 		g.setStroke(new BasicStroke(4));
+		g.setColor(Color.MAGENTA);
 		g.drawLine(entityPos.x, entityPos.y, partnerPos.x, partnerPos.y);
 	}
 	
@@ -157,7 +158,7 @@ public class ReproduceBehaviour extends SavableBehaviour
 	private void drawArc(Graphics2D g, ViewInfo info)
 	{
 		Rectangle bounds = getReproductionBounds(info);
-		int reamingTime = reproduction.getReamingTime();
+		float reamingTime = reproduction.getReamingTime();
 		int angle = (int) Utils.map(reamingTime, Reproduction.REPRODUCING_TIME, 0, 0, -360);
 		
 		g.setColor(Color.MAGENTA);
@@ -185,7 +186,7 @@ public class ReproduceBehaviour extends SavableBehaviour
 	@Override
 	void saveState(BehaviourState state)
 	{
-		
+
 	}
 	
 	@Override

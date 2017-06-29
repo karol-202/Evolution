@@ -25,7 +25,7 @@ import java.util.Random;
 
 public class Reproduction
 {
-	static final int REPRODUCING_TIME = 4;
+	static final float REPRODUCING_TIME = 4;
 	
 	private Entities entities;
 	private Entity entityA;
@@ -33,7 +33,7 @@ public class Reproduction
 	private ReproduceBehaviour behaviourA;
 	private ReproduceBehaviour behaviourB;
 	
-	private int reamingTime;
+	private float reamingTime;
 	
 	Reproduction(Entities entities, Entity entityA, Entity entityB)
 	{
@@ -54,17 +54,19 @@ public class Reproduction
 	
 	void update()
 	{
-		reamingTime -= Simulation.deltaTime;
-		if(isReproducingDone())
-		{
-			createChild();
-			endReproducing();
-		}
+		reamingTime -= Simulation.deltaTime / 2;
+		if(isReproducingDone()) createChild();
+		if(isReproducingDone() || isSomeoneDead()) endReproducing();
 	}
 	
 	private boolean isReproducingDone()
 	{
 		return reamingTime <= 0;
+	}
+	
+	private boolean isSomeoneDead()
+	{
+		return entityA.isDead() || entityB.isDead();
 	}
 	
 	private void createChild()
@@ -87,10 +89,10 @@ public class Reproduction
 	{
 		if(entity == entityA) return entityB;
 		if(entity == entityB) return entityA;
-		return null;
+		throw new RuntimeException("Unknown entity.");
 	}
 	
-	int getReamingTime()
+	float getReamingTime()
 	{
 		return reamingTime;
 	}

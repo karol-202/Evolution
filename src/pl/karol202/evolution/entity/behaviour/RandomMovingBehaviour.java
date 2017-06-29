@@ -62,8 +62,9 @@ public class RandomMovingBehaviour extends Behaviour
 	}
 	
 	@Override
-	public void drawBehaviour(Graphics2D g, ViewInfo viewInfo)
+	public void drawBehaviour(Graphics2D g, ViewInfo viewInfo, boolean selected)
 	{
+		if(!selected) return;
 		Rectangle bounds = getMovementAreaBounds(viewInfo);
 		
 		g.setColor(new Color(0, 0, 0, 32));

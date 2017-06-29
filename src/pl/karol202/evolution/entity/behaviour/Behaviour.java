@@ -33,7 +33,7 @@ public abstract class Behaviour
 	
 	public abstract void update();
 	
-	public abstract void drawBehaviour(Graphics2D g, ViewInfo viewInfo);
+	public abstract void drawBehaviour(Graphics2D g, ViewInfo viewInfo, boolean selected);
 	
 	public abstract int getId();
 	

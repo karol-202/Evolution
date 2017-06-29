@@ -117,7 +117,7 @@ public class FoodSeekBehaviour extends SavableBehaviour
 	}
 	
 	@Override
-	public void drawBehaviour(Graphics2D g, ViewInfo viewInfo) { }
+	public void drawBehaviour(Graphics2D g, ViewInfo viewInfo, boolean selected) { }
 	
 	@Override
 	public void loadState(BehaviourState state)

@@ -215,20 +215,23 @@ public class EvolutionPanel extends JPanel implements OnWorldUpdateListener, Mou
 		if(shouldBeClipped(sightRangeBounds)) return;
 		Rectangle bounds = getEntityBounds(entity);
 		Rectangle maskedBounds = getMaskedEntityBounds(entity);
+		
 		boolean hovered = isHovered(bounds);
 		boolean selected = isSelected(entity);
 		if(hovered) hoveredEntity = entity;
+		
 		g.setColor(hovered || selected ? getEntityFocusedColor(entity) : getEntityStandardColor(entity));
 		g.clipRect(maskedBounds.x, maskedBounds.y, maskedBounds.width, maskedBounds.height);
 		g.fillOval(bounds.x, bounds.y, bounds.width, bounds.height);
+		
 		setClipping(g);
-		g.setColor(entity.isReproducing() ? new Color(0.7921569f, 0.03137255f, 0.6901961f) : Color.DARK_GRAY);
+		g.setColor(entity.isReadyToReproduce() || entity.isInRut() ? new Color(0.7921569f, 0.03137255f, 0.6901961f) : Color.DARK_GRAY);
 		g.setStroke(new BasicStroke(2));
 		int angle = (int) Utils.map(entity.getTimeOfLife(), 0, entity.getMaxTimeOfLife(), -360, 0);
 		g.drawArc(bounds.x, bounds.y, bounds.width, bounds.height, 90, angle);
 		
 		if(selected) drawEntitySightRange(g, sightRangeBounds);
-		if(selected) entity.drawCurrentBehaviour(g, new ViewInfo((float) scale, xPosition, yPosition));
+		entity.drawCurrentBehaviour(g, new ViewInfo((float) scale, xPosition, yPosition), selected);
 	}
 	
 	private Rectangle getEntityBounds(Entity entity)

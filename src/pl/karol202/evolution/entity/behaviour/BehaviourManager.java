@@ -75,7 +75,7 @@ public class BehaviourManager
 	
 	private void chooseBehaviourWhenBusy()
 	{
-		if(isEating() || isActivelyReproducing()) return;
+		if(isEating() || isReproducing()) return;
 		if(entity.shouldEat()) currentBehaviour = findBehaviour(FoodSeekBehaviour.BEHAVIOUR_ID);
 		else if(entity.isReadyToReproduce()) currentBehaviour = findBehaviour(ReproduceBehaviour.BEHAVIOUR_ID);
 	}
@@ -85,7 +85,7 @@ public class BehaviourManager
 		currentBehaviour = null;
 	}
 	
-	public ReproduceBehaviour getReproduceBehaviour()
+	private ReproduceBehaviour getReproduceBehaviour()
 	{
 		return (ReproduceBehaviour) findBehaviour(ReproduceBehaviour.BEHAVIOUR_ID);
 	}
@@ -102,19 +102,19 @@ public class BehaviourManager
 		return currentBehaviour instanceof FoodSeekBehaviour;
 	}
 	
-	public boolean isReproducing()
+	public boolean isInRut()
 	{
 		return currentBehaviour instanceof ReproduceBehaviour;
 	}
 	
-	public boolean isActivelyReproducing()
+	public boolean isReproducing()
 	{
-		return isReproducing() && ((ReproduceBehaviour) currentBehaviour).isBusy();
+		return isInRut() && getReproduceBehaviour().isBusy();
 	}
 	
-	public void drawCurrentBehaviour(Graphics2D g, ViewInfo viewInfo)
+	public void drawCurrentBehaviour(Graphics2D g, ViewInfo viewInfo, boolean selected)
 	{
-		if(currentBehaviour != null) currentBehaviour.drawBehaviour(g, viewInfo);
+		if(currentBehaviour != null) currentBehaviour.drawBehaviour(g, viewInfo, selected);
 	}
 	
 	public String getCurrentBehaviourName()

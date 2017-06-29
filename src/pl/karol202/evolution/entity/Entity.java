@@ -194,6 +194,11 @@ public class Entity
 		entities.removeEntity(this);
 	}
 	
+	public boolean isDead()
+	{
+		return energy < 0 || timeOfLife >= maxTimeOfLife;
+	}
+	
 	public boolean shouldEat()
 	{
 		return energy < eatStartEnergyThreshold;
@@ -201,7 +206,12 @@ public class Entity
 	
 	public boolean isReadyToReproduce()
 	{
-		return energy >= reproduceReadyEnergyThreshold && reproduceCooldown <= 0 && !behaviourManager.isActivelyReproducing();
+		return energy >= reproduceReadyEnergyThreshold && reproduceCooldown <= 0 && !behaviourManager.isReproducing();
+	}
+	
+	public boolean isInRut()
+	{
+		return behaviourManager.isInRut();
 	}
 	
 	public boolean isReproducing()
@@ -221,9 +231,9 @@ public class Entity
 		this.reproduceCooldown = Utils.randomFloat(minReproduceCooldown, maxReproduceCooldown);
 	}
 	
-	public void drawCurrentBehaviour(Graphics2D g, ViewInfo viewInfo)
+	public void drawCurrentBehaviour(Graphics2D g, ViewInfo viewInfo, boolean selected)
 	{
-		behaviourManager.drawCurrentBehaviour(g, viewInfo);
+		behaviourManager.drawCurrentBehaviour(g, viewInfo, selected);
 	}
 	
 	public float getX()
