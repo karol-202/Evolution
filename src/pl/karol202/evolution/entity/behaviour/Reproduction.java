@@ -46,6 +46,16 @@ public class Reproduction
 		startReproducing();
 	}
 	
+	Reproduction(Entities entities, Entity entityA, Entity entityB, float reamingTime)
+	{
+		this.entities = entities;
+		this.entityA = entityA;
+		this.entityB = entityB;
+		this.behaviourA = entityA.getReproduceBehaviour();
+		this.behaviourB = entityB.getReproduceBehaviour();
+		this.reamingTime = reamingTime;
+	}
+	
 	private void startReproducing()
 	{
 		behaviourA = entityA.reproduce(this);
@@ -90,6 +100,16 @@ public class Reproduction
 		if(entity == entityA) return entityB;
 		if(entity == entityB) return entityA;
 		throw new RuntimeException("Unknown entity.");
+	}
+	
+	Entity getEntityA()
+	{
+		return entityA;
+	}
+	
+	Entity getEntityB()
+	{
+		return entityB;
 	}
 	
 	float getReamingTime()

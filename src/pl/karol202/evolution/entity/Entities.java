@@ -70,6 +70,11 @@ public class Entities
 		entitiesToAdd.add(entity);
 	}
 	
+	void addEntityInstantly(Entity entity)
+	{
+		entities.add(entity);
+	}
+	
 	void removeEntity(Entity entity)
 	{
 		if(getSelectedEntity() == entity) selectNothing();
@@ -150,7 +155,7 @@ public class Entities
 		this.selectedEntity = selectedEntity;
 	}
 	
-	public int getEntityIndex(Entity entity)
+	public int getEntityId(Entity entity)
 	{
 		return entities.indexOf(entity);
 	}

@@ -226,6 +226,11 @@ public class Entity
 		return behaviour;
 	}
 	
+	public ReproduceBehaviour getReproduceBehaviour()
+	{
+		return behaviourManager.reproduce();
+	}
+	
 	public void setRandomReproduceCooldown()
 	{
 		this.reproduceCooldown = Utils.randomFloat(minReproduceCooldown, maxReproduceCooldown);

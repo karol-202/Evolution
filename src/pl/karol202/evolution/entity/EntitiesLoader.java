@@ -19,10 +19,14 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 import pl.karol202.evolution.entity.behaviour.BehaviourState;
+import pl.karol202.evolution.entity.behaviour.ReproductionsLoader;
 import pl.karol202.evolution.entity.behaviour.SavableBehaviour;
 import pl.karol202.evolution.genes.GenesLoader;
 import pl.karol202.evolution.genes.Genotype;
 import pl.karol202.evolution.utils.Vector2;
+
+import java.util.HashMap;
+import java.util.Map;
 
 import static pl.karol202.evolution.simulation.SimulationManager.*;
 
@@ -30,6 +34,7 @@ public class EntitiesLoader
 {
 	private Entities entities;
 	private GenesLoader genesLoader;
+	private ReproductionsLoader reproductionsLoader;
 	
 	private Document document;
 	
@@ -37,6 +42,7 @@ public class EntitiesLoader
 	{
 		this.entities = entities;
 		this.genesLoader = new GenesLoader();
+		this.reproductionsLoader = new ReproductionsLoader(entities);
 	}
 	
 	public void parseEntities(Element elementWorld)
@@ -44,12 +50,30 @@ public class EntitiesLoader
 		Element elementEntities = getElement(elementWorld, "entities");
 		entities.setSelectedEntityIndex(getIntAttribute(elementEntities, "selectedEntity"));
 		
+		Element elementReproductions = getElement(elementEntities, "reproductions");
+		
 		entities.removeAllEntities();
+		Map<Element, Entity> entitiesMap = new HashMap<>();
 		NodeList entitiesNodes = elementEntities.getChildNodes();
 		for(int i = 0; i < entitiesNodes.getLength(); i++)
 		{
-			Element elementEntity = (Element) entitiesNodes.item(i);
-			entities.addEntity(parseEntity(elementEntity));
+			Element element = (Element) entitiesNodes.item(i);
+			if(element == elementReproductions) continue;
+			
+			Entity entity = parseEntity(element);
+			entities.addEntityInstantly(entity);
+			entitiesMap.put(element, entity);
+		}
+
+		reproductionsLoader.parseReproductions(elementReproductions);
+		
+		for(Map.Entry<Element, Entity> entry : entitiesMap.entrySet())
+		{
+			Element element = entry.getKey();
+			Entity entity = entry.getValue();
+			
+			parseEntityComponents(entity, element);
+			parseEntityBehaviours(entity, element);
 		}
 	}
 	
@@ -64,9 +88,6 @@ public class EntitiesLoader
 		entity.setEnergy(getFloatAttribute(elementEntity, "energy"));
 		entity.setTimeOfLife(getFloatAttribute(elementEntity, "timeOfLife"));
 		entity.setReproduceCooldown(getFloatAttribute(elementEntity, "reproduceCooldown"));
-		
-		parseEntityComponents(entity, elementEntity);
-		parseEntityBehaviours(entity, elementEntity);
 		
 		return entity;
 	}
@@ -134,6 +155,7 @@ public class EntitiesLoader
 		Element elementEntities = document.createElement("entities");
 		setNumberAttribute(elementEntities, "selectedEntity", entities.getSelectedEntityIndex());
 		entities.getEntitiesStream().map(this::createEntityElement).forEach(elementEntities::appendChild);
+		elementEntities.appendChild(reproductionsLoader.getReproductionsElement(document));
 		
 		return elementEntities;
 	}

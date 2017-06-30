@@ -180,13 +180,15 @@ public class ReproduceBehaviour extends SavableBehaviour
 	@Override
 	public void loadState(BehaviourState state)
 	{
-		
+		reproduction = ReproductionsLoader.instance.loadReproduction(state.getInt("reproduction"));
+		partner = entities.getEntityById(state.getInt("partnerId"));
 	}
 	
 	@Override
 	void saveState(BehaviourState state)
 	{
-
+		state.putInt("reproduction", ReproductionsLoader.instance.saveReproduction(reproduction));
+		state.putInt("partnerId", entities.getEntityId(partner));
 	}
 	
 	@Override
