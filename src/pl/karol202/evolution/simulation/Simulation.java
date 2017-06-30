@@ -15,6 +15,7 @@
  */
 package pl.karol202.evolution.simulation;
 
+import pl.karol202.evolution.stats.Stats;
 import pl.karol202.evolution.world.World;
 
 import java.util.ArrayList;
@@ -41,6 +42,8 @@ public class Simulation
 		this.listeners = new ArrayList<>();
 		this.world = world;
 		this.timeStep = timeStep;
+		
+		Stats.resetStats(world);
 	}
 	
 	public void start()
@@ -67,8 +70,7 @@ public class Simulation
 	void reset()
 	{
 		running = false;
-		listeners.forEach(OnSimulationUpdateListener::onSimulationStateChanged);
-		listeners.forEach(OnSimulationUpdateListener::onSimulationUpdated);
+		notifyChange();
 	}
 	
 	public void mainLoop()
@@ -92,6 +94,7 @@ public class Simulation
 	{
 		Simulation.deltaTime = deltaTime / 1000f;
 		world.update();
+		Stats.instance.update();
 		listeners.forEach(OnSimulationUpdateListener::onSimulationUpdated);
 	}
 	
@@ -121,8 +124,9 @@ public class Simulation
 		listeners.add(listener);
 	}
 	
-	public void notifyChnage()
+	void notifyChange()
 	{
+		Stats.resetStats(world);
 		listeners.forEach(OnSimulationUpdateListener::onSimulationStateChanged);
 		listeners.forEach(OnSimulationUpdateListener::onSimulationUpdated);
 	}

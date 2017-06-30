@@ -191,7 +191,7 @@ public class Entity
 	
 	private void die()
 	{
-		entities.removeEntity(this);
+		entities.removeDeadEntity(this);
 	}
 	
 	public boolean isDead()

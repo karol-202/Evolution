@@ -86,7 +86,7 @@ public class Reproduction
 		Genotype genotype = new Genotype(new Random(), entityA.getGenotype(), entityB.getGenotype());
 		
 		Entity entity = new Entity(entities, x, y, genotype);
-		entities.addEntity(entity);
+		entities.addNewEntity(entity);
 	}
 	
 	private void endReproducing()

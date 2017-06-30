@@ -15,6 +15,7 @@
  */
 package pl.karol202.evolution.entity;
 
+import pl.karol202.evolution.stats.Stats;
 import pl.karol202.evolution.world.Plants;
 import pl.karol202.evolution.world.World;
 
@@ -65,9 +66,10 @@ public class Entities
 		selectedEntity = -1;
 	}
 	
-	public void addEntity(Entity entity)
+	public void addNewEntity(Entity entity)
 	{
 		entitiesToAdd.add(entity);
+		Stats.instance.registerEntityBorn();
 	}
 	
 	void addEntityInstantly(Entity entity)
@@ -75,11 +77,12 @@ public class Entities
 		entities.add(entity);
 	}
 	
-	void removeEntity(Entity entity)
+	void removeDeadEntity(Entity entity)
 	{
 		if(getSelectedEntity() == entity) selectNothing();
 		else if(selectedEntity > entities.indexOf(entity)) selectedEntity--;
 		if(entities.contains(entity)) entitiesToRemove.add(entity);
+		Stats.instance.registerEntityDeath();
 	}
 	
 	float getTemperature(float x, float y)

@@ -19,6 +19,7 @@ import pl.karol202.evolution.simulation.Simulation;
 import pl.karol202.evolution.simulation.SimulationManager;
 import pl.karol202.evolution.ui.entity.EntityPanel;
 import pl.karol202.evolution.ui.settings.SimulationSettingsFrame;
+import pl.karol202.evolution.ui.stats.EntityStatsFrame;
 import pl.karol202.evolution.utils.ButtonHovering;
 import pl.karol202.evolution.utils.ImageLoader;
 import pl.karol202.evolution.utils.Vector2;
@@ -55,6 +56,9 @@ public class EvolutionFrame extends JFrame implements EvolutionPanel.OnViewChang
 	private JRadioButtonMenuItem itemViewTemperature;
 	private JRadioButtonMenuItem itemViewHumidity;
 	private JMenuItem itemCenterView;
+	
+	private JMenu menuStats;
+	private JMenuItem itemEntityStats;
 	
 	private JToolBar toolbar;
 	private JButton buttonStart;
@@ -114,6 +118,7 @@ public class EvolutionFrame extends JFrame implements EvolutionPanel.OnViewChang
 		setJMenuBar(menuBar);
 		initSimulationMenu();
 		initViewMenu();
+		initStatsMenu();
 	}
 	
 	private void initSimulationMenu()
@@ -230,6 +235,21 @@ public class EvolutionFrame extends JFrame implements EvolutionPanel.OnViewChang
 		itemCenterView = new JMenuItem("Wyśrodkuj");
 		itemCenterView.addActionListener(e -> panelEvolution.centerView());
 		menuView.add(itemCenterView);
+	}
+	
+	private void initStatsMenu()
+	{
+		menuStats = new JMenu("Statystyki");
+		menuBar.add(menuStats);
+		
+		initEntityStatsItem();
+	}
+	
+	private void initEntityStatsItem()
+	{
+		itemEntityStats = new JMenuItem("Statystyki istot");
+		itemEntityStats.addActionListener(e -> SwingUtilities.invokeLater(() -> new EntityStatsFrame(world)));
+		menuStats.add(itemEntityStats);
 	}
 	
 	private void initToolbar()
