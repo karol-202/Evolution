@@ -43,7 +43,7 @@ public class Simulation
 		this.world = world;
 		this.timeStep = timeStep;
 		
-		Stats.resetStats(world);
+		Stats.instance.resetStats(world);
 	}
 	
 	public void start()
@@ -70,6 +70,7 @@ public class Simulation
 	void reset()
 	{
 		running = false;
+		Stats.instance.resetStats(world);
 		notifyChange();
 	}
 	
@@ -126,7 +127,6 @@ public class Simulation
 	
 	void notifyChange()
 	{
-		Stats.resetStats(world);
 		listeners.forEach(OnSimulationUpdateListener::onSimulationStateChanged);
 		listeners.forEach(OnSimulationUpdateListener::onSimulationUpdated);
 	}

@@ -16,6 +16,7 @@
 package pl.karol202.evolution.ui.settings;
 
 import pl.karol202.evolution.simulation.Simulation;
+import pl.karol202.evolution.stats.Stats;
 import pl.karol202.evolution.utils.Utils;
 import pl.karol202.evolution.world.Plants;
 import pl.karol202.evolution.world.World;
@@ -453,6 +454,7 @@ public class SimulationSettingsFrame extends JFrame implements DocumentListener
 		int width = Integer.parseInt(fieldX.getText());
 		int height = Integer.parseInt(fieldY.getText());
 		world.generateRandomWorld(width, height);
+		Stats.instance.resetStats(world);
 	}
 	
 	private void applyFrequencies()

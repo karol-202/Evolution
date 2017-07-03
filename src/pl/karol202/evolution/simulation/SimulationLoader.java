@@ -18,6 +18,7 @@ package pl.karol202.evolution.simulation;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.xml.sax.SAXException;
+import pl.karol202.evolution.stats.StatsLoader;
 import pl.karol202.evolution.world.WorldLoader;
 
 import javax.xml.parsers.DocumentBuilder;
@@ -43,12 +44,17 @@ class SimulationLoader
 	private int version;
 	private Simulation simulation;
 	private WorldLoader worldLoader;
+	private StatsLoader statsLoader;
 	
-	void parseSimulation(File file, Simulation simulation) throws IOException, ParserConfigurationException, SAXException
+	SimulationLoader(Simulation simulation)
 	{
 		this.simulation = simulation;
 		this.worldLoader = new WorldLoader(simulation.getWorld());
-		
+		this.statsLoader = new StatsLoader();
+	}
+	
+	void parseSimulation(File file) throws IOException, ParserConfigurationException, SAXException
+	{
 		DocumentBuilderFactory builderFactory = DocumentBuilderFactory.newInstance();
 		DocumentBuilder builder = builderFactory.newDocumentBuilder();
 		document = builder.parse(file);
@@ -61,6 +67,7 @@ class SimulationLoader
 		parseVersion(root);
 		simulation.setTimeStep(getIntAttribute(root, "timeStep"));
 		worldLoader.parseWorld(root);
+		statsLoader.parseStats(root);
 	}
 	
 	private void parseVersion(Element elementRoot)
@@ -74,11 +81,8 @@ class SimulationLoader
 		
 	}
 	
-	void saveSimulation(Simulation simulation, File file) throws ParserConfigurationException, TransformerException, IOException
+	void saveSimulation(File file) throws ParserConfigurationException, TransformerException, IOException
 	{
-		this.simulation = simulation;
-		this.worldLoader = new WorldLoader(simulation.getWorld());
-		
 		DocumentBuilderFactory builderFactory = DocumentBuilderFactory.newInstance();
 		DocumentBuilder builder = builderFactory.newDocumentBuilder();
 		document = builder.newDocument();
@@ -92,6 +96,7 @@ class SimulationLoader
 		setNumberAttribute(rootSimulation, "version", VERSION);
 		setNumberAttribute(rootSimulation, "timeStep", simulation.getTimeStep());
 		rootSimulation.appendChild(worldLoader.getWorldElement(document));
+		rootSimulation.appendChild(statsLoader.getStatsElement(document));
 		return rootSimulation;
 	}
 	

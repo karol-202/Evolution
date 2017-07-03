@@ -20,27 +20,33 @@ import pl.karol202.evolution.world.World;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Stream;
 
 public class Stats
 {
-	public static Stats instance;
+	public static final Stats instance = new Stats();
 	
 	private int initialEntitiesAmount;
 	private List<EntityStatsEvent> entityEvents;
 	private int highestEntitiesAmount;
 	private float currentTime;
 	
-	private Stats(int initialEntitiesAmount)
+	private Stats()
+	{
+		resetStats(0);
+	}
+	
+	public void resetStats(World world)
+	{
+		resetStats(world.getInitialEntitiesAmount());
+	}
+	
+	void resetStats(int initialEntitiesAmount)
 	{
 		this.initialEntitiesAmount = initialEntitiesAmount;
 		this.entityEvents = new ArrayList<>();
 		this.highestEntitiesAmount = initialEntitiesAmount;
 		this.currentTime = 0;
-	}
-	
-	public static void resetStats(World world)
-	{
-		Stats.instance = new Stats(world.getInitialEntitiesAmount());
 	}
 	
 	public void update()
@@ -51,7 +57,7 @@ public class Stats
 	public void registerEntityBorn()
 	{
 		entityEvents.add(new BornEntityStatsEvent(currentTime));
-		highestEntitiesAmount++;
+		highestEntitiesAmount = Math.max(highestEntitiesAmount, getEntitiesAmount(currentTime));
 	}
 	
 	public void registerEntityDeath()
@@ -62,9 +68,29 @@ public class Stats
 	public int getEntitiesAmount(float time)
 	{
 		return initialEntitiesAmount + entityEvents.stream()
-												   .filter(e -> e.getTime() < time)
+												   .filter(e -> e.getTime() <= time)
 												   .mapToInt(EntityStatsEvent::getInfluenceOnAmount)
 												   .sum();
+	}
+	
+	int getInitialEntitiesAmount()
+	{
+		return initialEntitiesAmount;
+	}
+	
+	Stream<EntityStatsEvent> getEntityEventsStream()
+	{
+		return entityEvents.stream();
+	}
+	
+	void clearAllEvents()
+	{
+		entityEvents.clear();
+	}
+	
+	void addEntityEvent(EntityStatsEvent event)
+	{
+		entityEvents.add(event);
 	}
 	
 	public int getHighestEntitiesAmount()
@@ -72,8 +98,18 @@ public class Stats
 		return highestEntitiesAmount;
 	}
 	
+	void setHighestEntitiesAmount(int highestEntitiesAmount)
+	{
+		this.highestEntitiesAmount = highestEntitiesAmount;
+	}
+	
 	public float getCurrentTime()
 	{
 		return currentTime;
+	}
+	
+	void setCurrentTime(float currentTime)
+	{
+		this.currentTime = currentTime;
 	}
 }

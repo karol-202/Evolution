@@ -37,7 +37,7 @@ public class SimulationManager
 	{
 		this.simulation = simulation;
 		this.world = simulation.getWorld();
-		this.loader = new SimulationLoader();
+		this.loader = new SimulationLoader(simulation);
 	}
 	
 	public void newSimulation()
@@ -62,7 +62,7 @@ public class SimulationManager
 																		"Błąd otwierania", JOptionPane.ERROR_MESSAGE);
 			else
 			{
-				loader.parseSimulation(file, simulation);
+				loader.parseSimulation(file);
 				simulation.notifyChange();
 				lastFile = file;
 			}
@@ -96,7 +96,7 @@ public class SimulationManager
 			if(!hasProperExtension(file)) file = fixExtension(file);
 			file.createNewFile();
 			lastFile = file;
-			loader.saveSimulation(simulation, file);
+			loader.saveSimulation(file);
 		}
 		catch(ParserConfigurationException | TransformerException | IOException e)
 		{

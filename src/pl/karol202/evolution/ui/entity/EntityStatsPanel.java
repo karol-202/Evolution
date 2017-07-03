@@ -13,7 +13,7 @@
     See the License for the specific language governing permissions and
     limitations under the License.
  */
-package pl.karol202.evolution.ui.stats;
+package pl.karol202.evolution.ui.entity;
 
 import pl.karol202.evolution.stats.Stats;
 import pl.karol202.evolution.utils.Utils;
@@ -30,13 +30,14 @@ public class EntityStatsPanel extends JPanel
 	private static final int MARGIN = 10;
 	
 	private World world;
+	private Stats stats;
 	
 	private int mouseX;
-	private int mouseY;
 	
 	EntityStatsPanel(World world)
 	{
 		this.world = world;
+		this.stats = Stats.instance;
 		
 		setBackground(Color.WHITE);
 		ToolTipManager.sharedInstance().setInitialDelay(3);
@@ -52,28 +53,29 @@ public class EntityStatsPanel extends JPanel
 			@Override
 			public void mouseExited(MouseEvent e)
 			{
-				EntityStatsPanel.this.onMouseMoved(-1, 0);
+				EntityStatsPanel.this.onMouseMoved(-1);
 			}
 			
 			@Override
 			public void mouseDragged(MouseEvent e)
 			{
-				EntityStatsPanel.this.onMouseMoved(e.getX(), e.getY());
+				EntityStatsPanel.this.onMouseMoved(e.getX());
 			}
 			
 			@Override
 			public void mouseMoved(MouseEvent e)
 			{
-				EntityStatsPanel.this.onMouseMoved(e.getX(), e.getY());
+				EntityStatsPanel.this.onMouseMoved(e.getX());
 			}
 		});
 	}
 	
+	@SuppressWarnings("InfiniteLoopStatement")
 	private void createUpdateThread()
 	{
 		Runnable runnable = () ->
 		{
-			while(EntityStatsPanel.this.isShowing())
+			while(true)
 			{
 				SwingUtilities.invokeLater(() -> EntityStatsPanel.this.update(getTime()));
 				try
@@ -115,7 +117,6 @@ public class EntityStatsPanel extends JPanel
 		g.setColor(Color.GRAY);
 		g.setStroke(new BasicStroke(1));
 		
-		Stats stats = Stats.instance;
 		int previousAmount = world.getInitialEntitiesAmount();
 		for(int x = MARGIN; x < getWidth() - MARGIN; x++)
 		{
@@ -140,18 +141,17 @@ public class EntityStatsPanel extends JPanel
 		g.drawLine(mouseX, MARGIN, mouseX, getHeight() - MARGIN);
 	}
 	
-	private void onMouseMoved(int x, int y)
+	private void onMouseMoved(int x)
 	{
 		mouseX = x;
-		mouseY = y;
 		float time = getTime();
-		if(time < 0 || time > Stats.instance.getCurrentTime() || Stats.instance.getCurrentTime() < 1) mouseX = -1;
+		if(time < 0 || time > stats.getCurrentTime() || stats.getCurrentTime() < 1) mouseX = -1;
 		update(time);
 	}
 	
 	private void update(float time)
 	{
-		int amount = Stats.instance.getEntitiesAmount(time);
+		int amount = stats.getEntitiesAmount(time);
 		
 		if(mouseX != -1) updateTooltip(time, amount);
 		else disableTooltip();
@@ -160,17 +160,12 @@ public class EntityStatsPanel extends JPanel
 	
 	private float getTime()
 	{
-		return Utils.map(mouseX, MARGIN, getWidth() - MARGIN, 0, Stats.instance.getCurrentTime());
+		return Utils.map(mouseX, MARGIN, getWidth() - MARGIN, 0, stats.getCurrentTime());
 	}
 	
 	private void updateTooltip(float time, int amount)
 	{
-		setToolTipText("<html>Czas: " + time + "<br>Istoty: " + amount + "</html>");
-		
-		Point mouse = MouseInfo.getPointerInfo().getLocation();
-		ToolTipManager.sharedInstance().mouseMoved(
-				new MouseEvent(this, -1, System.currentTimeMillis(), 0, mouseX, mouseY,
-							   mouse.x, mouse.y, 0, false, 0));
+		setToolTipText(String.format("<html>Czas: %.2f<br>Istoty: %d</html>", time, amount));
 	}
 	
 	private void disableTooltip()

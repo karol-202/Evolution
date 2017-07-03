@@ -25,8 +25,9 @@ import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import java.awt.*;
 
-public class EntityPanel extends JPanel implements OnWorldUpdateListener, DocumentListener
+public class SidePanel extends JPanel implements OnWorldUpdateListener, DocumentListener
 {
+	private World world;
 	private Entities entities;
 	
 	private JLabel labelTitle;
@@ -41,10 +42,15 @@ public class EntityPanel extends JPanel implements OnWorldUpdateListener, Docume
 	private JTable tableGenotype;
 	private GenotypeTableModel tableModelGenotype;
 	
+	private JPanel panelStats;
+	private EntityStatsPanel panelEntityStats;
+	private JPanel panelEmpty;
+	
 	private int lastEntityIndex;
 	
-	public EntityPanel(World world)
+	public SidePanel(World world)
 	{
+		this.world = world;
 		this.entities = world.getEntities();
 		world.addListener(this);
 		
@@ -52,8 +58,6 @@ public class EntityPanel extends JPanel implements OnWorldUpdateListener, Docume
 		initTitleLabel();
 		initTabbedPane();
 		initSearchField();
-		
-		setPreferredSize(new Dimension(250, (int) getPreferredSize().getHeight()));
 		
 		updateData();
 	}
@@ -73,11 +77,12 @@ public class EntityPanel extends JPanel implements OnWorldUpdateListener, Docume
 		add(tabbedPane, new GridBagConstraints(0, 1, 1, 1, 1, 1,
 				GridBagConstraints.CENTER, GridBagConstraints.BOTH, new Insets(0, 0, 0, 0),
 				0, 0));
-		initEntityTable();
-		initGenotypeTable();
+		initEntityTab();
+		initGenotypeTab();
+		initStatsTab();
 	}
 
-	private void initEntityTable()
+	private void initEntityTab()
 	{
 		tableModelProperties = new EntityTableModel();
 		
@@ -88,7 +93,7 @@ public class EntityPanel extends JPanel implements OnWorldUpdateListener, Docume
 		tabbedPane.addTab("Właściwości", scrollPaneProperties);
 	}
 	
-	private void initGenotypeTable()
+	private void initGenotypeTab()
 	{
 		tableModelGenotype = new GenotypeTableModel();
 		
@@ -99,12 +104,28 @@ public class EntityPanel extends JPanel implements OnWorldUpdateListener, Docume
 		tabbedPane.addTab("Genotyp", scrollPaneGenotype);
 	}
 	
+	private void initStatsTab()
+	{
+		panelStats = new JPanel(new GridBagLayout());
+		tabbedPane.addTab("Statystyki", panelStats);
+		
+		panelEntityStats = new EntityStatsPanel(world);
+		panelStats.add(panelEntityStats, new GridBagConstraints(0, 0, 1, 1,
+				1, 0.2, GridBagConstraints.CENTER, GridBagConstraints.BOTH,
+				new Insets(0, 0, 0, 0), 0, 0));
+		
+		panelEmpty = new JPanel();
+		panelStats.add(panelEmpty, new GridBagConstraints(0, 1, 1, 1, 1, 0.8,
+				GridBagConstraints.CENTER, GridBagConstraints.BOTH, new Insets(0, 0, 0, 0),
+				0, 0));
+	}
+	
 	private void initSearchField()
 	{
 		fieldSearch = new JTextField();
 		fieldSearch.getDocument().addDocumentListener(this);
 		add(fieldSearch, new GridBagConstraints(0, 2, 1, 1, 1, 0,
-				GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL, new Insets(0, 0, 0, 0),
+				GridBagConstraints.NORTH, GridBagConstraints.HORIZONTAL, new Insets(0, 0, 0, 0),
 				0, 0));
 	}
 	

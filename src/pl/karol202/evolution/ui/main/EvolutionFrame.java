@@ -17,9 +17,8 @@ package pl.karol202.evolution.ui.main;
 
 import pl.karol202.evolution.simulation.Simulation;
 import pl.karol202.evolution.simulation.SimulationManager;
-import pl.karol202.evolution.ui.entity.EntityPanel;
+import pl.karol202.evolution.ui.entity.SidePanel;
 import pl.karol202.evolution.ui.settings.SimulationSettingsFrame;
-import pl.karol202.evolution.ui.stats.EntityStatsFrame;
 import pl.karol202.evolution.utils.ButtonHovering;
 import pl.karol202.evolution.utils.ImageLoader;
 import pl.karol202.evolution.utils.Vector2;
@@ -36,7 +35,9 @@ public class EvolutionFrame extends JFrame implements EvolutionPanel.OnViewChang
 	private Simulation simulation;
 	private World world;
 	
+	private JSplitPane splitPane;
 	private EvolutionPanel panelEvolution;
+	private SidePanel panelSide;
 	
 	private JMenuBar menuBar;
 	
@@ -57,9 +58,6 @@ public class EvolutionFrame extends JFrame implements EvolutionPanel.OnViewChang
 	private JRadioButtonMenuItem itemViewHumidity;
 	private JMenuItem itemCenterView;
 	
-	private JMenu menuStats;
-	private JMenuItem itemEntityStats;
-	
 	private JToolBar toolbar;
 	private JButton buttonStart;
 	private JButton buttonPause;
@@ -73,8 +71,6 @@ public class EvolutionFrame extends JFrame implements EvolutionPanel.OnViewChang
 	private ButtonHovering buttonMinus;
 	private ButtonHovering buttonPlus;
 	
-	private EntityPanel panelEntity;
-	
 	private long lastRepaintTime;
 	
 	public EvolutionFrame(SimulationManager manager, Simulation simulation)
@@ -87,11 +83,11 @@ public class EvolutionFrame extends JFrame implements EvolutionPanel.OnViewChang
 		simulation.addListener(this);
 		
 		setFrameParams();
-		initEvolutionPanel();
+		initSplitPane();
 		initMenu();
 		initToolbar();
 		initBottomPanel();
-		initEntityPanel();
+		initSidePanel();
 		
 		updateMenu();
 		updateEntitiesLabel();
@@ -106,10 +102,27 @@ public class EvolutionFrame extends JFrame implements EvolutionPanel.OnViewChang
 		setVisible(true);
 	}
 	
+	private void initSplitPane()
+	{
+		splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, true);
+		splitPane.setDividerLocation(getWidth() - 250);
+		initEvolutionPanel();
+		initSidePanel();
+		add(splitPane, BorderLayout.CENTER);
+	}
+	
 	private void initEvolutionPanel()
 	{
 		panelEvolution = new EvolutionPanel(world, this);
-		add(panelEvolution, BorderLayout.CENTER);
+		panelEvolution.setMinimumSize(new Dimension(100, 0));
+		splitPane.setLeftComponent(panelEvolution);
+	}
+	
+	private void initSidePanel()
+	{
+		panelSide = new SidePanel(world);
+		panelSide.setMinimumSize(new Dimension(200, 0));
+		splitPane.setRightComponent(panelSide);
 	}
 	
 	private void initMenu()
@@ -118,7 +131,6 @@ public class EvolutionFrame extends JFrame implements EvolutionPanel.OnViewChang
 		setJMenuBar(menuBar);
 		initSimulationMenu();
 		initViewMenu();
-		initStatsMenu();
 	}
 	
 	private void initSimulationMenu()
@@ -237,21 +249,6 @@ public class EvolutionFrame extends JFrame implements EvolutionPanel.OnViewChang
 		menuView.add(itemCenterView);
 	}
 	
-	private void initStatsMenu()
-	{
-		menuStats = new JMenu("Statystyki");
-		menuBar.add(menuStats);
-		
-		initEntityStatsItem();
-	}
-	
-	private void initEntityStatsItem()
-	{
-		itemEntityStats = new JMenuItem("Statystyki istot");
-		itemEntityStats.addActionListener(e -> SwingUtilities.invokeLater(() -> new EntityStatsFrame(world)));
-		menuStats.add(itemEntityStats);
-	}
-	
 	private void initToolbar()
 	{
 		toolbar = new JToolBar("Pasek narzędzi");
@@ -350,13 +347,6 @@ public class EvolutionFrame extends JFrame implements EvolutionPanel.OnViewChang
 				0, 0));
 	}
 	
-	private void initEntityPanel()
-	{
-		panelEntity = new EntityPanel(world);
-		panelEntity.setBorder(BorderFactory.createMatteBorder(0, 1, 0, 0, Color.DARK_GRAY));
-		add(panelEntity, BorderLayout.EAST);
-	}
-	
 	private void updateMenu()
 	{
 		itemStart.setEnabled(!simulation.isRunning());
@@ -401,7 +391,7 @@ public class EvolutionFrame extends JFrame implements EvolutionPanel.OnViewChang
 	@Override
 	public void onEntitySelectionChanged()
 	{
-		panelEntity.updateData();
+		panelSide.updateData();
 	}
 	
 	@Override
@@ -413,7 +403,7 @@ public class EvolutionFrame extends JFrame implements EvolutionPanel.OnViewChang
 	@Override
 	public void onSimulationUpdated()
 	{
-		panelEntity.updateData();
+		panelSide.updateData();
 		updateEntitiesLabel();
 		repaintPanel();
 	}
