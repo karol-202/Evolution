@@ -29,6 +29,8 @@ public enum GeneType
 	EHL(new float[] { 0.7f, -0.4f, 0.6f, -0.25f, 0.45f, -0.2f, 0.3f, -0.15f, 0.2f, -0.1f, 0.1f }), //Energy loss per second per 33% of optimal and current humidity difference
 	FSP(new float[] { 4, 4, 3, 3, 2, 2, 1, 1 }), //Eating speed
 	CSR(new float[] { 20, 20, 15, 15, 15, 15, 10, 10, 10, 10, 10, 10, 8, 8, 8, 5, 5, 5, 1 }), //Sight range
+	COE(), //Has entity smell?
+	COR(new float[] { 80, 70, 70, 50, 50, 40, 40, 30, 30, 30, 20, 10, 10, -50, -30, -30, -15, -5 }), //Smell range
 	BFS(new float[] { 0.1f, 0.1f, 0.05f, 0.05f, 0.05f, 0.05f, 0.04f, 0.03f, 0.03f }), //Eat start energy threshold
 	BRR(new float[] { 0.12f, 0.1f, 0.1f, 0.05f, 0.05f, 0.05f, 0.05f, 0.04f, 0.03f }), //Reproduce ready energy threshold
 	BRN(new float[] { 10, 10, 7, 5, 5, 3, 3, 2, -5, -5, -3, -2 }), //Min reproduce cooldown

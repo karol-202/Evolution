@@ -211,10 +211,11 @@ public class EvolutionPanel extends JPanel implements OnWorldUpdateListener, Mou
 	
 	private void drawEntity(Graphics2D g, Entity entity)
 	{
-		Rectangle sightRangeBounds = getEntitySightRangeBounds(entity);
-		if(shouldBeClipped(sightRangeBounds)) return;
+		Rectangle smellRangeBounds = getEntityRangeBounds(entity, entity.getSmellRange());
+		if(shouldBeClipped(smellRangeBounds)) return;
 		Rectangle bounds = getEntityBounds(entity);
 		Rectangle maskedBounds = getMaskedEntityBounds(entity);
+		Rectangle sightRangeBounds = getEntityRangeBounds(entity, entity.getSightRange());
 		
 		boolean hovered = isHovered(bounds);
 		boolean selected = isSelected(entity);
@@ -231,6 +232,7 @@ public class EvolutionPanel extends JPanel implements OnWorldUpdateListener, Mou
 		g.drawArc(bounds.x, bounds.y, bounds.width, bounds.height, 90, angle);
 		
 		if(selected) drawEntitySightRange(g, sightRangeBounds);
+		if(selected && entity.hasSmell()) drawEntitySmellRange(g, smellRangeBounds);
 		entity.drawCurrentBehaviour(g, new ViewInfo((float) scale, xPosition, yPosition), selected);
 	}
 	
@@ -289,12 +291,19 @@ public class EvolutionPanel extends JPanel implements OnWorldUpdateListener, Mou
 		g.drawOval(bounds.x, bounds.y, bounds.width, bounds.height);
 	}
 	
-	private Rectangle getEntitySightRangeBounds(Entity entity)
+	private void drawEntitySmellRange(Graphics2D g, Rectangle bounds)
 	{
-		float range = (float) (entity.getSightRange() * scale);
-		int x = (int) ((entity.getX() * scale) + xPosition - range);
-		int y = (int) ((entity.getY() * scale) + yPosition - range);
-		return new Rectangle(x, y, (int) range * 2, (int) range * 2);
+		g.setColor(new Color(213, 210, 0));
+		g.setStroke(new BasicStroke(2));
+		g.drawOval(bounds.x, bounds.y, bounds.width, bounds.height);
+	}
+	
+	private Rectangle getEntityRangeBounds(Entity entity, float range)
+	{
+		float size = (float) (range * scale);
+		int x = (int) ((entity.getX() * scale) + xPosition - size);
+		int y = (int) ((entity.getY() * scale) + yPosition - size);
+		return new Rectangle(x, y, (int) size * 2, (int) size * 2);
 	}
 	
 	private void drawPlants(Graphics2D g)

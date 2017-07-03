@@ -37,6 +37,8 @@ public enum EntityProperties
 	HUMIDITY_ENERGY_LOSS("Spadek energii (wilgotność)", e -> toString(e.getHumidityEnergyLoss()) + " / 33%"),
 	EATING_SPEED("Szybkość jedzenia", e -> toString(e.getEatingSpeed())),
 	SIGHT_RANGE("Zakres widzenia", e -> toString(e.getSightRange())),
+	SMELL("Obecność węchu", e -> e.hasSmell() ? "Tak" : "Nie"),
+	SMELL_RANGE("Zakres węchu", e -> e.hasSmell() ? toString(e.getSmellRange()) : "-"),
 	EAT_START_ENERGY_THRESHOLD("Energia rozpoczęcia jedzenia", e -> String.format("< %f", e.getEatStartEnergyThreshold())),
 	REPRODUCE_READY_ENERGY_THRESHOLD("Energia rozmnażania", e -> String.format(">= %f", e.getReproduceReadyEnergyThreshold())),
 	MIN_REPRODUCE_COOLDOWN("Min. czas do rozmnażania", e -> toString(e.getMinReproduceCooldown())),

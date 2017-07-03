@@ -34,6 +34,7 @@ public class ReproduceBehaviour extends SavableBehaviour
 	
 	private EntityMovement movement;
 	private EntitySight sight;
+	private EntitySmell smell;
 	
 	private Entities entities;
 	private Random random;
@@ -47,6 +48,7 @@ public class ReproduceBehaviour extends SavableBehaviour
 		
 		movement = (EntityMovement) components.getComponent(EntityMovement.class);
 		sight = (EntitySight) components.getComponent(EntitySight.class);
+		smell = (EntitySmell) components.getComponent(EntitySmell.class);
 		
 		entities = sight.getEntities();
 		random = new Random();
@@ -70,7 +72,8 @@ public class ReproduceBehaviour extends SavableBehaviour
 	
 	private Entity getNearestPartnerReadyToReproduce()
 	{
-		Stream<Entity> potentialPartners = sight.getPotentialPartners();
+		Stream<Entity> potentialPartners = sight.getSightRange() > smell.getSmellRange() ?
+										   sight.getPotentialPartners() : smell.getPotentialPartners();
 		if(potentialPartners == null) return null;
 		return potentialPartners.filter(Entity::isReadyToReproduce)
 								.min(sight.getEntitiesDistanceComparator())

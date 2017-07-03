@@ -43,7 +43,6 @@ public class EntitySight extends Component
 		super(entity);
 		this.plants = plants;
 		this.entities = entities;
-		
 		this.sightRange = sightRange;
 	}
 	
@@ -129,5 +128,10 @@ public class EntitySight extends Component
 	public Entities getEntities()
 	{
 		return entities;
+	}
+	
+	public float getSightRange()
+	{
+		return sightRange;
 	}
 }

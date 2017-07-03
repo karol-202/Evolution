@@ -26,18 +26,20 @@ import java.awt.event.MouseEvent;
 
 public class EntityStatsPanel extends JPanel
 {
-	private static final int REPAINT_TIME = 10;
+	private static final int REPAINT_TIME = 15;
 	private static final int MARGIN = 10;
 	
 	private World world;
 	
 	private int mouseX;
+	private int mouseY;
 	
 	EntityStatsPanel(World world)
 	{
 		this.world = world;
 		
 		setBackground(Color.WHITE);
+		ToolTipManager.sharedInstance().setInitialDelay(3);
 		
 		setMouseListener();
 		createUpdateThread();
@@ -50,33 +52,35 @@ public class EntityStatsPanel extends JPanel
 			@Override
 			public void mouseExited(MouseEvent e)
 			{
-				EntityStatsPanel.this.onMouseMoved(-1);
+				EntityStatsPanel.this.onMouseMoved(-1, 0);
 			}
 			
 			@Override
 			public void mouseDragged(MouseEvent e)
 			{
-				EntityStatsPanel.this.onMouseMoved(e.getX());
+				EntityStatsPanel.this.onMouseMoved(e.getX(), e.getY());
 			}
 			
 			@Override
 			public void mouseMoved(MouseEvent e)
 			{
-				EntityStatsPanel.this.onMouseMoved(e.getX());
+				EntityStatsPanel.this.onMouseMoved(e.getX(), e.getY());
 			}
 		});
 	}
 	
 	private void createUpdateThread()
 	{
-		Runnable runnable = () -> {
-			while(EntityStatsPanel.this.isVisible())
+		Runnable runnable = () ->
+		{
+			while(EntityStatsPanel.this.isShowing())
 			{
-				SwingUtilities.invokeLater(EntityStatsPanel.this::repaint);
+				SwingUtilities.invokeLater(() -> EntityStatsPanel.this.update(getTime()));
 				try
 				{
 					Thread.sleep(REPAINT_TIME);
-				} catch(InterruptedException e)
+				}
+				catch(InterruptedException e)
 				{
 					e.printStackTrace();
 				}
@@ -136,20 +140,41 @@ public class EntityStatsPanel extends JPanel
 		g.drawLine(mouseX, MARGIN, mouseX, getHeight() - MARGIN);
 	}
 	
-	private void onMouseMoved(int x)
+	private void onMouseMoved(int x, int y)
 	{
 		mouseX = x;
-		
-		float time = Utils.map(x, MARGIN, getWidth() - MARGIN, 0, Stats.instance.getCurrentTime());
+		mouseY = y;
+		float time = getTime();
 		if(time < 0 || time > Stats.instance.getCurrentTime() || Stats.instance.getCurrentTime() < 1) mouseX = -1;
+		update(time);
+	}
+	
+	private void update(float time)
+	{
 		int amount = Stats.instance.getEntitiesAmount(time);
 		
-		updateToolTip(time, amount);
+		if(mouseX != -1) updateTooltip(time, amount);
+		else disableTooltip();
 		repaint();
 	}
 	
-	private void updateToolTip(float time, int amount)
+	private float getTime()
+	{
+		return Utils.map(mouseX, MARGIN, getWidth() - MARGIN, 0, Stats.instance.getCurrentTime());
+	}
+	
+	private void updateTooltip(float time, int amount)
 	{
 		setToolTipText("<html>Czas: " + time + "<br>Istoty: " + amount + "</html>");
+		
+		Point mouse = MouseInfo.getPointerInfo().getLocation();
+		ToolTipManager.sharedInstance().mouseMoved(
+				new MouseEvent(this, -1, System.currentTimeMillis(), 0, mouseX, mouseY,
+							   mouse.x, mouse.y, 0, false, 0));
+	}
+	
+	private void disableTooltip()
+	{
+		setToolTipText(null);
 	}
 }

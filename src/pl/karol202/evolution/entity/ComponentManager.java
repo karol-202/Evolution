@@ -37,6 +37,7 @@ public class ComponentManager
 	{
 		components.add(new EntityMovement(entity));
 		components.add(new EntitySight(entity, entities.getPlants(), entities, entity.getSightRange()));
+		components.add(new EntitySmell(entity, entities, entity.getSmellRange()));
 		components.add(new EntityNutrition(entity));
 	}
 	

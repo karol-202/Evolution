@@ -56,6 +56,8 @@ public class Entity
 	private float humidityEnergyLoss;
 	private float eatingSpeed;
 	private float sightRange;
+	private boolean smell;
+	private float smellRange;
 	private float eatStartEnergyThreshold;
 	private float reproduceReadyEnergyThreshold;
 	private float minReproduceCooldown;
@@ -100,10 +102,12 @@ public class Entity
 		humidityEnergyLoss = clamp(genotype.getFloatProperty(GeneType.EHL), 0.1f, 2f);
 		eatingSpeed = genotype.getFloatProperty(GeneType.FSP);
 		sightRange = genotype.getFloatProperty(GeneType.CSR);
+		smell = genotype.getBooleanProperty(GeneType.COE);
+		smellRange = clamp(genotype.getFloatProperty(GeneType.COR), 120, 450);
 		eatStartEnergyThreshold = genotype.getFloatProperty(GeneType.BFS) * maxEnergy;
 		reproduceReadyEnergyThreshold = genotype.getFloatProperty(GeneType.BRR) * maxEnergy;
 		minReproduceCooldown = clamp(genotype.getFloatProperty(GeneType.BRN), 15, 45);
-		maxReproduceCooldown = clamp(genotype.getFloatProperty(GeneType.BRX), 60, 83);
+		maxReproduceCooldown = clamp(genotype.getFloatProperty(GeneType.BRX), 50, 83);
 	}
 
 	private Sex getSexFromGenes()
@@ -379,6 +383,16 @@ public class Entity
 	public float getSightRange()
 	{
 		return sightRange;
+	}
+	
+	public boolean hasSmell()
+	{
+		return smell;
+	}
+	
+	public float getSmellRange()
+	{
+		return smellRange;
 	}
 	
 	public float getEatStartEnergyThreshold()
