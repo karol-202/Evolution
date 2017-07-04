@@ -31,6 +31,7 @@ public enum EntityProperties
 	OPTIMAL_TEMPERATURE("Temperatura optymalna", e -> toString(e.getOptimalTemperature())),
 	OPTIMAL_HUMIDITY("Wilgotność optymalna", e -> toString(e.getOptimalHumidity())),
 	MAX_TIME_OF_LIFE("Docelowy czas życia", e -> toString(e.getMaxTimeOfLife())),
+	ADOLESCENCE_TIME("Czas dojrzewania", e -> toString(e.getAdolescenceTime())),
 	MAX_ENERGY("Maksymalna energia", e -> toString(e.getMaxEnergy())),
 	ENERGY_PER_SECOND("Użycie energii / s", e -> toString(e.getEnergyPerSecond())),
 	TEMPERATURE_ENERGY_LOSS("Spadek energii (temperatura)", e -> toString(e.getTemperatureEnergyLoss()) + " / 20°"),

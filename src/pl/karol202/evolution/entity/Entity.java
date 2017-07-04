@@ -50,6 +50,7 @@ public class Entity
 	private float optimalTemperature;
 	private float optimalHumidity;
 	private float maxTimeOfLife;
+	private float adolescenceTime;
 	private float maxEnergy;
 	private float energyPerSecond;
 	private float temperatureEnergyLoss;
@@ -85,7 +86,7 @@ public class Entity
 		this.y = y;
 		this.energy = maxEnergy;
 		this.timeOfLife = 0;
-		setRandomReproduceCooldown();
+		this.reproduceCooldown = adolescenceTime;
 	}
 	
 	private void setProperties()
@@ -96,6 +97,7 @@ public class Entity
 		optimalTemperature = genotype.getFloatProperty(GeneType.MOT);
 		optimalHumidity = clamp(genotype.getFloatProperty(GeneType.MOH), 0, 100);
 		maxTimeOfLife = clamp(genotype.getFloatProperty(GeneType.MLT), 20, 300);
+		adolescenceTime = (genotype.getFloatProperty(GeneType.MAT) + 0.18f) * maxTimeOfLife;
 		maxEnergy = genotype.getFloatProperty(GeneType.EMX);
 		energyPerSecond = genotype.getFloatProperty(GeneType.EPS);
 		temperatureEnergyLoss = clamp(genotype.getFloatProperty(GeneType.ETL), 0.1f, 2.5f);
@@ -353,6 +355,11 @@ public class Entity
 	public float getMaxTimeOfLife()
 	{
 		return maxTimeOfLife;
+	}
+	
+	public float getAdolescenceTime()
+	{
+		return adolescenceTime;
 	}
 	
 	public float getMaxEnergy()
