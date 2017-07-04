@@ -261,7 +261,7 @@ public class EvolutionPanel extends JPanel implements OnWorldUpdateListener, Mou
 	
 	private boolean isSelected(Entity entity)
 	{
-		return entity == entities.getSelectedEntity();
+		return entities.isEntitySelected(entity);
 	}
 	
 	private Color getEntityStandardColor(Entity entity)

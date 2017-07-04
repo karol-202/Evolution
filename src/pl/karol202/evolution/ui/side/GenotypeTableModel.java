@@ -13,7 +13,7 @@
     See the License for the specific language governing permissions and
     limitations under the License.
  */
-package pl.karol202.evolution.ui.entity;
+package pl.karol202.evolution.ui.side;
 
 import pl.karol202.evolution.entity.Entity;
 import pl.karol202.evolution.genes.Gene;

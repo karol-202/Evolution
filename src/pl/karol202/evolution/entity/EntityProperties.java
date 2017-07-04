@@ -15,43 +15,55 @@
  */
 package pl.karol202.evolution.entity;
 
+import pl.karol202.evolution.utils.ToFloatFunction;
+
 import java.util.function.Function;
 
 public enum EntityProperties
 {
-	X("X", e -> toString(e.getX())),
-	Y("Y", e -> toString(e.getY())),
-	ENERGY("Energia", e -> toString(e.getEnergy())),
-	TIME_OF_LIFE("Czas życia", e -> toString(e.getTimeOfLife())),
-	REPRODUCE_COOLDOWN("Czas do rozmnażania", e -> toString(e.getReproduceCooldown())),
+	X("X", Entity::getX, null),
+	Y("Y", Entity::getY, null),
+	ENERGY("Energia", Entity::getEnergy, null),
+	TIME_OF_LIFE("Czas życia", Entity::getTimeOfLife, null),
+	REPRODUCE_COOLDOWN("Czas do rozmnażania", Entity::getReproduceCooldown, null),
 	BEHAVIOUR("Zachowanie", Entity::getCurrentBehaviourName),
 	SEX("Płeć", e -> e.getSex().getName()),
-	SIZE("Wielkość", e -> toString(e.getSize())),
-	SPEED("Szybkość", e -> toString(e.getSpeed())),
-	OPTIMAL_TEMPERATURE("Temperatura optymalna", e -> toString(e.getOptimalTemperature())),
-	OPTIMAL_HUMIDITY("Wilgotność optymalna", e -> toString(e.getOptimalHumidity())),
-	MAX_TIME_OF_LIFE("Docelowy czas życia", e -> toString(e.getMaxTimeOfLife())),
-	ADOLESCENCE_TIME("Czas dojrzewania", e -> toString(e.getAdolescenceTime())),
-	MAX_ENERGY("Maksymalna energia", e -> toString(e.getMaxEnergy())),
-	ENERGY_PER_SECOND("Użycie energii / s", e -> toString(e.getEnergyPerSecond())),
-	TEMPERATURE_ENERGY_LOSS("Spadek energii (temperatura)", e -> toString(e.getTemperatureEnergyLoss()) + " / 20°"),
-	HUMIDITY_ENERGY_LOSS("Spadek energii (wilgotność)", e -> toString(e.getHumidityEnergyLoss()) + " / 33%"),
-	EATING_SPEED("Szybkość jedzenia", e -> toString(e.getEatingSpeed())),
-	SIGHT_RANGE("Zakres widzenia", e -> toString(e.getSightRange())),
+	SIZE("Wielkość", Entity::getSize, null),
+	SPEED("Szybkość", Entity::getSpeed, null),
+	OPTIMAL_TEMPERATURE("Temperatura optymalna", Entity::getOptimalTemperature, null),
+	OPTIMAL_HUMIDITY("Wilgotność optymalna", Entity::getOptimalHumidity, null),
+	MAX_TIME_OF_LIFE("Docelowy czas życia", Entity::getMaxTimeOfLife, null),
+	ADOLESCENCE_TIME("Czas dojrzewania", Entity::getAdolescenceTime, null),
+	MAX_ENERGY("Maksymalna energia", Entity::getMaxEnergy, null),
+	ENERGY_PER_SECOND("Użycie energii / s", Entity::getEnergyPerSecond, null),
+	TEMPERATURE_ENERGY_LOSS("Spadek energii (temperatura)", e -> String.format("%f / 20°", e.getTemperatureEnergyLoss())),
+	HUMIDITY_ENERGY_LOSS("Spadek energii (wilgotność)", e -> String.format("%f / 33%%", e.getHumidityEnergyLoss())),
+	EATING_SPEED("Szybkość jedzenia", Entity::getEatingSpeed, null),
+	SIGHT_RANGE("Zakres widzenia", Entity::getSightRange, null),
 	SMELL("Obecność węchu", e -> e.hasSmell() ? "Tak" : "Nie"),
 	SMELL_RANGE("Zakres węchu", e -> e.hasSmell() ? toString(e.getSmellRange()) : "-"),
 	EAT_START_ENERGY_THRESHOLD("Energia rozpoczęcia jedzenia", e -> String.format("< %f", e.getEatStartEnergyThreshold())),
 	REPRODUCE_READY_ENERGY_THRESHOLD("Energia rozmnażania", e -> String.format(">= %f", e.getReproduceReadyEnergyThreshold())),
-	MIN_REPRODUCE_COOLDOWN("Min. czas do rozmnażania", e -> toString(e.getMinReproduceCooldown())),
-	MAX_REPRODUCE_COOLDOWN("Maks. czas do rozmnażania", e -> toString(e.getMaxReproduceCooldown()));
+	MIN_REPRODUCE_COOLDOWN("Min. czas do rozmnażania", Entity::getMinReproduceCooldown, null),
+	MAX_REPRODUCE_COOLDOWN("Maks. czas do rozmnażania", Entity::getMaxReproduceCooldown, null);
 	
 	private String name;
-	private Function<Entity, String> function;
+	private Function<Entity, String> stringFunction;
+	private ToFloatFunction<Entity> floatFunction;
+	private boolean floatProperty;
 	
-	EntityProperties(String name, Function<Entity, String> function)
+	EntityProperties(String name, Function<Entity, String> stringFunction)
 	{
 		this.name = name;
-		this.function = function;
+		this.stringFunction = stringFunction;
+		this.floatProperty = false;
+	}
+	
+	EntityProperties(String name, ToFloatFunction<Entity> floatFunction, Void v)
+	{
+		this.name = name;
+		this.floatFunction = floatFunction;
+		this.floatProperty = true;
 	}
 	
 	public String getName()
@@ -59,9 +71,21 @@ public enum EntityProperties
 		return name;
 	}
 	
-	public String getValueForEntity(Entity entity)
+	public String getStringValueForEntity(Entity entity)
 	{
-		return function.apply(entity);
+		if(!floatProperty) return stringFunction.apply(entity);
+		else return toString(floatFunction.apply(entity));
+	}
+	
+	public float getFloatValueForEntity(Entity entity)
+	{
+		if(!floatProperty) return -1f;
+		return floatFunction.apply(entity);
+	}
+	
+	public boolean isFloatProperty()
+	{
+		return floatProperty;
 	}
 	
 	private static String toString(float f)

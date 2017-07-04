@@ -130,7 +130,17 @@ public class SimulationManager
 		return Float.parseFloat(element.getAttribute(name));
 	}
 	
+	public static boolean getBooleanAttribute(Element element, String name)
+	{
+		return Boolean.parseBoolean(element.getAttribute(name));
+	}
+	
 	public static void setNumberAttribute(Element element, String attribute, Number value)
+	{
+		element.setAttribute(attribute, value.toString());
+	}
+	
+	public static void setBooleanAttribute(Element element, String attribute, Boolean value)
 	{
 		element.setAttribute(attribute, value.toString());
 	}

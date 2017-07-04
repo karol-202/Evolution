@@ -48,7 +48,6 @@ public class EntitiesLoader
 	public void parseEntities(Element elementWorld)
 	{
 		Element elementEntities = getElement(elementWorld, "entities");
-		entities.setSelectedEntityIndex(getIntAttribute(elementEntities, "selectedEntity"));
 		
 		Element elementReproductions = getElement(elementEntities, "reproductions");
 		
@@ -61,7 +60,9 @@ public class EntitiesLoader
 			if(element == elementReproductions) continue;
 			
 			Entity entity = parseEntity(element);
-			entities.addEntityInstantly(entity);
+			boolean selected = getBooleanAttribute(element, "selected");
+			
+			entities.addEntityInstantly(entity, selected);
 			entitiesMap.put(element, entity);
 		}
 
@@ -153,7 +154,6 @@ public class EntitiesLoader
 	private Element createEntitiesElement()
 	{
 		Element elementEntities = document.createElement("entities");
-		setNumberAttribute(elementEntities, "selectedEntity", entities.getSelectedEntityIndex());
 		entities.getEntitiesStream().map(this::createEntityElement).forEach(elementEntities::appendChild);
 		elementEntities.appendChild(reproductionsLoader.getReproductionsElement(document));
 		
@@ -163,6 +163,7 @@ public class EntitiesLoader
 	private Element createEntityElement(Entity entity)
 	{
 		Element elementEntity = document.createElement("entity");
+		setBooleanAttribute(elementEntity, "selected", entities.isEntitySelected(entity));
 		setNumberAttribute(elementEntity, "x", entity.getX());
 		setNumberAttribute(elementEntity, "y", entity.getY());
 		setNumberAttribute(elementEntity, "energy", entity.getEnergy());

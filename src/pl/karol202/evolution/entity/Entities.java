@@ -19,6 +19,7 @@ import pl.karol202.evolution.stats.Stats;
 import pl.karol202.evolution.world.Plants;
 import pl.karol202.evolution.world.World;
 
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.Random;
 import java.util.stream.Stream;
@@ -28,8 +29,7 @@ public class Entities
 	private Random random;
 	private World world;
 	private Plants plants;
-	private ArrayList<Entity> entities;
-	private int selectedEntity;
+	private EntitiesList entities;
 	
 	private ArrayList<Entity> entitiesToAdd;
 	private ArrayList<Entity> entitiesToRemove;
@@ -39,8 +39,7 @@ public class Entities
 		this.random = random;
 		this.world = world;
 		this.plants = world.getPlants();
-		entities = new ArrayList<>();
-		selectedEntity = -1;
+		entities = new EntitiesList();
 		
 		entitiesToAdd = new ArrayList<>();
 		entitiesToRemove = new ArrayList<>();
@@ -50,20 +49,18 @@ public class Entities
 	{
 		entities.clear();
 		for(int i = 0; i < amount; i++) generateRandomEntity();
-		selectedEntity = -1;
 	}
 	
 	private void generateRandomEntity()
 	{
 		float x = random.nextFloat() * World.getWorldWidth();
 		float y = random.nextFloat() * World.getWorldHeight();
-		entities.add(Entity.createRandomEntity(this, x, y, random));
+		entities.addEntity(Entity.createRandomEntity(this, x, y, random), false);
 	}
 	
 	void removeAllEntities()
 	{
 		entities.clear();
-		selectedEntity = -1;
 	}
 	
 	public void addNewEntity(Entity entity)
@@ -72,16 +69,14 @@ public class Entities
 		Stats.instance.registerEntityBorn();
 	}
 	
-	void addEntityInstantly(Entity entity)
+	void addEntityInstantly(Entity entity, boolean selected)
 	{
-		entities.add(entity);
+		entities.addEntity(entity, selected);
 	}
 	
 	void removeDeadEntity(Entity entity)
 	{
-		if(getSelectedEntity() == entity) selectNothing();
-		else if(selectedEntity > entities.indexOf(entity)) selectedEntity--;
-		if(entities.contains(entity)) entitiesToRemove.add(entity);
+		entitiesToRemove.add(entity);
 		Stats.instance.registerEntityDeath();
 	}
 	
@@ -97,7 +92,7 @@ public class Entities
 	
 	public void update()
 	{
-		entities.forEach(Entity::update);
+		entities.updateAll();
 		addEntities();
 		removeEntities();
 	}
@@ -105,26 +100,30 @@ public class Entities
 	private void addEntities()
 	{
 		if(entitiesToAdd.isEmpty()) return;
-		entitiesToAdd.forEach(entities::add);
+		entitiesToAdd.forEach(e -> entities.addEntity(e, false));
 		entitiesToAdd.clear();
 	}
 	
 	private void removeEntities()
 	{
 		if(entitiesToRemove.isEmpty()) return;
-		entitiesToRemove.forEach(entities::remove);
+		entitiesToRemove.forEach(entities::removeEntity);
 		entitiesToRemove.clear();
 	}
 	
 	public void selectEntity(Entity entity)
 	{
-		if(!entities.contains(entity)) throw new RuntimeException("Unknown entity: " + entity);
-		selectedEntity = entities.indexOf(entity);
+		entities.selectEntity(entity);
+	}
+	
+	public void selectEntitiesInRect(Rectangle rect)
+	{
+		entities.selectEntitiesInRect(rect);
 	}
 	
 	public void selectNothing()
 	{
-		selectedEntity = -1;
+		entities.selectNothing();
 	}
 	
 	Plants getPlants()
@@ -132,40 +131,33 @@ public class Entities
 		return plants;
 	}
 	
-	public Stream<Entity> getEntitiesStream()
-	{
-		return entities.stream();
-	}
-	
 	public int getEntitiesAmount()
 	{
 		return entities.size();
 	}
 	
-	public Entity getSelectedEntity()
+	public Stream<Entity> getEntitiesStream()
 	{
-		if(selectedEntity == -1) return null;
-		return entities.get(selectedEntity);
+		return entities.entitiesStream();
 	}
 	
-	public int getSelectedEntityIndex()
+	public Stream<Entity> getSelectedEntities()
 	{
-		return selectedEntity;
+		return entities.selectedEntitiesStream();
 	}
 	
-	void setSelectedEntityIndex(int selectedEntity)
+	public boolean isEntitySelected(Entity entity)
 	{
-		this.selectedEntity = selectedEntity;
+		return entities.isEntitySelected(entity);
 	}
 	
 	public int getEntityId(Entity entity)
 	{
-		return entities.indexOf(entity);
+		return entities.indexOfEntity(entity);
 	}
 	
 	public Entity getEntityById(int id)
 	{
-		if(id == -1) return null;
-		return entities.get(id);
+		return entities.getEntityById(id);
 	}
 }

@@ -13,7 +13,7 @@
     See the License for the specific language governing permissions and
     limitations under the License.
  */
-package pl.karol202.evolution.ui.entity;
+package pl.karol202.evolution.ui.side;
 
 import pl.karol202.evolution.stats.Stats;
 import pl.karol202.evolution.utils.Utils;
@@ -24,7 +24,7 @@ import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
-public class EntityStatsPanel extends JPanel
+public class EntityAmountGraph extends JPanel
 {
 	private static final int REPAINT_TIME = 15;
 	private static final int MARGIN = 10;
@@ -34,7 +34,7 @@ public class EntityStatsPanel extends JPanel
 	
 	private int mouseX;
 	
-	EntityStatsPanel(World world)
+	EntityAmountGraph(World world)
 	{
 		this.world = world;
 		this.stats = Stats.instance;
@@ -53,19 +53,19 @@ public class EntityStatsPanel extends JPanel
 			@Override
 			public void mouseExited(MouseEvent e)
 			{
-				EntityStatsPanel.this.onMouseMoved(-1);
+				EntityAmountGraph.this.onMouseMoved(-1);
 			}
 			
 			@Override
 			public void mouseDragged(MouseEvent e)
 			{
-				EntityStatsPanel.this.onMouseMoved(e.getX());
+				EntityAmountGraph.this.onMouseMoved(e.getX());
 			}
 			
 			@Override
 			public void mouseMoved(MouseEvent e)
 			{
-				EntityStatsPanel.this.onMouseMoved(e.getX());
+				EntityAmountGraph.this.onMouseMoved(e.getX());
 			}
 		});
 	}
@@ -77,7 +77,7 @@ public class EntityStatsPanel extends JPanel
 		{
 			while(true)
 			{
-				SwingUtilities.invokeLater(() -> EntityStatsPanel.this.update(getTime()));
+				SwingUtilities.invokeLater(() -> EntityAmountGraph.this.update(getTime()));
 				try
 				{
 					Thread.sleep(REPAINT_TIME);
@@ -97,7 +97,7 @@ public class EntityStatsPanel extends JPanel
 		super.paintComponent(graphics);
 		Graphics2D g = (Graphics2D) graphics;
 		drawBorder(g);
-		drawChart(g);
+		drawGraph(g);
 		drawHighlight(g);
 	}
 	
@@ -111,7 +111,7 @@ public class EntityStatsPanel extends JPanel
 		g.drawLine(MARGIN, getHeight() - MARGIN, getWidth() - MARGIN, getHeight() - MARGIN);
 	}
 	
-	private void drawChart(Graphics2D g)
+	private void drawGraph(Graphics2D g)
 	{
 		g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 		g.setColor(Color.GRAY);

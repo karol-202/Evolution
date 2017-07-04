@@ -13,25 +13,30 @@
     See the License for the specific language governing permissions and
     limitations under the License.
  */
-package pl.karol202.evolution.ui.entity;
+package pl.karol202.evolution.ui.side;
 
-import pl.karol202.evolution.entity.Entity;
+import pl.karol202.evolution.entity.Entities;
 import pl.karol202.evolution.entity.EntityProperties;
 
 import javax.swing.table.AbstractTableModel;
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.stream.DoubleStream;
 import java.util.stream.Stream;
 
-public class EntityTableModel extends AbstractTableModel
+public class EntityStatsTableModel extends AbstractTableModel
 {
-	private Entity entity;
+	private static final String[] COLUMNS = { "Właściwość", "Średnia", "Mediana", "Minimum", "Maksimum" };
+	
+	private Entities entities;
 	private String filter;
 	private List<EntityProperties> filteredProperties;
 	
-	EntityTableModel()
+	EntityStatsTableModel(Entities entities)
 	{
-		filter = "";
+		this.entities = entities;
+		this.filter = "";
+		updateEntities();
 		filter();
 	}
 	
@@ -44,14 +49,24 @@ public class EntityTableModel extends AbstractTableModel
 	@Override
 	public int getColumnCount()
 	{
-		return 2;
+		return 5;
+	}
+	
+	@Override
+	public String getColumnName(int column)
+	{
+		return COLUMNS[column];
 	}
 	
 	@Override
 	public Object getValueAt(int row, int column)
 	{
-		if(column == 0) return getPropertyName(row);
-		else return getPropertyValue(row);
+		switch(column)
+		{
+		case 0: return getPropertyName(row);
+		case 1: return getAverage(row);
+		default: return "";
+		}
 	}
 	
 	private String getPropertyName(int row)
@@ -59,15 +74,23 @@ public class EntityTableModel extends AbstractTableModel
 		return filteredProperties.get(row).getName();
 	}
 	
-	private String getPropertyValue(int row)
+	private String getAverage(int row)
 	{
-		if(entity == null) return "";
-		return filteredProperties.get(row).getValueForEntity(entity);
+		DoubleStream stream = getDoubleStream(row);
+		if(stream == null) return "";
+		return String.valueOf(stream.average().orElse(-1));
 	}
 	
-	public void setEntity(Entity entity)
+	private DoubleStream getDoubleStream(int row)
 	{
-		this.entity = entity;
+		if(entities.getSelectedEntities().count() == 0) return null;
+		EntityProperties property = filteredProperties.get(row);
+		if(!property.isFloatProperty()) return null;
+		return entities.getSelectedEntities().mapToDouble(property::getFloatValueForEntity);
+	}
+	
+	public void updateEntities()
+	{
 		fireTableDataChanged();
 	}
 	
@@ -81,7 +104,8 @@ public class EntityTableModel extends AbstractTableModel
 	private void filter()
 	{
 		filteredProperties = Stream.of(EntityProperties.values())
-								   .filter(p -> p.getName().contains(filter) || filter.isEmpty())
-								   .collect(Collectors.toList());
+				.filter(p -> p.getName().contains(filter) || filter.isEmpty())
+				.filter(EntityProperties::isFloatProperty)
+				.collect(Collectors.toList());
 	}
 }

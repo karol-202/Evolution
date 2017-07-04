@@ -13,7 +13,7 @@
     See the License for the specific language governing permissions and
     limitations under the License.
  */
-package pl.karol202.evolution.ui.entity;
+package pl.karol202.evolution.ui.side;
 
 import pl.karol202.evolution.entity.Entities;
 import pl.karol202.evolution.entity.Entity;
@@ -42,9 +42,15 @@ public class SidePanel extends JPanel implements OnWorldUpdateListener, Document
 	private JTable tableGenotype;
 	private GenotypeTableModel tableModelGenotype;
 	
-	private JPanel panelStats;
-	private EntityStatsPanel panelEntityStats;
+	private JPanel panelGraphs;
+	private JLabel labelEntityAmountGraph;
+	private EntityAmountGraph graphEntityAmount;
 	private JPanel panelEmpty;
+	
+	private JPanel panelStats;
+	private JScrollPane scrollPaneStats;
+	private JTable tableStats;
+	private EntityStatsTableModel tableModelEntityStats;
 	
 	private int lastEntityIndex;
 	
@@ -79,6 +85,7 @@ public class SidePanel extends JPanel implements OnWorldUpdateListener, Document
 				0, 0));
 		initEntityTab();
 		initGenotypeTab();
+		initGraphsTab();
 		initStatsTab();
 	}
 
@@ -104,18 +111,39 @@ public class SidePanel extends JPanel implements OnWorldUpdateListener, Document
 		tabbedPane.addTab("Genotyp", scrollPaneGenotype);
 	}
 	
+	private void initGraphsTab()
+	{
+		panelGraphs = new JPanel(new GridBagLayout());
+		panelGraphs.setBackground(Color.WHITE);
+		tabbedPane.addTab("Wykresy", panelGraphs);
+		
+		labelEntityAmountGraph = new JLabel("Ilość istot");
+		panelGraphs.add(labelEntityAmountGraph, new GridBagConstraints(0, 0, 1, 1,
+				1, 0, GridBagConstraints.CENTER, GridBagConstraints.NONE,
+				new Insets(0, 0, 0, 0), 0, 0));
+		
+		graphEntityAmount = new EntityAmountGraph(world);
+		panelGraphs.add(graphEntityAmount, new GridBagConstraints(0, 1, 1, 1,
+				1, 0.2, GridBagConstraints.CENTER, GridBagConstraints.BOTH,
+				new Insets(0, 0, 0, 0), 0, 0));
+		
+		panelEmpty = new JPanel();
+		panelGraphs.add(panelEmpty, new GridBagConstraints(0, 2, 1, 1, 1, 0.8,
+				GridBagConstraints.CENTER, GridBagConstraints.BOTH, new Insets(0, 0, 0, 0),
+				0, 0));
+	}
+	
 	private void initStatsTab()
 	{
 		panelStats = new JPanel(new GridBagLayout());
 		tabbedPane.addTab("Statystyki", panelStats);
 		
-		panelEntityStats = new EntityStatsPanel(world);
-		panelStats.add(panelEntityStats, new GridBagConstraints(0, 0, 1, 1,
-				1, 0.2, GridBagConstraints.CENTER, GridBagConstraints.BOTH,
-				new Insets(0, 0, 0, 0), 0, 0));
+		tableModelEntityStats = new EntityStatsTableModel(entities);
 		
-		panelEmpty = new JPanel();
-		panelStats.add(panelEmpty, new GridBagConstraints(0, 1, 1, 1, 1, 0.8,
+		tableStats = new JTable(tableModelEntityStats);
+		
+		scrollPaneStats = new JScrollPane(tableStats);
+		panelStats.add(scrollPaneStats, new GridBagConstraints(0, 0, 1, 1, 1, 1,
 				GridBagConstraints.CENTER, GridBagConstraints.BOTH, new Insets(0, 0, 0, 0),
 				0, 0));
 	}
@@ -137,22 +165,23 @@ public class SidePanel extends JPanel implements OnWorldUpdateListener, Document
 	
 	private void updateTitleLabel()
 	{
-		int index = entities.getSelectedEntityIndex();
+		int index = entities.getSelectedEntities().count() == 1 ?
+					entities.getEntityId(entities.getSelectedEntities().findAny().orElse(null)) : -1;
 		if(index == lastEntityIndex) return;
 		lastEntityIndex = index;
 		
-		String title;
-		if(index == -1) title = " ";
-		else title = String.format("Istota #%d", index);
+		String title = index != -1 ? String.format("Istota #%d", index) : " ";
 		labelTitle.setText(title);
 	}
 	
 	private void updateTableModels()
 	{
-		Entity entity = entities.getSelectedEntity();
+		Entity entity = entities.getSelectedEntities().count() == 1 ?
+						entities.getSelectedEntities().findAny().orElse(null) : null;
 		
 		tableModelProperties.setEntity(entity);
 		tableModelGenotype.setEntity(entity);
+		tableModelEntityStats.updateEntities();
 	}
 	
 	@Override

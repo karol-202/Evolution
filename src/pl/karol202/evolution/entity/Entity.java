@@ -97,7 +97,7 @@ public class Entity
 		optimalTemperature = genotype.getFloatProperty(GeneType.MOT);
 		optimalHumidity = clamp(genotype.getFloatProperty(GeneType.MOH), 0, 100);
 		maxTimeOfLife = clamp(genotype.getFloatProperty(GeneType.MLT), 20, 300);
-		adolescenceTime = (genotype.getFloatProperty(GeneType.MAT) + 0.18f) * maxTimeOfLife;
+		adolescenceTime = (genotype.getFloatProperty(GeneType.MAT) + 0.21f) * maxTimeOfLife;
 		maxEnergy = genotype.getFloatProperty(GeneType.EMX);
 		energyPerSecond = genotype.getFloatProperty(GeneType.EPS);
 		temperatureEnergyLoss = clamp(genotype.getFloatProperty(GeneType.ETL), 0.1f, 2.5f);

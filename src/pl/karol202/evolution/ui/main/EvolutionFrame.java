@@ -17,7 +17,7 @@ package pl.karol202.evolution.ui.main;
 
 import pl.karol202.evolution.simulation.Simulation;
 import pl.karol202.evolution.simulation.SimulationManager;
-import pl.karol202.evolution.ui.entity.SidePanel;
+import pl.karol202.evolution.ui.side.SidePanel;
 import pl.karol202.evolution.ui.settings.SimulationSettingsFrame;
 import pl.karol202.evolution.utils.ButtonHovering;
 import pl.karol202.evolution.utils.ImageLoader;
@@ -105,7 +105,7 @@ public class EvolutionFrame extends JFrame implements EvolutionPanel.OnViewChang
 	private void initSplitPane()
 	{
 		splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, true);
-		splitPane.setDividerLocation(getWidth() - 250);
+		splitPane.setDividerLocation(getWidth() - 307);
 		initEvolutionPanel();
 		initSidePanel();
 		add(splitPane, BorderLayout.CENTER);
