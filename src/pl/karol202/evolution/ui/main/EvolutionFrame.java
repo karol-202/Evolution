@@ -17,11 +17,10 @@ package pl.karol202.evolution.ui.main;
 
 import pl.karol202.evolution.simulation.Simulation;
 import pl.karol202.evolution.simulation.SimulationManager;
-import pl.karol202.evolution.ui.side.SidePanel;
 import pl.karol202.evolution.ui.settings.SimulationSettingsFrame;
+import pl.karol202.evolution.ui.side.SidePanel;
 import pl.karol202.evolution.utils.ButtonHovering;
 import pl.karol202.evolution.utils.ImageLoader;
-import pl.karol202.evolution.utils.Vector2;
 import pl.karol202.evolution.world.World;
 
 import javax.swing.*;
@@ -58,10 +57,14 @@ public class EvolutionFrame extends JFrame implements EvolutionPanel.OnViewChang
 	private JRadioButtonMenuItem itemViewHumidity;
 	private JMenuItem itemCenterView;
 	
+	private JMenu menuSelection;
+	private JCheckBoxMenuItem itemSelectingToggle;
+	
 	private JToolBar toolbar;
 	private JButton buttonStart;
 	private JButton buttonPause;
 	private JButton buttonStep;
+	private JToggleButton buttonSelectingToggle;
 	
 	private JPanel panelBottom;
 	private JLabel labelEntities;
@@ -131,6 +134,7 @@ public class EvolutionFrame extends JFrame implements EvolutionPanel.OnViewChang
 		setJMenuBar(menuBar);
 		initSimulationMenu();
 		initViewMenu();
+		initSelectionMenu();
 	}
 	
 	private void initSimulationMenu()
@@ -249,6 +253,21 @@ public class EvolutionFrame extends JFrame implements EvolutionPanel.OnViewChang
 		menuView.add(itemCenterView);
 	}
 	
+	private void initSelectionMenu()
+	{
+		menuSelection = new JMenu("Zaznaczenie");
+		menuBar.add(menuSelection);
+		
+		initSelectingToggleItem();
+	}
+	
+	private void initSelectingToggleItem()
+	{
+		itemSelectingToggle = new JCheckBoxMenuItem("Włącz zaznaczanie");
+		itemSelectingToggle.addActionListener(e -> panelEvolution.setSelecting(itemSelectingToggle.getState()));
+		menuSelection.add(itemSelectingToggle);
+	}
+	
 	private void initToolbar()
 	{
 		toolbar = new JToolBar("Pasek narzędzi");
@@ -258,6 +277,8 @@ public class EvolutionFrame extends JFrame implements EvolutionPanel.OnViewChang
 		initStartButton();
 		initPauseButton();
 		initStepButton();
+		toolbar.addSeparator();
+		initSelectingToggleButton();
 	}
 	
 	private void initStartButton()
@@ -282,6 +303,14 @@ public class EvolutionFrame extends JFrame implements EvolutionPanel.OnViewChang
 		buttonStep.setFocusable(false);
 		buttonStep.addActionListener(e -> simulation.step());
 		toolbar.add(buttonStep);
+	}
+	
+	private void initSelectingToggleButton()
+	{
+		buttonSelectingToggle = new JToggleButton(new ImageIcon(ImageLoader.loadImage("/res/selection.png")));
+		buttonSelectingToggle.setFocusable(false);
+		buttonSelectingToggle.addActionListener(e -> panelEvolution.setSelecting(buttonSelectingToggle.isSelected()));
+		toolbar.add(buttonSelectingToggle);
 	}
 	
 	private void initBottomPanel()
@@ -364,28 +393,21 @@ public class EvolutionFrame extends JFrame implements EvolutionPanel.OnViewChang
 		labelEntities.setText(getEntitiesString());
 	}
 	
-	private void updateWorldInfo(int x, int y)
+	private void updateWorldInfo(float x, float y)
 	{
-		Vector2 worldPos = mouseToWorld(x, y);
-		
-		float temperature = world.getTemperature(worldPos.getX(), worldPos.getY());
+		float temperature = world.getTemperature(x, y);
 		labelTemperature.setText(String.format("Temperatura: %.1f°", temperature));
 		
-		float humidity = world.getHumidity(worldPos.getX(), worldPos.getY());
+		float humidity = world.getHumidity(x, y);
 		labelHumidity.setText(String.format("Wilgotność: %.1f%%", humidity));
-	}
-	
-	private Vector2 mouseToWorld(int x, int y)
-	{
-		float worldX = (float) ((x - panelEvolution.getXPosition()) / panelEvolution.getScale());
-		float worldY = (float) ((y - panelEvolution.getYPosition()) / panelEvolution.getScale());
-		return new Vector2(worldX, worldY);
 	}
 	
 	@Override
 	public void onViewParametersChanged()
 	{
 		labelScale.setText(getScaleString());
+		itemSelectingToggle.setState(panelEvolution.isSelecting());
+		buttonSelectingToggle.setSelected(panelEvolution.isSelecting());
 	}
 	
 	@Override
@@ -395,7 +417,7 @@ public class EvolutionFrame extends JFrame implements EvolutionPanel.OnViewChang
 	}
 	
 	@Override
-	public void onMousePositionChanged(int x, int y)
+	public void onMousePositionChanged(float x, float y)
 	{
 		updateWorldInfo(x, y);
 	}

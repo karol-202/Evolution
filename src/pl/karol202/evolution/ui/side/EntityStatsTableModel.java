@@ -65,6 +65,9 @@ public class EntityStatsTableModel extends AbstractTableModel
 		{
 		case 0: return getPropertyName(row);
 		case 1: return getAverage(row);
+		case 2: return getMedian(row);
+		case 3: return getMin(row);
+		case 4: return getMax(row);
 		default: return "";
 		}
 	}
@@ -78,7 +81,32 @@ public class EntityStatsTableModel extends AbstractTableModel
 	{
 		DoubleStream stream = getDoubleStream(row);
 		if(stream == null) return "";
-		return String.valueOf(stream.average().orElse(-1));
+		return String.format("%.2f", stream.average().orElse(-1));
+	}
+	
+	private String getMedian(int row)
+	{
+		DoubleStream stream = getDoubleStream(row);
+		if(stream == null) return "";
+		
+		double[] array = stream.sorted().toArray();
+		int center = array.length / 2;
+		if(array.length % 2 == 1) return String.format("%.2f", array[center]);
+		else return String.format("%.2f", (array[center - 1] + array[center]) / 2);
+	}
+	
+	private String getMin(int row)
+	{
+		DoubleStream stream = getDoubleStream(row);
+		if(stream == null) return "";
+		return String.format("%.2f", stream.min().orElse(-1));
+	}
+	
+	private String getMax(int row)
+	{
+		DoubleStream stream = getDoubleStream(row);
+		if(stream == null) return "";
+		return String.format("%.2f", stream.max().orElse(-1));
 	}
 	
 	private DoubleStream getDoubleStream(int row)

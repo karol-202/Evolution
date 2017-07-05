@@ -19,6 +19,7 @@ import pl.karol202.evolution.entity.Entities;
 import pl.karol202.evolution.entity.Entity;
 import pl.karol202.evolution.utils.Gradient;
 import pl.karol202.evolution.utils.Utils;
+import pl.karol202.evolution.utils.Vector2;
 import pl.karol202.evolution.world.OnWorldUpdateListener;
 import pl.karol202.evolution.world.Plant;
 import pl.karol202.evolution.world.Plants;
@@ -37,7 +38,7 @@ public class EvolutionPanel extends JPanel implements OnWorldUpdateListener, Mou
 		
 		void onEntitySelectionChanged();
 		
-		void onMousePositionChanged(int x, int y);
+		void onMousePositionChanged(float x, float y);
 	}
 	
 	private static final double SQRT2 = Math.sqrt(2);
@@ -64,6 +65,9 @@ public class EvolutionPanel extends JPanel implements OnWorldUpdateListener, Mou
 	private int xPosAtDraggingStart;
 	private int yPosAtDraggingStart;
 	
+	private boolean selecting;
+	private Rectangle selection;
+	
 	private int mouseX;
 	private int mouseY;
 	private Entity hoveredEntity;
@@ -79,6 +83,8 @@ public class EvolutionPanel extends JPanel implements OnWorldUpdateListener, Mou
 		this.scale = 1;
 		this.xPosition = 0;
 		this.yPosition = 0;
+		
+		this.selecting = false;
 		
 		addMouseListener(this);
 		addMouseMotionListener(this);
@@ -160,6 +166,7 @@ public class EvolutionPanel extends JPanel implements OnWorldUpdateListener, Mou
 		setClipping(g);
 		drawPlants(g);
 		drawEntities(g);
+		drawSelection(g);
 	}
 	
 	private void setGraphicsParams(Graphics2D g)
@@ -353,6 +360,27 @@ public class EvolutionPanel extends JPanel implements OnWorldUpdateListener, Mou
 			   rectangle.y + rectangle.height < 0 || rectangle.y > getHeight();
 	}
 	
+	private void drawSelection(Graphics2D g)
+	{
+		if(selection == null) return;
+		
+		g.setColor(Color.DARK_GRAY);
+		float[] dash = new float[] { 10f, 10f };
+		g.setStroke(new BasicStroke(2, BasicStroke.CAP_SQUARE, BasicStroke.JOIN_MITER, 1f, dash, 0f));
+		
+		Rectangle bounds = getSelectionBounds();
+		g.drawRect(bounds.x, bounds.y, bounds.width, bounds.height);
+	}
+	
+	private Rectangle getSelectionBounds()
+	{
+		int x = (int) (selection.x * scale) + xPosition;
+		int y = (int) (selection.y * scale) + yPosition;
+		int width = (int) (selection.width * scale);
+		int height = (int) (selection.height * scale);
+		return new Rectangle(x, y, width, height);
+	}
+	
 	private int getScaledWorldWidth()
 	{
 		return (int) Math.round(world.getWidth() * scale);
@@ -367,16 +395,6 @@ public class EvolutionPanel extends JPanel implements OnWorldUpdateListener, Mou
 	{
 		this.viewMode = viewMode;
 		repaint();
-	}
-	
-	public int getXPosition()
-	{
-		return xPosition;
-	}
-	
-	public int getYPosition()
-	{
-		return yPosition;
 	}
 	
 	double getScale()
@@ -495,33 +513,38 @@ public class EvolutionPanel extends JPanel implements OnWorldUpdateListener, Mou
 		repaint();
 	}
 	
+	boolean isSelecting()
+	{
+		return selecting;
+	}
+	
+	void setSelecting(boolean selecting)
+	{
+		this.selecting = selecting;
+	}
+	
 	@Override
 	public void mouseClicked(MouseEvent e)
 	{
-		if(hoveredEntity != null)
-		{
-			entities.selectEntity(hoveredEntity);
-			viewListener.onEntitySelectionChanged();
-		}
-		else
-		{
-			entities.selectNothing();
-			viewListener.onEntitySelectionChanged();
-		}
+		if(hoveredEntity != null) entities.selectEntity(hoveredEntity);
+		else entities.selectNothing();
+		
+		viewListener.onEntitySelectionChanged();
 		repaint();
 	}
 	
 	@Override
 	public void mousePressed(MouseEvent e)
 	{
-		draggingStartX = e.getX();
-		draggingStartY = e.getY();
-		xPosAtDraggingStart = xPosition;
-		yPosAtDraggingStart = yPosition;
+		if(!selecting) startDragging(e);
+		else startSelecting(e);
 	}
 	
 	@Override
-	public void mouseReleased(MouseEvent e) { }
+	public void mouseReleased(MouseEvent e)
+	{
+		endSelecting(e);
+	}
 	
 	@Override
 	public void mouseEntered(MouseEvent e) { }
@@ -532,13 +555,8 @@ public class EvolutionPanel extends JPanel implements OnWorldUpdateListener, Mou
 	@Override
 	public void mouseDragged(MouseEvent e)
 	{
-		xPosition = xPosAtDraggingStart + (e.getX() - draggingStartX);
-		yPosition = yPosAtDraggingStart + (e.getY() - draggingStartY);
-		if(xPosition < -getScaledWorldWidth()) xPosition = -getScaledWorldWidth();
-		if(yPosition < -getScaledWorldHeight()) yPosition = -getScaledWorldHeight();
-		if(xPosition > getWidth()) xPosition = getWidth();
-		if(yPosition > getHeight()) yPosition = getHeight();
-		
+		if(!selecting) dragView(e);
+		else continueSelecting(e);
 		mouseX = e.getX();
 		mouseY = e.getY();
 		repaint();
@@ -549,7 +567,9 @@ public class EvolutionPanel extends JPanel implements OnWorldUpdateListener, Mou
 	{
 		mouseX = e.getX();
 		mouseY = e.getY();
-		viewListener.onMousePositionChanged(mouseX, mouseY);
+		Vector2 worldPos = screenPosToWorldPos(mouseX, mouseY);
+		
+		viewListener.onMousePositionChanged(worldPos.getX(), worldPos.getY());
 		repaint();
 	}
 	
@@ -563,5 +583,61 @@ public class EvolutionPanel extends JPanel implements OnWorldUpdateListener, Mou
 		if(rotation > 0) scaleDownInternal();
 		else scaleUpInternal();
 		applyScalingToPosition(oldScale, e.getX(), e.getY());
+	}
+	
+	private void startDragging(MouseEvent e)
+	{
+		draggingStartX = e.getX();
+		draggingStartY = e.getY();
+		xPosAtDraggingStart = xPosition;
+		yPosAtDraggingStart = yPosition;
+	}
+	
+	private void dragView(MouseEvent e)
+	{
+		xPosition = xPosAtDraggingStart + (e.getX() - draggingStartX);
+		yPosition = yPosAtDraggingStart + (e.getY() - draggingStartY);
+		if(xPosition < -getScaledWorldWidth()) xPosition = -getScaledWorldWidth();
+		if(yPosition < -getScaledWorldHeight()) yPosition = -getScaledWorldHeight();
+		if(xPosition > getWidth()) xPosition = getWidth();
+		if(yPosition > getHeight()) yPosition = getHeight();
+	}
+	
+	private void startSelecting(MouseEvent e)
+	{
+		Vector2 worldPos = screenPosToWorldPos(e.getX(), e.getY());
+		
+		selection = new Rectangle();
+		selection.x = (int) worldPos.getX();
+		selection.y = (int) worldPos.getY();
+	}
+	
+	private void continueSelecting(MouseEvent e)
+	{
+		Vector2 worldPos = screenPosToWorldPos(e.getX(), e.getY());
+		
+		selection.width = (int) worldPos.getX() - selection.x;
+		selection.height = (int) worldPos.getY() - selection.y;
+	}
+	
+	private void endSelecting(MouseEvent e)
+	{
+		if(!selecting) return;
+		selecting = false;
+		continueSelecting(e);
+		entities.selectNothing();
+		entities.selectEntitiesInRect(selection);
+		selection = null;
+		
+		viewListener.onViewParametersChanged();
+		viewListener.onEntitySelectionChanged();
+		repaint();
+	}
+	
+	private Vector2 screenPosToWorldPos(int x, int y)
+	{
+		float worldX = (float) ((x - xPosition) / scale);
+		float worldY = (float) ((y - yPosition) / scale);
+		return new Vector2(worldX, worldY);
 	}
 }
