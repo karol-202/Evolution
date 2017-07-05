@@ -19,6 +19,7 @@ import pl.karol202.evolution.entity.Entities;
 import pl.karol202.evolution.entity.EntityProperties;
 
 import javax.swing.table.AbstractTableModel;
+import java.text.DecimalFormat;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.DoubleStream;
@@ -26,16 +27,18 @@ import java.util.stream.Stream;
 
 public class EntityStatsTableModel extends AbstractTableModel
 {
-	private static final String[] COLUMNS = { "Właściwość", "Średnia", "Mediana", "Minimum", "Maksimum" };
+	private static final String[] COLUMNS = { "Właściwość", "Średnia", "Mediana", "Min", "Max" };
 	
 	private Entities entities;
 	private String filter;
 	private List<EntityProperties> filteredProperties;
+	private DecimalFormat decimalFormat;
 	
 	EntityStatsTableModel(Entities entities)
 	{
 		this.entities = entities;
 		this.filter = "";
+		this.decimalFormat = new DecimalFormat("#0.0#");
 		updateEntities();
 		filter();
 	}
@@ -81,7 +84,7 @@ public class EntityStatsTableModel extends AbstractTableModel
 	{
 		DoubleStream stream = getDoubleStream(row);
 		if(stream == null) return "";
-		return String.format("%.2f", stream.average().orElse(-1));
+		return decimalFormat.format(stream.average().orElse(-1));
 	}
 	
 	private String getMedian(int row)
@@ -91,22 +94,22 @@ public class EntityStatsTableModel extends AbstractTableModel
 		
 		double[] array = stream.sorted().toArray();
 		int center = array.length / 2;
-		if(array.length % 2 == 1) return String.format("%.2f", array[center]);
-		else return String.format("%.2f", (array[center - 1] + array[center]) / 2);
+		if(array.length % 2 == 1) return decimalFormat.format(array[center]);
+		else return decimalFormat.format((array[center - 1] + array[center]) / 2);
 	}
 	
 	private String getMin(int row)
 	{
 		DoubleStream stream = getDoubleStream(row);
 		if(stream == null) return "";
-		return String.format("%.2f", stream.min().orElse(-1));
+		return decimalFormat.format(stream.min().orElse(-1));
 	}
 	
 	private String getMax(int row)
 	{
 		DoubleStream stream = getDoubleStream(row);
 		if(stream == null) return "";
-		return String.format("%.2f", stream.max().orElse(-1));
+		return decimalFormat.format(stream.max().orElse(-1));
 	}
 	
 	private DoubleStream getDoubleStream(int row)
@@ -117,7 +120,7 @@ public class EntityStatsTableModel extends AbstractTableModel
 		return entities.getSelectedEntities().mapToDouble(property::getFloatValueForEntity);
 	}
 	
-	public void updateEntities()
+	void updateEntities()
 	{
 		fireTableDataChanged();
 	}

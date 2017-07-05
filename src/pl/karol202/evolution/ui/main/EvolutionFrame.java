@@ -15,6 +15,7 @@
  */
 package pl.karol202.evolution.ui.main;
 
+import pl.karol202.evolution.entity.Entities;
 import pl.karol202.evolution.simulation.Simulation;
 import pl.karol202.evolution.simulation.SimulationManager;
 import pl.karol202.evolution.ui.settings.SimulationSettingsFrame;
@@ -33,6 +34,7 @@ public class EvolutionFrame extends JFrame implements EvolutionPanel.OnViewChang
 	private SimulationManager manager;
 	private Simulation simulation;
 	private World world;
+	private Entities entities;
 	
 	private JSplitPane splitPane;
 	private EvolutionPanel panelEvolution;
@@ -59,12 +61,14 @@ public class EvolutionFrame extends JFrame implements EvolutionPanel.OnViewChang
 	
 	private JMenu menuSelection;
 	private JCheckBoxMenuItem itemSelectingToggle;
+	private JCheckBoxMenuItem itemSelectAll;
 	
 	private JToolBar toolbar;
 	private JButton buttonStart;
 	private JButton buttonPause;
 	private JButton buttonStep;
 	private JToggleButton buttonSelectingToggle;
+	private JToggleButton buttonSelectAll;
 	
 	private JPanel panelBottom;
 	private JLabel labelEntities;
@@ -83,6 +87,7 @@ public class EvolutionFrame extends JFrame implements EvolutionPanel.OnViewChang
 		this.manager = manager;
 		this.simulation = simulation;
 		this.world = simulation.getWorld();
+		this.entities = world.getEntities();
 		simulation.addListener(this);
 		
 		setFrameParams();
@@ -259,13 +264,21 @@ public class EvolutionFrame extends JFrame implements EvolutionPanel.OnViewChang
 		menuBar.add(menuSelection);
 		
 		initSelectingToggleItem();
+		initSelectAllItem();
 	}
 	
 	private void initSelectingToggleItem()
 	{
 		itemSelectingToggle = new JCheckBoxMenuItem("Włącz zaznaczanie");
-		itemSelectingToggle.addActionListener(e -> panelEvolution.setSelecting(itemSelectingToggle.getState()));
+		itemSelectingToggle.addActionListener(e -> setSelecting(itemSelectingToggle.getState()));
 		menuSelection.add(itemSelectingToggle);
+	}
+	
+	private void initSelectAllItem()
+	{
+		itemSelectAll = new JCheckBoxMenuItem("Zaznacz wszystko");
+		itemSelectAll.addActionListener(e -> setSelectAll(itemSelectAll.getState()));
+		menuSelection.add(itemSelectAll);
 	}
 	
 	private void initToolbar()
@@ -279,6 +292,7 @@ public class EvolutionFrame extends JFrame implements EvolutionPanel.OnViewChang
 		initStepButton();
 		toolbar.addSeparator();
 		initSelectingToggleButton();
+		initSelectAllButton();
 	}
 	
 	private void initStartButton()
@@ -309,8 +323,16 @@ public class EvolutionFrame extends JFrame implements EvolutionPanel.OnViewChang
 	{
 		buttonSelectingToggle = new JToggleButton(new ImageIcon(ImageLoader.loadImage("/res/selection.png")));
 		buttonSelectingToggle.setFocusable(false);
-		buttonSelectingToggle.addActionListener(e -> panelEvolution.setSelecting(buttonSelectingToggle.isSelected()));
+		buttonSelectingToggle.addActionListener(e -> setSelecting(buttonSelectingToggle.isSelected()));
 		toolbar.add(buttonSelectingToggle);
+	}
+	
+	private void initSelectAllButton()
+	{
+		buttonSelectAll = new JToggleButton(new ImageIcon(ImageLoader.loadImage("/res/select_all.png")));
+		buttonSelectAll.setFocusable(false);
+		buttonSelectAll.addActionListener(e -> setSelectAll(buttonSelectAll.isSelected()));
+		toolbar.add(buttonSelectAll);
 	}
 	
 	private void initBottomPanel()
@@ -376,6 +398,24 @@ public class EvolutionFrame extends JFrame implements EvolutionPanel.OnViewChang
 				0, 0));
 	}
 	
+	private void setSelecting(boolean selecting)
+	{
+		panelEvolution.setSelecting(selecting);
+		onViewParametersChanged();
+	}
+	
+	private void setSelectAll(boolean selectAll)
+	{
+		if(selectAll) entities.selectAll();
+		entities.setSelectingAll(selectAll);
+		
+		if(selectAll) panelEvolution.setSelecting(false);
+		panelEvolution.repaint();
+		
+		buttonSelectingToggle.setEnabled(!selectAll);
+		onViewParametersChanged();
+	}
+	
 	private void updateMenu()
 	{
 		itemStart.setEnabled(!simulation.isRunning());
@@ -406,8 +446,12 @@ public class EvolutionFrame extends JFrame implements EvolutionPanel.OnViewChang
 	public void onViewParametersChanged()
 	{
 		labelScale.setText(getScaleString());
+		
 		itemSelectingToggle.setState(panelEvolution.isSelecting());
 		buttonSelectingToggle.setSelected(panelEvolution.isSelecting());
+		
+		itemSelectAll.setState(entities.isSelectingAll());
+		buttonSelectAll.setSelected(entities.isSelectingAll());
 	}
 	
 	@Override

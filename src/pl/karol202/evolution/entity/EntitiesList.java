@@ -143,6 +143,11 @@ class EntitiesList extends ArrayList<EntitiesList.SelectableEntity>
 		forEach(se -> se.setSelected(false));
 	}
 	
+	void selectAll()
+	{
+		forEach(se -> se.setSelected(true));
+	}
+	
 	boolean isEntitySelected(Entity entity)
 	{
 		return stream().filter(se -> se.getEntity() == entity).findAny()

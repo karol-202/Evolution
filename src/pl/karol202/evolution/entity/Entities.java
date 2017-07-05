@@ -30,6 +30,7 @@ public class Entities
 	private World world;
 	private Plants plants;
 	private EntitiesList entities;
+	private boolean selectAll;
 	
 	private ArrayList<Entity> entitiesToAdd;
 	private ArrayList<Entity> entitiesToRemove;
@@ -39,7 +40,8 @@ public class Entities
 		this.random = random;
 		this.world = world;
 		this.plants = world.getPlants();
-		entities = new EntitiesList();
+		this.entities = new EntitiesList();
+		this.selectAll = false;
 		
 		entitiesToAdd = new ArrayList<>();
 		entitiesToRemove = new ArrayList<>();
@@ -55,12 +57,7 @@ public class Entities
 	{
 		float x = random.nextFloat() * World.getWorldWidth();
 		float y = random.nextFloat() * World.getWorldHeight();
-		entities.addEntity(Entity.createRandomEntity(this, x, y, random), false);
-	}
-	
-	void removeAllEntities()
-	{
-		entities.clear();
+		entities.addEntity(Entity.createRandomEntity(this, x, y, random), selectAll);
 	}
 	
 	public void addNewEntity(Entity entity)
@@ -72,6 +69,11 @@ public class Entities
 	void addEntityInstantly(Entity entity, boolean selected)
 	{
 		entities.addEntity(entity, selected);
+	}
+	
+	void removeAllEntities()
+	{
+		entities.clear();
 	}
 	
 	void removeDeadEntity(Entity entity)
@@ -100,7 +102,7 @@ public class Entities
 	private void addEntities()
 	{
 		if(entitiesToAdd.isEmpty()) return;
-		entitiesToAdd.forEach(e -> entities.addEntity(e, false));
+		entitiesToAdd.forEach(e -> entities.addEntity(e, selectAll));
 		entitiesToAdd.clear();
 	}
 	
@@ -141,6 +143,11 @@ public class Entities
 		entities.selectNothing();
 	}
 	
+	public void selectAll()
+	{
+		entities.selectAll();
+	}
+	
 	Plants getPlants()
 	{
 		return plants;
@@ -174,5 +181,15 @@ public class Entities
 	public Entity getEntityById(int id)
 	{
 		return entities.getEntityById(id);
+	}
+	
+	public boolean isSelectingAll()
+	{
+		return selectAll;
+	}
+	
+	public void setSelectingAll(boolean selectAll)
+	{
+		this.selectAll = selectAll;
 	}
 }
