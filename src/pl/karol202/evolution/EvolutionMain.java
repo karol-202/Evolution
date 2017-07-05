@@ -18,6 +18,7 @@ package pl.karol202.evolution;
 import pl.karol202.evolution.simulation.Simulation;
 import pl.karol202.evolution.simulation.SimulationManager;
 import pl.karol202.evolution.ui.main.EvolutionFrame;
+import pl.karol202.evolution.utils.KeyManager;
 import pl.karol202.evolution.world.World;
 
 import javax.swing.*;
@@ -42,6 +43,7 @@ public class EvolutionMain
 		
 		this.fileToOpen = fileToOpen;
 		
+		KeyManager.init();
 		setLookAndFeel();
 		runMainFrame();
 		while(frame == null || frame.isVisible())

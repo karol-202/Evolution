@@ -97,19 +97,45 @@ class EntitiesList extends ArrayList<EntitiesList.SelectableEntity>
 		forEach(SelectableEntity::update);
 	}
 	
-	void selectEntity(Entity entity)
+	void selectOnlyEntity(Entity entity)
 	{
 		if(!containsEntity(entity)) throw new IllegalArgumentException("Unknown entity: " + entity);
 		forEach(se -> se.setSelected(se.getEntity() == entity));
 	}
 	
+	void selectEntity(Entity entity)
+	{
+		setEntitySelection(entity, true);
+	}
+	
+	void deselectEntity(Entity entity)
+	{
+		setEntitySelection(entity, false);
+	}
+	
+	void setEntitySelection(Entity entity, boolean selected)
+	{
+		if(!containsEntity(entity)) throw new IllegalArgumentException("Unknown entity: " + entity);
+		stream().filter(se -> se.getEntity() == entity).forEach(se -> se.setSelected(selected));
+	}
+	
 	void selectEntitiesInRect(Rectangle rect)
+	{
+		setSelectionForEntitiesInRect(rect, true);
+	}
+	
+	void deselectEntitiesInRect(Rectangle rect)
+	{
+		setSelectionForEntitiesInRect(rect, false);
+	}
+	
+	private void setSelectionForEntitiesInRect(Rectangle rect, boolean selected)
 	{
 		stream().filter(se -> {
 			Entity entity = se.getEntity();
 			return entity.getX() > rect.getMinX() && entity.getX() < rect.getMaxX() &&
 				   entity.getY() > rect.getMinY() && entity.getY() < rect.getMaxY();
-		}).forEach(se -> se.setSelected(true));
+		}).forEach(se -> se.setSelected(selected));
 	}
 	
 	void selectNothing()

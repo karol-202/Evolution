@@ -18,6 +18,7 @@ package pl.karol202.evolution.ui.main;
 import pl.karol202.evolution.entity.Entities;
 import pl.karol202.evolution.entity.Entity;
 import pl.karol202.evolution.utils.Gradient;
+import pl.karol202.evolution.utils.KeyManager;
 import pl.karol202.evolution.utils.Utils;
 import pl.karol202.evolution.utils.Vector2;
 import pl.karol202.evolution.world.OnWorldUpdateListener;
@@ -526,7 +527,7 @@ public class EvolutionPanel extends JPanel implements OnWorldUpdateListener, Mou
 	@Override
 	public void mouseClicked(MouseEvent e)
 	{
-		if(hoveredEntity != null) entities.selectEntity(hoveredEntity);
+		if(hoveredEntity != null) manageSelectionOfHoveredEntity();
 		else entities.selectNothing();
 		
 		viewListener.onEntitySelectionChanged();
@@ -603,6 +604,13 @@ public class EvolutionPanel extends JPanel implements OnWorldUpdateListener, Mou
 		if(yPosition > getHeight()) yPosition = getHeight();
 	}
 	
+	private void manageSelectionOfHoveredEntity()
+	{
+		if(KeyManager.isShiftPressed() && !KeyManager.isCtrlPressed()) entities.selectEntity(hoveredEntity);
+		else if(KeyManager.isCtrlPressed() && !KeyManager.isShiftPressed()) entities.deselectEntity(hoveredEntity);
+		else entities.selectOnlyEntity(hoveredEntity);
+	}
+	
 	private void startSelecting(MouseEvent e)
 	{
 		Vector2 worldPos = screenPosToWorldPos(e.getX(), e.getY());
@@ -620,24 +628,25 @@ public class EvolutionPanel extends JPanel implements OnWorldUpdateListener, Mou
 		selection.height = (int) worldPos.getY() - selection.y;
 	}
 	
-	private void endSelecting(MouseEvent e)
-	{
-		if(!selecting) return;
-		selecting = false;
-		continueSelecting(e);
-		entities.selectNothing();
-		entities.selectEntitiesInRect(selection);
-		selection = null;
-		
-		viewListener.onViewParametersChanged();
-		viewListener.onEntitySelectionChanged();
-		repaint();
-	}
-	
 	private Vector2 screenPosToWorldPos(int x, int y)
 	{
 		float worldX = (float) ((x - xPosition) / scale);
 		float worldY = (float) ((y - yPosition) / scale);
 		return new Vector2(worldX, worldY);
+	}
+	
+	private void endSelecting(MouseEvent e)
+	{
+		if(!selecting) return;
+		selecting = false;
+		continueSelecting(e);
+		if(!KeyManager.isShiftPressed() && !KeyManager.isCtrlPressed()) entities.selectNothing();
+		if(!KeyManager.isCtrlPressed()) entities.selectEntitiesInRect(selection);
+		else if(!KeyManager.isShiftPressed()) entities.deselectEntitiesInRect(selection);
+		selection = null;
+		
+		viewListener.onViewParametersChanged();
+		viewListener.onEntitySelectionChanged();
+		repaint();
 	}
 }

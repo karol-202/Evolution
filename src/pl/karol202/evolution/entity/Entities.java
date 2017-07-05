@@ -111,14 +111,29 @@ public class Entities
 		entitiesToRemove.clear();
 	}
 	
+	public void selectOnlyEntity(Entity entity)
+	{
+		entities.selectOnlyEntity(entity);
+	}
+	
 	public void selectEntity(Entity entity)
 	{
 		entities.selectEntity(entity);
 	}
 	
+	public void deselectEntity(Entity entity)
+	{
+		entities.deselectEntity(entity);
+	}
+	
 	public void selectEntitiesInRect(Rectangle rect)
 	{
 		entities.selectEntitiesInRect(rect);
+	}
+	
+	public void deselectEntitiesInRect(Rectangle rect)
+	{
+		entities.deselectEntitiesInRect(rect);
 	}
 	
 	public void selectNothing()
