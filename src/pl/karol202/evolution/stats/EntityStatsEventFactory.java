@@ -15,12 +15,18 @@
  */
 package pl.karol202.evolution.stats;
 
+import pl.karol202.evolution.entity.property.EntityProperties;
+
+import java.util.Map;
+
 public class EntityStatsEventFactory
 {
-	public EntityStatsEvent createEvent(String className, float time)
+	public EntityStatsEvent createEvent(String className, float time, Map<EntityProperties, Float> entityPropertiesMap)
 	{
-		if(className.equals(BornEntityStatsEvent.class.getName())) return new BornEntityStatsEvent(time);
-		else if(className.equals(DeathEntityStatsEvent.class.getName())) return new DeathEntityStatsEvent(time);
+		if(className.equals(BornEntityStatsEvent.class.getName()))
+			return new BornEntityStatsEvent(time, entityPropertiesMap);
+		else if(className.equals(DeathEntityStatsEvent.class.getName()))
+			return new DeathEntityStatsEvent(time, entityPropertiesMap);
 		else return null;
 	}
 }

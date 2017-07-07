@@ -113,7 +113,7 @@ class EntitiesList extends ArrayList<EntitiesList.SelectableEntity>
 		setEntitySelection(entity, false);
 	}
 	
-	void setEntitySelection(Entity entity, boolean selected)
+	private void setEntitySelection(Entity entity, boolean selected)
 	{
 		if(!containsEntity(entity)) throw new IllegalArgumentException("Unknown entity: " + entity);
 		stream().filter(se -> se.getEntity() == entity).forEach(se -> se.setSelected(selected));

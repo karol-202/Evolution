@@ -86,7 +86,7 @@ public class Entity
 		this.y = y;
 		this.energy = maxEnergy;
 		this.timeOfLife = 0;
-		this.reproduceCooldown = adolescenceTime;
+		this.reproduceCooldown = adolescenceTime * maxTimeOfLife;
 	}
 	
 	private void setProperties()
@@ -97,7 +97,7 @@ public class Entity
 		optimalTemperature = genotype.getFloatProperty(GeneType.MOT);
 		optimalHumidity = clamp(genotype.getFloatProperty(GeneType.MOH), 0, 100);
 		maxTimeOfLife = clamp(genotype.getFloatProperty(GeneType.MLT), 20, 300);
-		adolescenceTime = (genotype.getFloatProperty(GeneType.MAT) + 0.21f) * maxTimeOfLife;
+		adolescenceTime = (genotype.getFloatProperty(GeneType.MAT) + 0.21f);
 		maxEnergy = genotype.getFloatProperty(GeneType.EMX);
 		energyPerSecond = genotype.getFloatProperty(GeneType.EPS);
 		temperatureEnergyLoss = clamp(genotype.getFloatProperty(GeneType.ETL), 0.1f, 2.5f);
@@ -105,9 +105,9 @@ public class Entity
 		eatingSpeed = genotype.getFloatProperty(GeneType.FSP);
 		sightRange = genotype.getFloatProperty(GeneType.CSR);
 		smell = genotype.getBooleanProperty(GeneType.COE);
-		smellRange = clamp(genotype.getFloatProperty(GeneType.COR), 120, 450);
-		eatStartEnergyThreshold = genotype.getFloatProperty(GeneType.BFS) * maxEnergy;
-		reproduceReadyEnergyThreshold = genotype.getFloatProperty(GeneType.BRR) * maxEnergy;
+		smellRange = smell ? clamp(genotype.getFloatProperty(GeneType.COR), 120, 450) : 0f;
+		eatStartEnergyThreshold = genotype.getFloatProperty(GeneType.BFS);
+		reproduceReadyEnergyThreshold = genotype.getFloatProperty(GeneType.BRR);
 		minReproduceCooldown = clamp(genotype.getFloatProperty(GeneType.BRN), 15, 45);
 		maxReproduceCooldown = clamp(genotype.getFloatProperty(GeneType.BRX), 50, 83);
 	}
@@ -207,12 +207,12 @@ public class Entity
 	
 	public boolean shouldEat()
 	{
-		return energy < eatStartEnergyThreshold;
+		return energy < eatStartEnergyThreshold * maxEnergy;
 	}
 	
 	public boolean isReadyToReproduce()
 	{
-		return energy >= reproduceReadyEnergyThreshold && reproduceCooldown <= 0 && !behaviourManager.isReproducing();
+		return energy >= reproduceReadyEnergyThreshold * maxEnergy && reproduceCooldown <= 0 && !behaviourManager.isReproducing();
 	}
 	
 	public boolean isInRut()
@@ -287,7 +287,7 @@ public class Entity
 		this.timeOfLife = timeOfLife;
 	}
 	
-	float getReproduceCooldown()
+	public float getReproduceCooldown()
 	{
 		return reproduceCooldown;
 	}
@@ -307,7 +307,7 @@ public class Entity
 		return behaviourManager.getSavableBehavioursStream();
 	}
 	
-	String getCurrentBehaviourName()
+	public String getCurrentBehaviourName()
 	{
 		return behaviourManager.getCurrentBehaviourName();
 	}

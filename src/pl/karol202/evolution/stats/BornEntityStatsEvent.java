@@ -15,11 +15,15 @@
  */
 package pl.karol202.evolution.stats;
 
+import pl.karol202.evolution.entity.property.EntityProperties;
+
+import java.util.Map;
+
 class BornEntityStatsEvent extends EntityStatsEvent
 {
-	BornEntityStatsEvent(float time)
+	BornEntityStatsEvent(float time, Map<EntityProperties, Float> entityPropertiesMap)
 	{
-		super(time);
+		super(time, entityPropertiesMap);
 	}
 	
 	@Override

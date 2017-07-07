@@ -15,18 +15,29 @@
  */
 package pl.karol202.evolution.stats;
 
+import pl.karol202.evolution.entity.property.EntityProperties;
+
+import java.util.Map;
+
 abstract class EntityStatsEvent
 {
 	private float time;
+	private Map<EntityProperties, Float> entityPropertiesMap;
 	
-	EntityStatsEvent(float time)
+	EntityStatsEvent(float time, Map<EntityProperties, Float> entityPropertiesMap)
 	{
 		this.time = time;
+		this.entityPropertiesMap = entityPropertiesMap;
 	}
 	
 	float getTime()
 	{
 		return time;
+	}
+	
+	Map<EntityProperties, Float> getEntityPropertiesMap()
+	{
+		return entityPropertiesMap;
 	}
 	
 	abstract int getInfluenceOnAmount();

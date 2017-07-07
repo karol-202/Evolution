@@ -16,7 +16,7 @@
 package pl.karol202.evolution.ui.side;
 
 import pl.karol202.evolution.entity.Entity;
-import pl.karol202.evolution.entity.EntityProperties;
+import pl.karol202.evolution.entity.property.EntityProperties;
 
 import javax.swing.table.AbstractTableModel;
 import java.util.List;

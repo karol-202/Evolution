@@ -16,10 +16,9 @@
 package pl.karol202.evolution.ui.side;
 
 import pl.karol202.evolution.entity.Entities;
-import pl.karol202.evolution.entity.EntityProperties;
+import pl.karol202.evolution.entity.property.EntityProperties;
 
 import javax.swing.table.AbstractTableModel;
-import java.text.DecimalFormat;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.DoubleStream;
@@ -32,13 +31,11 @@ public class EntityStatsTableModel extends AbstractTableModel
 	private Entities entities;
 	private String filter;
 	private List<EntityProperties> filteredProperties;
-	private DecimalFormat decimalFormat;
 	
 	EntityStatsTableModel(Entities entities)
 	{
 		this.entities = entities;
 		this.filter = "";
-		this.decimalFormat = new DecimalFormat("#0.0#");
 		updateEntities();
 		filter();
 	}
@@ -82,40 +79,43 @@ public class EntityStatsTableModel extends AbstractTableModel
 	
 	private String getAverage(int row)
 	{
-		DoubleStream stream = getDoubleStream(row);
+		EntityProperties property = filteredProperties.get(row);
+		DoubleStream stream = getDoubleStream(property);
 		if(stream == null) return "";
-		return decimalFormat.format(stream.average().orElse(-1));
+		return property.transformFloatToString((float) stream.average().orElse(-1));
 	}
 	
 	private String getMedian(int row)
 	{
-		DoubleStream stream = getDoubleStream(row);
+		EntityProperties property = filteredProperties.get(row);
+		DoubleStream stream = getDoubleStream(property);
 		if(stream == null) return "";
 		
 		double[] array = stream.sorted().toArray();
 		int center = array.length / 2;
-		if(array.length % 2 == 1) return decimalFormat.format(array[center]);
-		else return decimalFormat.format((array[center - 1] + array[center]) / 2);
+		if(array.length % 2 == 1) return property.transformFloatToString((float) array[center]);
+		else return property.transformFloatToString((float) (array[center - 1] + array[center]) / 2);
 	}
 	
 	private String getMin(int row)
 	{
-		DoubleStream stream = getDoubleStream(row);
+		EntityProperties property = filteredProperties.get(row);
+		DoubleStream stream = getDoubleStream(property);
 		if(stream == null) return "";
-		return decimalFormat.format(stream.min().orElse(-1));
+		return property.transformFloatToString((float) stream.min().orElse(-1));
 	}
 	
 	private String getMax(int row)
 	{
-		DoubleStream stream = getDoubleStream(row);
+		EntityProperties property = filteredProperties.get(row);
+		DoubleStream stream = getDoubleStream(property);
 		if(stream == null) return "";
-		return decimalFormat.format(stream.max().orElse(-1));
+		return property.transformFloatToString((float) stream.max().orElse(-1));
 	}
 	
-	private DoubleStream getDoubleStream(int row)
+	private DoubleStream getDoubleStream(EntityProperties property)
 	{
 		if(entities.getSelectedEntities().count() == 0) return null;
-		EntityProperties property = filteredProperties.get(row);
 		if(!property.isFloatProperty()) return null;
 		return entities.getSelectedEntities().mapToDouble(property::getFloatValueForEntity);
 	}
@@ -136,7 +136,7 @@ public class EntityStatsTableModel extends AbstractTableModel
 	{
 		filteredProperties = Stream.of(EntityProperties.values())
 				.filter(p -> p.getName().contains(filter) || filter.isEmpty())
-				.filter(EntityProperties::isFloatProperty)
+				.filter(EntityProperties::isStatsCapable)
 				.collect(Collectors.toList());
 	}
 }

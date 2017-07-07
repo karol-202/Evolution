@@ -13,10 +13,22 @@
     See the License for the specific language governing permissions and
     limitations under the License.
  */
-package pl.karol202.evolution.utils;
+package pl.karol202.evolution.entity.property;
 
-@FunctionalInterface
-public interface ToFloatFunction<T>
+import pl.karol202.evolution.entity.Entity;
+
+interface EntityPropertyAdapter<T>
 {
-	float apply(T value);
+	boolean isStatsCapable();
+	
+	default String getStringValueForEntity(Entity entity)
+	{
+		return transformToString(getValueForEntity(entity));
+	}
+	
+	T getValueForEntity(Entity entity);
+	
+	String transformToString(T value);
+	
+	boolean isRegistered();
 }
