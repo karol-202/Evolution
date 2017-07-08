@@ -28,12 +28,16 @@ class EntityFloatPropertyAdapter implements EntityPropertyAdapter<Float>
 	private Function<Entity, Float> valueFunction;
 	private Function<Float, String> displayFunction;
 	private boolean registered;
+	private float min;
+	private float max;
 	
-	EntityFloatPropertyAdapter(Function<Entity, Float> valueFunction, Function<Float, String> displayFunction, boolean registered)
+	EntityFloatPropertyAdapter(Function<Entity, Float> valueFunction, Function<Float, String> displayFunction, boolean registered, float min, float max)
 	{
 		this.valueFunction = valueFunction;
 		this.displayFunction = displayFunction != null ? displayFunction : DEFAULT_DISPLAY;
 		this.registered = registered;
+		this.min = min;
+		this.max = max;
 	}
 	
 	@Override
@@ -58,5 +62,15 @@ class EntityFloatPropertyAdapter implements EntityPropertyAdapter<Float>
 	public boolean isRegistered()
 	{
 		return registered;
+	}
+	
+	public float getMin()
+	{
+		return min;
+	}
+	
+	public float getMax()
+	{
+		return max;
 	}
 }

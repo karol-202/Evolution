@@ -84,21 +84,21 @@ public class StatsLoader
 		for(int i = 0; i < mapsNodes.getLength(); i++)
 		{
 			Element elementMap = (Element) mapsNodes.item(i);
-			mapsList.add(getEntityProperties(elementMap));
+			mapsList.add(parseEntityProperties(elementMap));
 		}
 		return mapsList;
 	}
 	
-	private Map<EntityProperties, Float> getEntityProperties(Element elementMap)
+	private Map<EntityProperties, Float> parseEntityProperties(Element elementMap)
 	{
 		NodeList propertiesNodes = elementMap.getChildNodes();
 		return IntStream.range(0, propertiesNodes.getLength())
 						.mapToObj(i -> (Element) propertiesNodes.item(i))
-						.map(this::getEntityProperty)
+						.map(this::parseEntityProperty)
 						.collect(Collectors.toMap(PropertyPair::getProperty, PropertyPair::getValue));
 	}
 	
-	private PropertyPair getEntityProperty(Element elementProperty)
+	private PropertyPair parseEntityProperty(Element elementProperty)
 	{
 		EntityProperties property = EntityProperties.values()[getIntAttribute(elementProperty, "property")];
 		float value = getFloatAttribute(elementProperty, "value");
@@ -122,9 +122,15 @@ public class StatsLoader
 	{
 		String className = elementEvent.getTagName();
 		float time = getFloatAttribute(elementEvent, "time");
-		Map<EntityProperties, Float> properties = getEntityProperties(elementEvent);
+		Map<EntityProperties, Float> properties = parsePropertiesOfEntityEvent(elementEvent);
 		
 		return factory.createEvent(className, time, properties);
+	}
+	
+	private Map<EntityProperties, Float> parsePropertiesOfEntityEvent(Element elementEvent)
+	{
+		Element elementMap = getElement(elementEvent, "properties");
+		return parseEntityProperties(elementMap);
 	}
 	
 	public Element getStatsElement(Document document)

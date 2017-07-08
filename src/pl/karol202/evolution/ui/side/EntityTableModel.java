@@ -68,7 +68,7 @@ public class EntityTableModel extends AbstractTableModel
 	public void setEntity(Entity entity)
 	{
 		this.entity = entity;
-		fireTableDataChanged();
+		fireTableRowsUpdated(0, filteredProperties.size() - 1);
 	}
 	
 	void setFilter(String filter)

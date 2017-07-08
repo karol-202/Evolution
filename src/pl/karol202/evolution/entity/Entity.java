@@ -92,7 +92,7 @@ public class Entity
 	private void setProperties()
 	{
 		sex = getSexFromGenes();
-		size = genotype.getFloatProperty(GeneType.MSZ);
+		size = clamp(genotype.getFloatProperty(GeneType.MSZ), 1, 28);
 		speed = genotype.getFloatProperty(GeneType.MSP);
 		optimalTemperature = genotype.getFloatProperty(GeneType.MOT);
 		optimalHumidity = clamp(genotype.getFloatProperty(GeneType.MOH), 0, 100);

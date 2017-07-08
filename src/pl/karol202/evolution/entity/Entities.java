@@ -63,7 +63,7 @@ public class Entities
 	public void addNewEntity(Entity entity)
 	{
 		entitiesToAdd.add(entity);
-		Stats.instance.registerEntityBorn();
+		Stats.instance.registerEntityBorn(entity);
 	}
 	
 	void addEntityInstantly(Entity entity, boolean selected)
@@ -79,7 +79,7 @@ public class Entities
 	void removeDeadEntity(Entity entity)
 	{
 		entitiesToRemove.add(entity);
-		Stats.instance.registerEntityDeath();
+		Stats.instance.registerEntityDeath(entity);
 	}
 	
 	float getTemperature(float x, float y)
@@ -171,6 +171,11 @@ public class Entities
 	public boolean isEntitySelected(Entity entity)
 	{
 		return entities.isEntitySelected(entity);
+	}
+	
+	public boolean areAllEntitiesSelected()
+	{
+		return entities.areAllEntitiesSelected();
 	}
 	
 	public int getEntityId(Entity entity)

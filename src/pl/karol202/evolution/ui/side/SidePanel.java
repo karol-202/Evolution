@@ -51,6 +51,7 @@ public class SidePanel extends JPanel implements OnWorldUpdateListener, Document
 	private JScrollPane scrollPaneStats;
 	private JTable tableStats;
 	private EntityStatsTableModel tableModelEntityStats;
+	private EntityPropertyGraph graphEntityProperty;
 	
 	private int lastEntityIndex;
 	
@@ -141,9 +142,17 @@ public class SidePanel extends JPanel implements OnWorldUpdateListener, Document
 		tableModelEntityStats = new EntityStatsTableModel(entities);
 		
 		tableStats = new JTable(tableModelEntityStats);
+		tableStats.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+		tableStats.getSelectionModel()
+				  .addListSelectionListener(e -> graphEntityProperty.setProperty(tableModelEntityStats.getFilteredPropertyAtRow(tableStats.getSelectedRow())));
 		
 		scrollPaneStats = new JScrollPane(tableStats);
-		panelStats.add(scrollPaneStats, new GridBagConstraints(0, 0, 1, 1, 1, 1,
+		panelStats.add(scrollPaneStats, new GridBagConstraints(0, 0, 1, 1, 1, 0.8,
+				GridBagConstraints.CENTER, GridBagConstraints.BOTH, new Insets(0, 0, 0, 0),
+				0, 0));
+		
+		graphEntityProperty = new EntityPropertyGraph();
+		panelStats.add(graphEntityProperty, new GridBagConstraints(0, 1, 1, 1, 1, 0.2,
 				GridBagConstraints.CENTER, GridBagConstraints.BOTH, new Insets(0, 0, 0, 0),
 				0, 0));
 	}

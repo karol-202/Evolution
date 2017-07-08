@@ -36,8 +36,8 @@ public class EntityStatsTableModel extends AbstractTableModel
 	{
 		this.entities = entities;
 		this.filter = "";
-		updateEntities();
 		filter();
+		updateEntities();
 	}
 	
 	@Override
@@ -61,13 +61,17 @@ public class EntityStatsTableModel extends AbstractTableModel
 	@Override
 	public Object getValueAt(int row, int column)
 	{
+		EntityProperties property = filteredProperties.get(row);
+		DoubleStream stream = getDoubleStream(property);
+		if(stream == null && column != 0) return "";
+		
 		switch(column)
 		{
 		case 0: return getPropertyName(row);
-		case 1: return getAverage(row);
-		case 2: return getMedian(row);
-		case 3: return getMin(row);
-		case 4: return getMax(row);
+		case 1: return getAverage(property, stream);
+		case 2: return getMedian(property, stream);
+		case 3: return getMin(property, stream);
+		case 4: return getMax(property, stream);
 		default: return "";
 		}
 	}
@@ -77,39 +81,26 @@ public class EntityStatsTableModel extends AbstractTableModel
 		return filteredProperties.get(row).getName();
 	}
 	
-	private String getAverage(int row)
+	private String getAverage(EntityProperties property, DoubleStream stream)
 	{
-		EntityProperties property = filteredProperties.get(row);
-		DoubleStream stream = getDoubleStream(property);
-		if(stream == null) return "";
 		return property.transformFloatToString((float) stream.average().orElse(-1));
 	}
 	
-	private String getMedian(int row)
+	private String getMedian(EntityProperties property, DoubleStream stream)
 	{
-		EntityProperties property = filteredProperties.get(row);
-		DoubleStream stream = getDoubleStream(property);
-		if(stream == null) return "";
-		
 		double[] array = stream.sorted().toArray();
 		int center = array.length / 2;
 		if(array.length % 2 == 1) return property.transformFloatToString((float) array[center]);
 		else return property.transformFloatToString((float) (array[center - 1] + array[center]) / 2);
 	}
 	
-	private String getMin(int row)
+	private String getMin(EntityProperties property, DoubleStream stream)
 	{
-		EntityProperties property = filteredProperties.get(row);
-		DoubleStream stream = getDoubleStream(property);
-		if(stream == null) return "";
 		return property.transformFloatToString((float) stream.min().orElse(-1));
 	}
 	
-	private String getMax(int row)
+	private String getMax(EntityProperties property, DoubleStream stream)
 	{
-		EntityProperties property = filteredProperties.get(row);
-		DoubleStream stream = getDoubleStream(property);
-		if(stream == null) return "";
 		return property.transformFloatToString((float) stream.max().orElse(-1));
 	}
 	
@@ -122,7 +113,7 @@ public class EntityStatsTableModel extends AbstractTableModel
 	
 	void updateEntities()
 	{
-		fireTableDataChanged();
+		fireTableRowsUpdated(0, filteredProperties.size() - 1);
 	}
 	
 	void setFilter(String filter)
@@ -138,5 +129,10 @@ public class EntityStatsTableModel extends AbstractTableModel
 				.filter(p -> p.getName().contains(filter) || filter.isEmpty())
 				.filter(EntityProperties::isStatsCapable)
 				.collect(Collectors.toList());
+	}
+	
+	EntityProperties getFilteredPropertyAtRow(int row)
+	{
+		return filteredProperties.get(row);
 	}
 }

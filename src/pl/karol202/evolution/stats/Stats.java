@@ -97,7 +97,7 @@ public class Stats
 												   .sum();
 	}
 	
-	public Stream<Map<EntityProperties, Float>> getEntitiesProperties(float time)
+	public List<Map<EntityProperties, Float>> getEntitiesProperties(float time)
 	{
 		List<Map<EntityProperties, Float>> mapsList = initialPropertiesMapsList.stream().map(HashMap::new)
 																						.collect(Collectors.toList());
@@ -106,7 +106,7 @@ public class Stats
 			if(e.getInfluenceOnAmount() > 0) mapsList.add(map);
 			else if(e.getInfluenceOnAmount() < 0) mapsList.remove(map);
 		});
-		return mapsList.stream();
+		return mapsList;
 	}
 	
 	int getInitialEntitiesAmount()

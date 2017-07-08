@@ -153,4 +153,9 @@ class EntitiesList extends ArrayList<EntitiesList.SelectableEntity>
 		return stream().filter(se -> se.getEntity() == entity).findAny()
 					   .orElseThrow(() -> new IllegalArgumentException("Unknown entity: " + entity)).isSelected();
 	}
+	
+	boolean areAllEntitiesSelected()
+	{
+		return stream().allMatch(SelectableEntity::isSelected);
+	}
 }

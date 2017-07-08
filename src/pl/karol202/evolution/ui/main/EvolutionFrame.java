@@ -412,7 +412,9 @@ public class EvolutionFrame extends JFrame implements EvolutionPanel.OnViewChang
 		if(selectAll) panelEvolution.setSelecting(false);
 		panelEvolution.repaint();
 		
+		itemSelectingToggle.setEnabled(!selectAll);
 		buttonSelectingToggle.setEnabled(!selectAll);
+		onEntitySelectionChanged();
 		onViewParametersChanged();
 	}
 	
@@ -457,6 +459,11 @@ public class EvolutionFrame extends JFrame implements EvolutionPanel.OnViewChang
 	@Override
 	public void onEntitySelectionChanged()
 	{
+		if(!entities.areAllEntitiesSelected())
+		{
+			entities.setSelectingAll(false);
+			onViewParametersChanged();
+		}
 		panelSide.updateData();
 	}
 	
