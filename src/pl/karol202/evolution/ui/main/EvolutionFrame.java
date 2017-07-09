@@ -108,6 +108,7 @@ public class EvolutionFrame extends JFrame implements EvolutionPanel.OnViewChang
 	{
 		setSize(1024, 768);
 		setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+		setIconImage(ImageLoader.loadImage("/res/icon.png"));
 		setLayout(new BorderLayout());
 		setVisible(true);
 	}
