@@ -58,6 +58,8 @@ public class EvolutionFrame extends JFrame implements EvolutionPanel.OnViewChang
 	private JRadioButtonMenuItem itemViewTemperature;
 	private JRadioButtonMenuItem itemViewHumidity;
 	private JMenuItem itemCenterView;
+	private JCheckBoxMenuItem itemLayerSightAndSmell;
+	private JCheckBoxMenuItem itemLayerBehaviours;
 	
 	private JMenu menuSelection;
 	private JCheckBoxMenuItem itemSelectingToggle;
@@ -224,6 +226,9 @@ public class EvolutionFrame extends JFrame implements EvolutionPanel.OnViewChang
 		initHumidityModeItem();
 		menuView.add(new JSeparator());
 		initCenterViewItem();
+		menuView.add(new JSeparator());
+		initSightAndSmellLayerItem();
+		initBehavioursLayerItem();
 	}
 	
 	private void initStandardModeItem()
@@ -256,6 +261,22 @@ public class EvolutionFrame extends JFrame implements EvolutionPanel.OnViewChang
 		itemCenterView = new JMenuItem("Wyśrodkuj");
 		itemCenterView.addActionListener(e -> panelEvolution.centerView());
 		menuView.add(itemCenterView);
+	}
+	
+	private void initSightAndSmellLayerItem()
+	{
+		itemLayerSightAndSmell = new JCheckBoxMenuItem("Warstwa: wzrok i węch");
+		itemLayerSightAndSmell.setState(panelEvolution.isSightAndSmellLayerActive());
+		itemLayerSightAndSmell.addActionListener(e -> panelEvolution.setSightAndSmellLayerActive(itemLayerSightAndSmell.getState()));
+		menuView.add(itemLayerSightAndSmell);
+	}
+	
+	private void initBehavioursLayerItem()
+	{
+		itemLayerBehaviours = new JCheckBoxMenuItem("Warstwa: zachowania");
+		itemLayerBehaviours.setState(panelEvolution.isBehavioursLayerActive());
+		itemLayerBehaviours.addActionListener(e -> panelEvolution.setBehavioursLayerActive(itemLayerBehaviours.getState()));
+		menuView.add(itemLayerBehaviours);
 	}
 	
 	private void initSelectionMenu()

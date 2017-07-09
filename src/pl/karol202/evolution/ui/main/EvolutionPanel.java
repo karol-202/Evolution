@@ -60,6 +60,7 @@ public class EvolutionPanel extends JPanel implements OnWorldUpdateListener, Mou
 	private double scale;
 	private int xPosition;
 	private int yPosition;
+	private LayersSettings layersSettings;
 	
 	private int draggingStartX;
 	private int draggingStartY;
@@ -84,6 +85,7 @@ public class EvolutionPanel extends JPanel implements OnWorldUpdateListener, Mou
 		this.scale = 1;
 		this.xPosition = 0;
 		this.yPosition = 0;
+		this.layersSettings = new LayersSettings();
 		
 		this.selecting = false;
 		
@@ -239,9 +241,9 @@ public class EvolutionPanel extends JPanel implements OnWorldUpdateListener, Mou
 		int angle = (int) Utils.map(entity.getTimeOfLife(), 0, entity.getMaxTimeOfLife(), -360, 0);
 		g.drawArc(bounds.x, bounds.y, bounds.width, bounds.height, 90, angle);
 		
-		if(selected) drawEntitySightRange(g, sightRangeBounds);
-		if(selected && entity.hasSmell()) drawEntitySmellRange(g, smellRangeBounds);
-		entity.drawCurrentBehaviour(g, new ViewInfo((float) scale, xPosition, yPosition), selected);
+		if(selected && layersSettings.isSightAndSmellActive()) drawEntitySightRange(g, sightRangeBounds);
+		if(selected && entity.hasSmell() && layersSettings.isSightAndSmellActive()) drawEntitySmellRange(g, smellRangeBounds);
+		if(layersSettings.areBehavioursActive()) entity.drawCurrentBehaviour(g, new ViewInfo((float) scale, xPosition, yPosition), selected);
 	}
 	
 	private Rectangle getEntityBounds(Entity entity)
@@ -511,6 +513,28 @@ public class EvolutionPanel extends JPanel implements OnWorldUpdateListener, Mou
 	{
 		xPosition = (getWidth() / 2) - (getScaledWorldWidth() / 2);
 		yPosition = (getHeight() / 2) - (getScaledWorldHeight() / 2);
+		repaint();
+	}
+	
+	boolean isSightAndSmellLayerActive()
+	{
+		return layersSettings.isSightAndSmellActive();
+	}
+	
+	void setSightAndSmellLayerActive(boolean active)
+	{
+		layersSettings.setSightAndSmell(active);
+		repaint();
+	}
+	
+	boolean isBehavioursLayerActive()
+	{
+		return layersSettings.areBehavioursActive();
+	}
+	
+	void setBehavioursLayerActive(boolean active)
+	{
+		layersSettings.setBehaviours(active);
 		repaint();
 	}
 	

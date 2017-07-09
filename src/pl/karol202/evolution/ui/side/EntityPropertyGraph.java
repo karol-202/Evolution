@@ -49,7 +49,7 @@ class EntityPropertyGraph extends Graph
 			int maxY = (int) Utils.map(max, property.getMin(), property.getMax(), getHeight() - MARGIN, MARGIN);
 			if(x > MARGIN)
 			{
-				g.setColor(Color.GREEN);
+				g.setColor(Color.BLACK);
 				g.drawLine(x - 1, previousAverageY, x, averageY);
 				
 				g.setColor(Color.BLUE);
@@ -97,6 +97,11 @@ class EntityPropertyGraph extends Graph
 		float min = getMin(mapsList);
 		float max = getMax(mapsList);
 		setToolTipText(String.format("<html>Czas: %.2f<br>Średnia: %f<br>Min: %f<br>Max: %f</html>", time, average, min, max));
+	}
+	
+	public String getPropertyName()
+	{
+		return property != null ? property.getName() : "";
 	}
 	
 	public void setProperty(EntityProperties property)

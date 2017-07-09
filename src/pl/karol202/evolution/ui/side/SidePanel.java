@@ -51,6 +51,7 @@ public class SidePanel extends JPanel implements OnWorldUpdateListener, Document
 	private JScrollPane scrollPaneStats;
 	private JTable tableStats;
 	private EntityStatsTableModel tableModelEntityStats;
+	private JLabel labelPropertyName;
 	private EntityPropertyGraph graphEntityProperty;
 	
 	private int lastEntityIndex;
@@ -137,6 +138,7 @@ public class SidePanel extends JPanel implements OnWorldUpdateListener, Document
 	private void initStatsTab()
 	{
 		panelStats = new JPanel(new GridBagLayout());
+		panelStats.setBackground(Color.WHITE);
 		tabbedPane.addTab("Statystyki", panelStats);
 		
 		tableModelEntityStats = new EntityStatsTableModel(entities);
@@ -144,15 +146,23 @@ public class SidePanel extends JPanel implements OnWorldUpdateListener, Document
 		tableStats = new JTable(tableModelEntityStats);
 		tableStats.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		tableStats.getSelectionModel()
-				  .addListSelectionListener(e -> graphEntityProperty.setProperty(tableModelEntityStats.getFilteredPropertyAtRow(tableStats.getSelectedRow())));
+				  .addListSelectionListener(e -> {
+				  	graphEntityProperty.setProperty(tableModelEntityStats.getFilteredPropertyAtRow(tableStats.getSelectedRow()));
+				  	labelPropertyName.setText(graphEntityProperty.getPropertyName());
+				  });
 		
 		scrollPaneStats = new JScrollPane(tableStats);
 		panelStats.add(scrollPaneStats, new GridBagConstraints(0, 0, 1, 1, 1, 0.8,
 				GridBagConstraints.CENTER, GridBagConstraints.BOTH, new Insets(0, 0, 0, 0),
 				0, 0));
 		
+		labelPropertyName = new JLabel();
+		panelStats.add(labelPropertyName, new GridBagConstraints(0, 1, 1, 1, 0, 0,
+				GridBagConstraints.CENTER, GridBagConstraints.NONE, new Insets(0, 0, 0, 0),
+				0, 0));
+		
 		graphEntityProperty = new EntityPropertyGraph();
-		panelStats.add(graphEntityProperty, new GridBagConstraints(0, 1, 1, 1, 1, 0.2,
+		panelStats.add(graphEntityProperty, new GridBagConstraints(0, 2, 1, 1, 1, 0.2,
 				GridBagConstraints.CENTER, GridBagConstraints.BOTH, new Insets(0, 0, 0, 0),
 				0, 0));
 	}

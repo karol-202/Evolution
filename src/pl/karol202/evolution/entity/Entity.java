@@ -84,7 +84,7 @@ public class Entity
 		
 		this.x = x;
 		this.y = y;
-		this.energy = maxEnergy;
+		this.energy = maxEnergy * 0.5f;
 		this.timeOfLife = 0;
 		this.reproduceCooldown = adolescenceTime * maxTimeOfLife;
 	}
@@ -99,7 +99,7 @@ public class Entity
 		maxTimeOfLife = clamp(genotype.getFloatProperty(GeneType.MLT), 20, 300);
 		adolescenceTime = (genotype.getFloatProperty(GeneType.MAT) + 0.21f);
 		maxEnergy = genotype.getFloatProperty(GeneType.EMX);
-		energyPerSecond = genotype.getFloatProperty(GeneType.EPS);
+		energyPerSecond = clamp(genotype.getFloatProperty(GeneType.EPS), 0.75f, 4.5f);
 		temperatureEnergyLoss = clamp(genotype.getFloatProperty(GeneType.ETL), 0.1f, 2.5f);
 		humidityEnergyLoss = clamp(genotype.getFloatProperty(GeneType.EHL), 0.1f, 2f);
 		eatingSpeed = genotype.getFloatProperty(GeneType.FSP);
