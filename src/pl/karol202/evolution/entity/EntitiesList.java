@@ -59,14 +59,14 @@ class EntitiesList extends ArrayList<EntitiesList.SelectableEntity>
 		add(new SelectableEntity(entity, selected));
 	}
 	
-	boolean containsEntity(Entity entity)
+	private boolean containsEntity(Entity entity)
 	{
 		return stream().filter(se -> se.getEntity() == entity).count() > 0;
 	}
 	
 	int indexOfEntity(Entity entity)
 	{
-		return stream().filter(se -> se.getEntity() == entity).map(SelectableEntity::getEntity).mapToInt(this::indexOf)
+		return stream().filter(se -> se.getEntity() == entity).mapToInt(this::indexOf)
 					   .findAny().orElse(-1);
 	}
 	

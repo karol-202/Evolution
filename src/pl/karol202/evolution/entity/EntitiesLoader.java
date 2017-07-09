@@ -76,6 +76,8 @@ public class EntitiesLoader
 			parseEntityComponents(entity, element);
 			parseEntityBehaviours(entity, element);
 		}
+		
+		reproductionsLoader.onEntitiesLoadingEnded();
 	}
 	
 	private Entity parseEntity(Element elementEntity)

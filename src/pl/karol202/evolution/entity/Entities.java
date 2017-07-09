@@ -78,6 +78,7 @@ public class Entities
 	
 	void removeDeadEntity(Entity entity)
 	{
+		if(entitiesToRemove.contains(entity)) return;
 		entitiesToRemove.add(entity);
 		Stats.instance.registerEntityDeath(entity);
 	}

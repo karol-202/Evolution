@@ -60,7 +60,7 @@ public class ReproduceBehaviour extends SavableBehaviour
 		if(partner == null) findPartner();
 		else if(isReproducing()) reproduction.update();
 		else if(!hasReachedPartner()) goToPartner();
-		else new Reproduction(entities, entity, partner);
+		else if(!partner.isReproducing()) new Reproduction(entities, entity, partner);
 	}
 	
 	private void findPartner()

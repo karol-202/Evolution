@@ -86,6 +86,8 @@ public class ReproductionsLoader
 			Reproduction reproduction = reproductions.get(i);
 			elementReproductions.appendChild(createReproductionElement(reproduction, i));
 		}
+		reproductions.clear();
+		
 		return elementReproductions;
 	}
 	
@@ -110,5 +112,10 @@ public class ReproductionsLoader
 		if(reproduction == null) return -1;
 		if(!reproductions.contains(reproduction)) reproductions.add(reproduction);
 		return reproductions.indexOf(reproduction);
+	}
+	
+	public void onEntitiesLoadingEnded()
+	{
+		reproductions.clear();
 	}
 }
